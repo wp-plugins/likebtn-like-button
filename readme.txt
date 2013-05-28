@@ -26,18 +26,20 @@ This module allows to integrate the LikeBtn Like Button into your WordPress webs
 
 == Installation ==
 
-1. Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. To add the Like Button to the pages add the following code to the page.php file of your current theme within the while-loop:
+1) Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
+
+2) Activate the plugin through the 'Plugins' menu in WordPress
+
+3) To add the Like Button to the pages add the following code to the page.php file of your current theme within the while-loop:
 `<?php if (function_exists('likebtn_post')) { likebtn_post(); } ?>`
 
-1. To add the Like Button to the posts add the following code to the single.php file of your current theme within the while-loop:
+4) To add the Like Button to the posts add the following code to the single.php file of your current theme within the while-loop:
 `<?php if (function_exists('likebtn_post')) { likebtn_post(); } ?>`
 
-1. To add the Like Button to the comments add the following code to the functions.php file of your current theme after `<?php comment_text(); ?>`:
+5) To add the Like Button to the comments add the following code to the functions.php file of your current theme after `<?php comment_text(); ?>`:
 `<?php if (function_exists('likebtn_comment')) { likebtn_comment(); } ?>`
 
-1. Plugin does not provide any backend admin panel.
+6) Plugin does not provide any backend admin panel.
 
 == Frequently Asked Questions ==
 
