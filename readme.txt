@@ -8,7 +8,7 @@ Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Like Button allows visitors to like and dislike pages, posts and comments anonymously.
+Like Button allows visitors to like and dislike posts, pages and comments anonymously.
 
 == Description ==
 
