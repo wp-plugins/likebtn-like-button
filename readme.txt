@@ -32,11 +32,9 @@ This module allows to integrate the LikeBtn Like Button into your WordPress webs
 
 == Installation ==
 
-1) Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
-
-2) Activate the plugin through the 'Plugins' menu in WordPress
-
-3) Configure the plugin in LikeBtn admin panel.
+1. Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Configure the plugin in LikeBtn admin panel.
 
 == Frequently Asked Questions ==
 
@@ -44,7 +42,7 @@ This module allows to integrate the LikeBtn Like Button into your WordPress webs
 
 == Screenshots ==
 1. Like Button
-1. Plugin settings
+2. Plugin settings
 
 == Changelog ==
 
