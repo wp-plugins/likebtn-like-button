@@ -28,7 +28,7 @@ This module allows to integrate the LikeBtn Like Button into your WordPress webs
 * Built-in styles.
 * Built-in support for a number of languages.
 * Allows to change all labels texts.
-* All <a href="http://www.likebtn.com/en/#settings/" target="_blank" title="Like Button Settings">LikeBtn settings</a> are available.
+* All <a href="http://www.likebtn.com/en/#settings" target="_blank" title="Like Button Settings">LikeBtn.com settings</a> are available.
 
 == Installation ==
 
