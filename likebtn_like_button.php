@@ -136,7 +136,7 @@ add_action('init', 'likebtn_like_button_init');
 function likebtn_like_button_links($links, $file) {
     $plugin_file = basename(__FILE__);
     if (basename($file) == $plugin_file) {
-        $settings_link = '<a href="options-general.php?page=likebtn_like_button">' . __('Settings', 'likebtn_like_button') . '</a>';
+        $settings_link = '<a href="options-general.php?page=likebtn_like_button_settings">' . __('Settings', 'likebtn_like_button') . '</a>';
         array_unshift($links, $settings_link);
     }
     return $links;
@@ -1017,7 +1017,7 @@ function likebtn_like_button_comment_text($content) {
     }
 
     // check Post view mode - no need
-    
+
     // check Post format
     $post_format = get_post_format($post_id);
     if (!$post_format) {
