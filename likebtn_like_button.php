@@ -234,7 +234,7 @@ function likebtn_like_button_activation_hook() {
         add_option('likebtn_like_button_show_' . $entity_name, '0');
         add_option('likebtn_like_button_use_settings_from_' . $entity_name, '');
         add_option('likebtn_like_button_post_view_mode_' . $entity_name, LIKEBTN_LIKE_BUTTON_POST_VIEW_MODE_BOTH);
-        add_option('likebtn_like_button_post_format_' . $entity_name, 'all');
+        add_option('likebtn_like_button_post_format_' . $entity_name, array('all'));
         add_option('likebtn_like_button_exclude_sections_' . $entity_name, array());
         add_option('likebtn_like_button_exclude_categories_' . $entity_name, array());
         add_option('likebtn_like_button_allow_ids_' . $entity_name, '');
@@ -354,7 +354,14 @@ function likebtn_like_button_admin_settings() {
             foreach ($likebtn_like_button_entities as $entity_name => $entity_title):
 
                 $excluded_sections = get_option('likebtn_like_button_exclude_sections_' . $entity_name);
+                if (!is_array($excluded_sections)) {
+                    $excluded_sections = array();
+                }
+
                 $excluded_categories = get_option('likebtn_like_button_exclude_categories_' . $entity_name);
+                if (!is_array($excluded_categories)) {
+                    $excluded_categories = array();
+                }
                 ?>
 
                 <div class="postbox">
@@ -756,6 +763,11 @@ function _likebtn_like_button_get_post_formats() {
     } else {
         $post_formats = array();
     }
+
+    if (!is_array($post_formats)) {
+        $post_formats = array();
+    }
+
     // append Standard format
     array_unshift($post_formats, 'standard');
 
