@@ -945,7 +945,7 @@ function likebtn_like_button_the_content($content) {
         $post_format = 'standard';
     }
 
-    if (get_option('likebtn_like_button_post_format_' . $entity_name) != 'all' &&
+    if (!in_array('all', get_option('likebtn_like_button_post_format_' . $entity_name)) &&
         !in_array($post_format, get_option('likebtn_like_button_post_format_' . $entity_name))
     ) {
         return $content;
@@ -1036,7 +1036,7 @@ function likebtn_like_button_comment_text($content) {
         $post_format = 'standard';
     }
 
-    if (get_option('likebtn_like_button_post_format_' . $entity_name) != 'all' &&
+    if (!in_array('all', get_option('likebtn_like_button_post_format_' . $entity_name)) &&
         !in_array($post_format, get_option('likebtn_like_button_post_format_' . $entity_name))
     ) {
         return $content;
