@@ -42,8 +42,11 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 
 == Frequently Asked Questions ==
 <strong>1. How can I place the Like Button inside the post/page content using a shortcode?</strong>
+
 Use the following shortcode: [likebtn]
+
 You can pass Like Button setttings as parameters in the shortcode: [likebtn identifier="my_button_in_post" style="large"]
+
 If identifier parameter is not specified, post ID is used.
 
 
