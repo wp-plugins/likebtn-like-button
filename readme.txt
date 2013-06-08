@@ -23,9 +23,9 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 * Visitors do not have to register or log in to use the Like Button.
 * After liking visitors can share a link in social networks: Facebook, Twitter etc.
 * Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments.
-* Provides statistics on vote results.
+* Statistics on vote results.
 * Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
-* Provides widget displaying most liked content.
+* Widget displaying most liked content.
 * Customizable position and alignment.
 * Can be displayed depending on the post view mode, format, category, id.
 * Appearance is controlled through CSS.
@@ -41,7 +41,10 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 1. Configure the plugin in LikeBtn admin panel.
 
 == Frequently Asked Questions ==
-
+<strong>1. How can I place the Like Button inside the post/page content using a shortcode?</strong>
+Use the following shortcode: [likebtn]
+You can pass Like Button setttings as parameters in the shortcode: [likebtn identifier="my_button_in_post" style="large"]
+If identifier parameter is not specified, post ID is used.
 
 
 == Screenshots ==
@@ -62,7 +65,7 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 = 1.2 =
 * Synchronization of the vote results from LikeBtn.com into website database.
 * Statistics on vote results.
-* Most liked content widget
+* Most liked content widget.
 * Added center alignment.
 * Added shortcode to place the Like Button inside the post/page content.
 
