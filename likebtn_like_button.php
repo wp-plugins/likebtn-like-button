@@ -207,6 +207,9 @@ function likebtn_like_button_admin_menu() {
     add_submenu_page(
         'likebtn_like_button_settings', __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . ' ‹ LikeBtn Like Button', __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), 'manage_options', 'likebtn_like_button_statistics', 'likebtn_like_button_admin_statistics'
     );
+    add_submenu_page(
+        'likebtn_like_button_settings', __('Help') . ' ‹ LikeBtn Like Button', __('Help'), 'manage_options', 'likebtn_like_button_help', 'likebtn_like_button_admin_help'
+    );
 }
 
 add_action('admin_menu', 'likebtn_like_button_admin_menu');
@@ -237,7 +240,9 @@ HEADER;
         <h2 class="nav-tab-wrapper">
             <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_settings' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_settings">' . __('Settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>
             <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_statistics' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_statistics">' . __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>
+            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_help' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_help">' . __('Help') . '</a>
         </h2>';
+
     echo $header;
 }
 
@@ -867,7 +872,7 @@ function likebtn_like_button_admin_statistics() {
     require_once(dirname(__FILE__) . '/likebtn_like_button_pagination.class.php');
 
     $pagination_target = "admin.php?page=likebtn_like_button_statistics";
-    foreach ($_GET as $get_parameter=>$get_value) {
+    foreach ($_GET as $get_parameter => $get_value) {
         $pagination_target .= '&' . $get_parameter . '=' . stripcslashes($get_value);
     }
 
@@ -1004,7 +1009,7 @@ function likebtn_like_button_admin_statistics() {
             <li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
             <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
             <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
-            <?php /*<li><?php _e('Run Synchronization test in Settings.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>*/ ?>
+            <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li> */ ?>
         </ol>
         <br/><br/>
         <form action="" method="get" id="statistics_form">
@@ -1022,7 +1027,7 @@ function likebtn_like_button_admin_statistics() {
             <select name="likebtn_like_button_sort_by" >
                 <option value="likes" <?php selected('likes', $sort_by); ?> ><?php _e('Most liked', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
                 <option value="dislikes" <?php selected('dislikes', $sort_by); ?> ><?php _e('Most disliked', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
-                <?php /*<option value="last_updated" <?php selected('last_updated', $sort_by); ?> ><?php _e('Last updated', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>*/ ?>
+                <?php /* <option value="last_updated" <?php selected('last_updated', $sort_by); ?> ><?php _e('Last updated', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option> */ ?>
             </select>
 
             &nbsp;&nbsp;
@@ -1052,7 +1057,8 @@ function likebtn_like_button_admin_statistics() {
                     </select>
 
                     &nbsp;&nbsp;
-                    <input class="button-secondary" type="button" name="reset" value="<?php _e('Reset filter', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onClick="jQuery('.statistics_filter_container :input[type!=button]').val('');jQuery('#statistics_form').submit();"/>
+                    <input class="button-secondary" type="button" name="reset" value="<?php _e('Reset filter', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onClick="jQuery('.statistics_filter_container :input[type!=button]').val('');
+                                            jQuery('#statistics_form').submit();"/>
                 </div>
             </div>
 
@@ -1115,6 +1121,26 @@ function likebtn_like_button_admin_statistics() {
     <?php
 }
 
+// admin help
+function likebtn_like_button_admin_help() {
+    likebtn_like_button_admin_header();
+    ?>
+    <div id="poststuff" class="metabox-holder has-right-sidebar">
+        <strong>1. <?php _e('How can I place the Like Button inside the post/page content using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
+        <p>
+            <?php _e('Use the following shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+            <code>[likebtn]</code>
+            <br/>
+            <?php _e('You can pass Like Button setttings as parameters in the shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+            <code>[likebtn identifier="my_button_in_post" style="large"]</code>
+            <br/>
+            <?php _e('If <code>identifier</code> parameter is not specified, post ID is used.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+        </p>
+    </div>
+    </div>
+    <?php
+}
+
 // get URL of the public folder
 function _likebtn_like_button_get_public_url() {
     $siteurl = get_option('siteurl');
@@ -1168,9 +1194,19 @@ function _likebtn_like_button_get_entities() {
     return $entities;
 }
 
+add_shortcode('likebtn', 'likebtn_like_button_short_code');
+
+// short code
+function likebtn_like_button_short_code($args) {
+
+    $entity_name = get_post_type();
+    $entity_id = get_the_ID();
+
+    return _likebtn_like_button_get_markup($entity_name, $entity_id, $args);
+}
 
 ################
-### W ###
+### Widget ###
 ################
 require_once(dirname(__FILE__) . '/likebtn_like_button_most_liked_widget.class.php');
 
@@ -1188,17 +1224,17 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
     $likebtn = new LikeBtnLikeButton();
     $likebtn->runSyncVotes();
 
-    $data = 'data-identifier="' . $entity_name . '_' . $entity_id . '"';
+    if ($values && $values['identifier']) {
+        $data = 'data-identifier="' . $values['identifier'] . '"';
+    } else {
+        $data = 'data-identifier="' . $entity_name . '_' . $entity_id . '"';
+    }
 
     foreach ($likebtn_like_button_settings as $option_name => $option_info) {
 
-        if ($values) {
+        if ($values && isset($values[$option_name])) {
             // if values passed
-            if (isset($values[$option_name])) {
-                $option_value = $values[$option_name];
-            } else {
-                $option_value = '';
-            }
+            $option_value = $values[$option_name];
         } else {
             $option_value = get_option('likebtn_like_button_settings_' . $option_name . '_' . $entity_name);
         }
