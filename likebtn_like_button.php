@@ -28,6 +28,7 @@ define('LIKEBTN_LIKE_BUTTON_POSITION_BOTH', 'both');
 
 // alignment
 define('LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT', 'left');
+define('LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER', 'center');
 define('LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT', 'right');
 
 // post full/excerpt
@@ -565,6 +566,8 @@ function likebtn_like_button_admin_settings() {
                                             <th scope="row"><label><?php _e('Alignment', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                             <td>
                                                 <input type="radio" name="likebtn_like_button_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT; ?>" <?php if (LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT == get_option('likebtn_like_button_alignment_' . $entity_name) || !get_option('likebtn_like_button_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Left'); ?>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="likebtn_like_button_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER; ?>" <?php if (LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER == get_option('likebtn_like_button_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Center'); ?>
                                                 &nbsp;&nbsp;&nbsp;
                                                 <input type="radio" name="likebtn_like_button_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT; ?>" <?php if (LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT == get_option('likebtn_like_button_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Right'); ?>
 
@@ -1241,6 +1244,9 @@ MARKUP;
     // alignment
     if (get_option('likebtn_like_button_alignment_' . $entity_name) == LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT) {
         $markup = '<div style="text-align:right">' . $markup . '</div>';
+    }
+    if (get_option('likebtn_like_button_alignment_' . $entity_name) == LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER) {
+        $markup = '<div style="text-align:center">' . $markup . '</div>';
     }
 
     return $markup;

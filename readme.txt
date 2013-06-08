@@ -61,6 +61,8 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 = 1.2 =
 * Synchronization of the vote results from LikeBtn.com into website database.
 * Statistics on vote results.
+* Most liked content widget
+* Added center alignment.
 
 == Upgrade Notice ==
 
