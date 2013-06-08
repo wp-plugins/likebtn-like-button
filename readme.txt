@@ -4,7 +4,7 @@ Donate link: http://www.likebtn.com
 Tags: like, likes, like button, comments, post, widget, widgets, like widget, dislike button, dislike, counter, voting, page, thumb up, thumb down, wp like button, facebook, twitter, likebutton, php, plugin, template, wordpress, like wordpress, sidebar, share, sharing, like button code, shortcode
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,7 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 = Features =
 * Allows visitors to like and dislike posts, pages and comments anonymously.
 * Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments.
+* Provides statistics on vote results.
 * Visitors do not have to register or log in to use the Like Button.
 * After liking visitors can share a link in social networks: Facebook, Twitter etc.
 * Customizable position and alignment.
@@ -44,6 +45,7 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 == Screenshots ==
 1. Like Button
 2. Plugin settings
+2. Statistics
 
 == Changelog ==
 
@@ -52,6 +54,10 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 
 = 1.1 =
 * LikeBtn admin panel now available.
+
+= 1.2 =
+* Synchronization of the vote results from LikeBtn.com into website database.
+* Statistics on vote results.
 
 == Upgrade Notice ==
 
