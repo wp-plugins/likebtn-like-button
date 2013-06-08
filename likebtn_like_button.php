@@ -1085,6 +1085,9 @@ function likebtn_like_button_admin_statistics() {
                     <?php if (mb_strlen($statistics_item->post_title) > 100): ?>
                         <?php $statistics_item->post_title = mb_substr($statistics_item->post_title, 0, 100) . '...'; ?>
                     <?php endif ?>
+                    <?php if (function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')): ?>
+                        <?php $statistics_item->post_title = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($statistics_item->post_title); ?>
+                    <?php endif ?>
                     <tr>
                         <td><?php echo $statistics_item->post_id; ?></td>
                         <td><a href="<?php echo $post_url ?>" target="_blank"><?php echo htmlspecialchars($statistics_item->post_title); ?></a></td>
@@ -1161,6 +1164,13 @@ function _likebtn_like_button_get_entities() {
 
     return $entities;
 }
+
+
+################
+### W ###
+################
+require_once(dirname(__FILE__) . '/likebtn_like_button_most_liked_widget.class.php');
+
 
 ################
 ### Frontend ###

@@ -20,10 +20,11 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 
 = Features =
 * Allows visitors to like and dislike posts, pages and comments anonymously.
-* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments.
-* Provides statistics on vote results.
 * Visitors do not have to register or log in to use the Like Button.
 * After liking visitors can share a link in social networks: Facebook, Twitter etc.
+* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments.
+* Provides statistics on vote results.
+* Provides widget displaying most liked content.
 * Customizable position and alignment.
 * Can be displayed depending on the post view mode, format, category, id.
 * Appearance is controlled through CSS.
@@ -45,7 +46,9 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 == Screenshots ==
 1. Like Button
 2. Plugin settings
-2. Statistics
+3. Statistics
+4. Most Liked Content Widget admin view
+5. Most Liked Content Widget frontend view
 
 == Changelog ==
 
