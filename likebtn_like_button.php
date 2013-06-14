@@ -3,7 +3,7 @@
   Plugin Name: LikeBtn Like Button
   Plugin URI: http://www.likebtn.com
   Description: <strong><a href="http://www.likebtn.com" target="_blank" title="Like Button">LikeBtn.com</a></strong> - is the service providing a fully customizable like button widget for websites. The Like Button can be installed on any website for FREE. The service also offers a range of plans giving access to additional options and tools - see <a href="http://www.likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>. This module allows to integrate the LikeBtn Like Button into your WordPress website to allow visitors to like and dislike pages, posts and comments anonymously.
-  Version: 1.1
+  Version: 1.3
   Author: likebtn
   Author URI: http://www.likebtn.com
  */
@@ -1171,7 +1171,7 @@ function likebtn_like_button_admin_help() {
             <br/>
             <?php _e('If <code>identifier</code> parameter is not specified, post ID is used.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
         </p>
-        <strong>2. <?php _e('How can I display a list the most liked content inside the post/page using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
+        <strong>2. <?php _e('How can I display a list the most liked content inside the post/page using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP)</strong>
         <p>
             <?php _e('Use the following shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
             <code>[likebtn_most_liked content_types="post,comment" title="Most liked posts and comments on my website" show_date="1" show_likes="0" show_dislikes="1" number="3"]</code>

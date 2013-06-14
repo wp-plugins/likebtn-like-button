@@ -22,11 +22,11 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 * Allows visitors to like and dislike posts, pages and comments anonymously.
 * Visitors do not have to register or log in to use the Like Button.
 * After liking visitors can share a link in social networks: Facebook, Twitter etc.
-* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments.
-* Statistics on vote results.
+* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments (PRO, VIP).
+* Statistics on vote results (PRO, VIP).
 * Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
-* Shortcode to place a list of the most liked content inside the post/page using a shortcode: <code>[likebtn_most_liked]</code>
-* Widget displaying most liked content.
+* Shortcode to place a list of the most liked content inside the post/page using a shortcode (PRO, VIP): <code>[likebtn_most_liked]</code>
+* Widget displaying most liked content (PRO, VIP).
 * Customizable position and alignment.
 * Can be displayed depending on the post view mode, format, category, id.
 * Appearance is controlled through CSS.
@@ -51,7 +51,7 @@ You can pass Like Button setttings as parameters in the shortcode:
 
 If identifier parameter is not specified, post ID is used.
 
-<strong>2. How can I display a list the most liked content inside the post/page using a shortcode?</strong>
+<strong>2. How can I display a list the most liked content inside the post/page using a shortcode? (PRO, VIP)</strong>
 
 Use the following shortcode:
 `[likebtn_most_liked content_types="post,comment" title="Most liked posts and comments on my website" show_date="1" show_likes="0" show_dislikes="1" number="3"]`
