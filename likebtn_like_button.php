@@ -777,6 +777,13 @@ function likebtn_like_button_admin_settings() {
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Dislike Button label', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_i18n_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_dislike_' . $entity_name); ?>" size="60"/>
+                                                        <span class="description">i18n_dislike</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
                                                     <th scope="row"><label><?php _e('Like Button tooltip', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <input type="text" name="likebtn_like_button_settings_i18n_like_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_like_tooltip_' . $entity_name); ?>" size="60"/>
