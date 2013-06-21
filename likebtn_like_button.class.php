@@ -83,6 +83,8 @@ class LikeBtnLikeButton {
      * Comment sync function.
      */
     public function syncVotes() {
+        $sync_result = true;
+
         $last_sync_time = number_format(get_option('likebtn_like_button_last_sync_time'), 0, '', '');
 
         $email = trim(get_option('likebtn_like_button_account_email'));
@@ -102,10 +104,29 @@ class LikeBtnLikeButton {
             $url .= '&updated_after=' . $updated_after;
         }
 
+        // retrieve first page
         $response_string = $this->curl($url);
         $response = $this->jsonDecode($response_string);
 
-        if ($this->updateVotes($response)) {
+        if (!$this->updateVotes($response)) {
+            $sync_result = false;
+        }
+
+        // retrieve all pages after the first
+        if (isset($response['response']['total']) && isset($response['response']['page_size'])) {
+            $total_pages = ceil((int) $response['response']['total'] / (int) $response['response']['page_size']);
+
+            for ($page = 2; $page <= $total_pages; $page++) {
+                $response_string = $this->curl($url . '&page=' . $page);
+                $response = $this->jsonDecode($response_string);
+
+                if (!$this->updateVotes($response)) {
+                    $sync_result = false;
+                }
+            }
+        }
+
+        if ($sync_result) {
             update_option('likebtn_like_button_last_successfull_sync_time', $last_sync_time);
         }
     }
