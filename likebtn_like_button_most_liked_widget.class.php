@@ -29,6 +29,21 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     function form($instance) {
         global $likebtn_like_button_entities;
 
+        $time_range_list = array(
+            'all' => __('All time', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '1' => __('1 day', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '2' => __('2 days', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '3' => __('3 days', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '7' => __('1 week', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '14' => __('2 weeks', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '21' => __('3 weeks', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '1m' => __('1 month', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '2m' => __('2 months', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '3m' => __('3 months', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '6m' => __('6 months', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN),
+            '1y' => __('1 year', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN)
+        );
+
         if ($instance['title'] == '') {
             $instance['title'] = __('Most Liked Content', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
         }
@@ -56,6 +71,14 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         <p>
             <label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of items to show:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label>
             <input type="text" id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" value="<?php echo $instance['number']; ?>" size="3" />
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('time_range'); ?>"><?php _e('Time range:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label>
+            <select name="<?php echo $this->get_field_name('time_range'); ?>" id="<?php echo $this->get_field_id('time_range'); ?>">
+                <?php foreach ($time_range_list as $time_range_value => $time_range_name): ?>
+                    <option value="<?php echo $time_range_value; ?>" <?php selected($time_range_value, $instance['time_range']); ?> ><?php _e($time_range_name, LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                <?php endforeach ?>
+            </select>
         </p>
         <p>
             <input class="checkbox" type="checkbox" <?php checked($instance['show_date']); ?> id="<?php echo $this->get_field_id('show_date'); ?>" name="<?php echo $this->get_field_name('show_date'); ?>" value="1" />
@@ -107,7 +130,7 @@ class LikeBtnLikeButtonMostLiked {
             $show_date = '1';
         }
 
-        foreach ($instance['entity_name'] as $entity_index=>$entity_name) {
+        foreach ($instance['entity_name'] as $entity_index => $entity_name) {
             $instance['entity_name'][$entity_index] = str_replace("'", '', trim($entity_name));
         }
         $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
@@ -139,6 +162,9 @@ class LikeBtnLikeButtonMostLiked {
                  WHERE
                     pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "'
                     AND p.post_type in ({$query_post_types}) ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND post_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
         }
         if (in_array(LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT, $instance['entity_name']) && count($instance['entity_name']) > 1) {
             $query .= " UNION ";
@@ -159,6 +185,9 @@ class LikeBtnLikeButtonMostLiked {
                     ON (pm_dislikes.comment_id = pm_likes.comment_id AND pm_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES . "')
                  WHERE
                     pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "' ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND comment_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
         }
         if (in_array(LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT, $instance['entity_name']) && count($instance['entity_name']) > 1) {
             $query .= "
@@ -231,6 +260,52 @@ class LikeBtnLikeButtonMostLiked {
         $widget_data .= $after_widget;
 
         return $widget_data;
+    }
+
+    function timeRangeToDateTime($range) {
+        $day = 0;
+        $month = 0;
+        $year = 0;
+        switch ($range) {
+            case "1":
+                $day = 1;
+                break;
+            case "2":
+                $day = 2;
+                break;
+            case "3":
+                $day = 3;
+                break;
+            case "7":
+                $day = 7;
+                break;
+            case "14":
+                $day = 14;
+                break;
+            case "21":
+                $day = 21;
+                break;
+            case "1m":
+                $month = 1;
+                break;
+            case "2m":
+                $month = 2;
+                break;
+            case "3m":
+                $month = 3;
+                break;
+            case "6m":
+                $month = 6;
+                break;
+            case "1y":
+                $year = 1;
+                break;
+        }
+
+        $now_date_time = strtotime(date('Y-m-d H:i:s'));
+        $range_timestamp = mktime(date('H', $now_date_time), date('i', $now_date_time), date('s', $now_date_time), date('m', $now_date_time) - $month, date('d', $now_date_time) - $day, date('Y', $now_date_time) - $year);
+
+        return date('Y-m-d H:i:s', $range_timestamp);
     }
 
 }

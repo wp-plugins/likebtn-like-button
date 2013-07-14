@@ -91,5 +91,11 @@ The following post types are available: `post, page, attachment, revision, nav_m
 * Added Reset button in Settings.
 * Added auto disabling/enabling options depending on the plan selected.
 
+= 1.4 =
+* Popup position options.
+* Show copyright link in the share popup option.
+* Popup style option.
+* Time range option in Widget displaying most liked content.
+
 == Upgrade Notice ==
 

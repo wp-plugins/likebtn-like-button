@@ -100,7 +100,10 @@ $likebtn_like_button_settings = array(
     "style" => array("default" => 'white'),
     "addthis_pubid" => array("default" => ''),
     "addthis_service_codes" => array("default" => ''),
+    "show_copyright" => array("default" => '1'),
     "popup_enabled" => array("default" => '1'),
+    "popup_position" => array("default" => 'top'),
+    "popup_style" => array("default" => 'light'),
     "i18n_like" => array("default" => ''),
     "i18n_dislike" => array("default" => ''),
     "i18n_like_tooltip" => array("default" => ''),
@@ -731,10 +734,39 @@ function likebtn_like_button_admin_settings() {
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Show copyright link in the share popup', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (VIP)</label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_show_copyright_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_show_copyright_' . $entity_name)); ?> class="plan_dependent plan_vip" />
+                                                        <span class="description">show_copyright</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
                                                     <th scope="row"><label><?php _e('Show popop after "liking" (VIP)', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_popup_enabled_' . $entity_name)); ?> class="plan_dependent plan_vip" />
                                                         <span class="description">popup_enabled</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Popup position', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <select name="likebtn_like_button_settings_popup_position_<?php echo $entity_name; ?>">
+                                                            <option value="top" <?php selected('top', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >top</option>
+                                                            <option value="right" <?php selected('right', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >right</option>
+                                                            <option value="bottom" <?php selected('bottom', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >bottom</option>
+                                                            <option value="left" <?php selected('left', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >left</option>
+                                                        </select>
+                                                        <span class="description">popup_position</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Popup style', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <select name="likebtn_like_button_settings_popup_style_<?php echo $entity_name; ?>">
+                                                            <option value="light" <?php selected('light', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> >light</option>
+                                                            <option value="dark" <?php selected('dark', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> >dark</option>
+                                                        </select>
+                                                        <span class="description">popup_style</span>
                                                     </td>
                                                 </tr>
                                             </table>
