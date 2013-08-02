@@ -54,6 +54,7 @@ You can pass Like Button settings as parameters in the shortcode:
 
 If identifier parameter is not specified, post ID is used.
 
+
 <strong>2. How can I display a list of the most liked content inside the post/page using a shortcode? (PRO, VIP, ULTRA)</strong>
 
 Use the following shortcode:
@@ -61,14 +62,12 @@ Use the following shortcode:
 
 Available content types: `post, page, attachment, revision, nav_menu_item, comment` and custom post types.
 
-<strong>3. Identifier structure</strong>
 
-The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: "Post type" + "_" + "Post ID"
+<strong>3. Identifier structure.</strong>
 
-Examples:
-* post_1
-* page_7
-* comments_23
+The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: **"Post type" + "_" + "Post ID"**
+
+Examples: post_1, page_7
 
 So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify `identifier`-parameter as follows:
 `data-identifier="post_<?php the_ID()?>"`
