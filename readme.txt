@@ -65,7 +65,7 @@ Available content types: `post, page, attachment, revision, nav_menu_item, comme
 
 <strong>3. Identifier structure.</strong>
 
-The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: **"Post type" + "_" + "Post ID"**
+The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: **Post type** + **_** + **Post ID**
 
 Examples: post_1, page_7
 
