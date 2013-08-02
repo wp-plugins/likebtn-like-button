@@ -1439,7 +1439,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
     $markup = <<<MARKUP
 <!-- LikeBtn.com BEGIN -->
 <span class="likebtn-wrapper" {$data}></span>
-<script type="text/javascript" src="http://www.likebtn.com/js/widget.js" async="async"></script>
+<script type="text/javascript" src="//www.likebtn.com/js/widget.js" async="async"></script>
 <!-- LikeBtn.com END -->
 MARKUP;
 
