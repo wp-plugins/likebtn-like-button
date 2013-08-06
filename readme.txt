@@ -1,7 +1,7 @@
 === LikeBtn Like Button ===
 Contributors: likebtn
 Donate link: http://www.likebtn.com
-Tags: like, likes, like button, comments, post, widget, widgets, like widget, dislike button, dislike, counter, voting, page, thumb up, thumb down, wp like button, facebook, twitter, likebutton, php, plugin, template, wordpress, like wordpress, sidebar, share, sharing, like button code, shortcode
+Tags: like button, like, vote
 Requires at least: 2.8
 Tested up to: 3.5.2
 Stable tag: 1.5
