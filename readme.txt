@@ -1,7 +1,7 @@
 === LikeBtn Like Button ===
 Contributors: likebtn
 Donate link: http://www.likebtn.com
-Tags: like button, like, vote
+Tags: like button, like, vote, facebook, i like this
 Requires at least: 2.8
 Tested up to: 3.5.2
 Stable tag: 1.5
