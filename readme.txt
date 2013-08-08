@@ -1,9 +1,9 @@
 === LikeBtn Like Button ===
 Contributors: likebtn
 Donate link: http://www.likebtn.com
-Tags: like, likes, like button, comments, post, widget, widgets, like widget, dislike button, dislike, counter, voting, page, thumb up, thumb down, wp like button, facebook, twitter, likebutton, php, plugin, template, wordpress, like wordpress, sidebar, share, sharing, like button code, shortcode
+Tags: like button, like, vote, facebook, i like this
 Requires at least: 2.8
-Tested up to: 3.5.2
+Tested up to: 3.6
 Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -22,11 +22,11 @@ This plugin allows to integrate the LikeBtn Like Button into your WordPress webs
 * Allows visitors to like and dislike pages, posts, custom post types and comments anonymously.
 * Visitors do not have to register or log in to use the Like Button.
 * After liking visitors can share a link in social networks: Facebook, Twitter etc.
-* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments (PRO, VIP).
-* Statistics on vote results (PRO, VIP).
+* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments (PRO, VIP, ULTRA).
+* Statistics on vote results (PRO, VIP, ULTRA).
 * Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
-* Shortcode to place a list of the most liked content inside the post/page using a shortcode (PRO, VIP): <code>[likebtn_most_liked]</code>
-* Widget displaying most liked content (PRO, VIP).
+* Shortcode to place a list of the most liked content inside the post/page using a shortcode (PRO, VIP, ULTRA): <code>[likebtn_most_liked]</code>
+* Widget displaying most liked content (PRO, VIP, ULTRA).
 * Customizable position and alignment.
 * Can be displayed depending on the post view mode, format, category, ID.
 * Appearance is controlled through CSS.
@@ -54,12 +54,23 @@ You can pass Like Button settings as parameters in the shortcode:
 
 If identifier parameter is not specified, post ID is used.
 
-<strong>2. How can I display a list of the most liked content inside the post/page using a shortcode? (PRO, VIP)</strong>
+
+<strong>2. How can I display a list of the most liked content inside the post/page using a shortcode? (PRO, VIP, ULTRA)</strong>
 
 Use the following shortcode:
 `[likebtn_most_liked content_types="post,comment" title="Most liked posts and comments on my website" show_date="1" show_likes="0" show_dislikes="1" number="3"]`
 
 Available content types: `post, page, attachment, revision, nav_menu_item, comment` and custom post types.
+
+
+<strong>3. Identifier structure.</strong>
+
+The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: **Post type** + **_** + **Post ID**
+
+Examples: post_1, page_7
+
+So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify `identifier`-parameter as follows:
+`data-identifier="post_<?php the_ID()?>"`
 
 
 
@@ -102,6 +113,11 @@ Available content types: `post, page, attachment, revision, nav_menu_item, comme
 * Added JavaScript callback function serving as an event handler option.
 * Added Show Like Button option.
 * Added Reset likes and dislikes feature.
+
+= 1.6 =
+* Fixed bug in sorting of the Most liked content widget
+* Disabled synchronization for revisions
+* Added user authorization option
 
 == Upgrade Notice ==
 
