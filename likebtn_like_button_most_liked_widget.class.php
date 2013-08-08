@@ -151,8 +151,8 @@ class LikeBtnLikeButtonMostLiked {
                     p.ID as 'post_id',
                     p.post_title,
                     p.post_date,
-                    pm_likes.meta_value as 'likes',
-                    pm_dislikes.meta_value as 'dislikes',
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
                     p.post_type
                  FROM {$wpdb->prefix}postmeta pm_likes
                  LEFT JOIN {$wpdb->prefix}posts p
@@ -175,8 +175,8 @@ class LikeBtnLikeButtonMostLiked {
                     p.comment_ID as 'post_id',
                     p.comment_content as post_title,
                     p.comment_date as 'post_date',
-                    pm_likes.meta_value as 'likes',
-                    pm_dislikes.meta_value as 'dislikes',
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
                     'comment' as post_type
                  FROM {$wpdb->prefix}commentmeta pm_likes
                  LEFT JOIN {$wpdb->prefix}comments p
