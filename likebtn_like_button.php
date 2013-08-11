@@ -91,6 +91,9 @@ $likebtn_like_button_post_statuses = array_reverse(get_post_statuses());
 global $likebtn_like_button_settings;
 $likebtn_like_button_settings = array(
     "lang" => array("default" => "en"),
+    "group_identifier " => array("default" => ""),
+    "local_domain" => array("default" => ''),
+    "share_url" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
     "show_like_label" => array("default" => '1'),
     "show_dislike_label" => array("default" => '0'),
@@ -201,7 +204,7 @@ add_action('init', 'likebtn_like_button_init');
 function likebtn_like_button_links($links, $file) {
     $plugin_file = basename(__FILE__);
     if (basename($file) == $plugin_file) {
-        $settings_link = '<a href="options-general.php?page=likebtn_like_button_settings">' . __('Settings', 'likebtn_like_button') . '</a>';
+        $settings_link = '<a href="admin.php?page=likebtn_like_button_settings">' . __('Settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>';
         array_unshift($links, $settings_link);
     }
     return $links;
@@ -217,6 +220,9 @@ function likebtn_like_button_admin_menu() {
     //add_options_page('LikeBtn Like Button', __('LikeBtn Like Button', 'likebtn_like_button'), 'activate_plugins', 'likebtn_like_button', 'likebtn_like_button_admin_content');
     add_submenu_page(
             'likebtn_like_button_settings', __('Settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . ' ‹ ' . __('LikeBtn Like Button', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), __('Settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), 'manage_options', 'likebtn_like_button_settings', 'likebtn_like_button_admin_settings'
+    );
+    add_submenu_page(
+            'likebtn_like_button_settings', __('Buttons', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . ' ‹ ' . __('LikeBtn Like Button', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), __('Buttons', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), 'manage_options', 'likebtn_like_button_buttons', 'likebtn_like_button_admin_buttons'
     );
     add_submenu_page(
             'likebtn_like_button_settings', __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . ' ‹ LikeBtn Like Button', __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN), 'manage_options', 'likebtn_like_button_statistics', 'likebtn_like_button_admin_statistics'
@@ -253,6 +259,7 @@ HEADER;
     $header .= '
         <h2 class="nav-tab-wrapper">
             <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_settings' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_settings">' . __('Settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>
+            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_buttons' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_buttons">' . __('Buttons', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>
             <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_statistics' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_statistics">' . __('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) . '</a>
             <a class="nav-tab ' . ($_GET['page'] == 'likebtn_like_button_help' ? 'nav-tab-active' : '') . '" href="/wp-admin/admin.php?page=likebtn_like_button_help">' . __('Help') . '</a>
         </h2>';
@@ -270,6 +277,7 @@ function likebtn_like_button_unistall() {
     delete_option('likebtn_like_button_account_email');
     delete_option('likebtn_like_button_account_api_key');
     delete_option('likebtn_like_button_sync_inerval');
+    delete_option('likebtn_like_button_local_domain');
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
         delete_option('likebtn_like_button_show_' . $entity_name);
         delete_option('likebtn_like_button_use_settings_from_' . $entity_name);
@@ -305,6 +313,7 @@ function likebtn_like_button_activation_hook() {
     add_option('likebtn_like_button_account_email', '');
     add_option('likebtn_like_button_account_api_key', '');
     add_option('likebtn_like_button_sync_inerval', '');
+    add_option('likebtn_like_button_local_domain', '');
 
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
         add_option('likebtn_like_button_show_' . $entity_name, '0');
@@ -338,24 +347,25 @@ function likebtn_like_button_register_settings() {
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_account_email');
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_account_api_key');
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_sync_inerval');
+    register_setting('likebtn_like_button_settings', 'likebtn_like_button_local_domain');
 
     // entities settings
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_show_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_use_settings_from_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_post_view_mode_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_post_format_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_exclude_sections_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_exclude_categories_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_allow_ids_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_exclude_ids_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_user_logged_in_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_position_' . $entity_name);
-        register_setting('likebtn_like_button_settings', 'likebtn_like_button_alignment_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_show_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_use_settings_from_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_view_mode_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_format_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_sections_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_categories_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_allow_ids_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_ids_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_user_logged_in_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_position_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_alignment_' . $entity_name);
 
         // settings
         foreach ($likebtn_like_button_settings as $option => $option_info) {
-            register_setting('likebtn_like_button_settings', 'likebtn_like_button_settings_' . $option . '_' . $entity_name);
+            register_setting('likebtn_like_button_buttons', 'likebtn_like_button_settings_' . $option . '_' . $entity_name);
         }
     }
 }
@@ -366,75 +376,20 @@ add_action('admin_init', 'likebtn_like_button_register_settings');
 function likebtn_like_button_admin_settings() {
 
     global $likebtn_like_button_plans;
-    global $likebtn_like_button_entities;
-    global $likebtn_like_button_styles;
-    global $likebtn_like_button_default_languages;
     global $likebtn_like_button_sync_intervals;
-    global $likebtn_like_button_settings;
-
-    // retrieve post formats
-    $post_formats = _likebtn_like_button_get_post_formats();
 
     // reset sync interval
     if (!get_option('likebtn_like_button_account_email') || !get_option('likebtn_like_button_account_api_key')) {
         update_option('likebtn_like_button_sync_inerval', '');
     }
 
-    // run sunchronization
-    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
-    $likebtn = new LikeBtnLikeButton();
-    $likebtn->runSyncLocales();
-    $likebtn->runSyncStyles();
-
-    $locales = get_option('likebtn_like_button_locales');
-
-    $languages = array();
-    $languages['auto'] = 'auto - ' . __("Detect from client browser", LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
-    if ($locales) {
-        // Locales have been loaded using API.
-        foreach ($locales as $locale_code => $locale_info) {
-            $lang_option = $locale_code . ' - ' . $locale_info['name'];
-            if ($locale_code != 'en') {
-                $lang_option .= ' (' . $locale_info['en_name'] . ')';
-            }
-            $languages[$locale_code] = $lang_option;
-        }
-    } else {
-        // Locales have not been loaded using API yet, load default languages.
-        foreach ($likebtn_like_button_default_languages as $lang_code => $lang_title) {
-            $languages[$lang_code] = $lang_title;
-        }
-    }
-
-    // Get styles
-    $styles = get_option('likebtn_like_button_styles');
-
-    $style_options = array();
-    if (!$styles) {
-      // Styles have not been loaded using API yet, load default languages
-      $styles = $likebtn_like_button_styles;
-    }
-    foreach ($styles as $style) {
-      $style_options[] = $style;
-    }
-
     likebtn_like_button_admin_header();
     ?>
     <script type="text/javascript">
-        var reset_settings = [];
-        reset_settings['post_view_mode'] = 'both';
-        reset_settings['post_format'] = 'all';
-        reset_settings['exclude_sections'] = '';
-        reset_settings['exclude_categories'] = '';
-        reset_settings['allow_ids'] = '';
-        reset_settings['exclude_ids'] = '';
-        reset_settings['position'] = 'bottom';
-        reset_settings['alignment'] = 'left';
-    <?php foreach ($likebtn_like_button_settings as $option_name => $option_info): ?>
-            reset_settings['settings_<?php echo $option_name ?>'] = '<?php echo $option_info['default'] ?>';
-    <?php endforeach ?>
+        jQuery(document).ready(function() {
+            planChange(jQuery(":input[name='likebtn_like_button_plan']").val());
+        });
     </script>
-
     <div id="poststuff" class="metabox-holder has-right-sidebar">
         <form method="post" action="options.php">
             <?php settings_fields('likebtn_like_button_settings'); ?>
@@ -488,25 +443,127 @@ function likebtn_like_button_admin_settings() {
                     </table>
                 </div>
             </div>
+            <div class="postbox likebtn_like_button_account">
+                <h3><?php _e('Synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
+                <div class="inside">
+                    <table class="form-table">
+                        <tr valign="top">
+                            <th scope="row"><label><?php _e('Synchronization interval', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                            <td>
+                                <select name="likebtn_like_button_sync_inerval" <?php disabled((!get_option('likebtn_like_button_account_email') || !get_option('likebtn_like_button_account_api_key'))); ?> class="plan_dependent plan_pro">
+                                    <option value="" <?php selected('', get_option('likebtn_like_button_sync_inerval')); ?> ><?php _e('Do not fetch likes/dislikes from LikeBtn.com into my database', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></option>
+                                    <?php foreach ($likebtn_like_button_sync_intervals as $sync_interval): ?>
+                                        <option value="<?php echo $sync_interval; ?>" <?php selected($sync_interval, get_option('likebtn_like_button_sync_inerval')); ?> ><?php echo $sync_interval; ?> <?php _e('min', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                                <br/>
+                                <span class="description"><?php _e('Time interval in minutes in which fetching of vote results from LikeBtn.com into your database is being launched. When synchronization is enabled you can view Statistics, number of likes and dislikes for each post as Custom Field, sort posts by vote results, use Like Button widgets. The less the interval the heavier your database load (60 minutes interval is recommended)', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
+                                <br/>
+                                <input class="button-primary" type="button" name="TestSync" value="<?php _e('Test synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onclick="testSync('<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_like_button_test_sync_container"><img src="<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="postbox likebtn_like_button_account">
+                <h3><?php _e('Local domain', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
+                <div class="inside">
+                    <table class="form-table">
+                        <tr valign="top">
+                            <th scope="row">&nbsp;</th>
+                            <td>
+                                <input type="text" name="likebtn_like_button_local_domain" value="<?php echo get_option('likebtn_like_button_local_domain') ?>" size="60" />&nbsp;<span class="description">(<?php _e('Example:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?> localdomain!50f358d30acf358d30ac000001)</span>
+                                <br/>
+                                <span class="description"><?php _e('Specify it if your website is located on a local server and is available from your local network only and NOT available from the Internet. You can find the domain on your <a href="http://www.likebtn.com/en/customer.php/websites" target="_blank">Websites</a> page after adding your local website to the panel. See <a href="http://www.likebtn.com/en/faq#local_domain" target="_blank">FAQ</a> for more details.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row"><label><?php _e('Synchronization interval', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
-                    <td>
-                        <select name="likebtn_like_button_sync_inerval" <?php disabled((!get_option('likebtn_like_button_account_email') || !get_option('likebtn_like_button_account_api_key'))); ?> class="plan_dependent plan_pro">
-                            <option value="" <?php selected('', get_option('likebtn_like_button_sync_inerval')); ?> ><?php _e('Do not fetch likes/dislikes from LikeBtn.com into my database', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></option>
-                            <?php foreach ($likebtn_like_button_sync_intervals as $sync_interval): ?>
-                                <option value="<?php echo $sync_interval; ?>" <?php selected($sync_interval, get_option('likebtn_like_button_sync_inerval')); ?> ><?php echo $sync_interval; ?> <?php _e('min', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
-                            <?php endforeach ?>
-                        </select>
-                        <br/>
-                        <span class="description"><?php _e('Time interval in minutes in which fetching of vote results from LikeBtn.com into your database is being launched. When synchronization is enabled you can view Statistics, number of likes and dislikes for each post as Custom Field, sort posts by vote results, use Like Button widgets. The less the interval the heavier your database load (60 minutes interval is recommended)', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
-                        <br/>
-                        <input class="button-primary" type="button" name="TestSync" value="<?php _e('Test synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onclick="testSync('<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_like_button_test_sync_container"><img src="<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
-                    </td>
-                </tr>
-            </table>
-            <br/>
+            <input class="button-primary" type="submit" name="Save" value="<?php _e('Save', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" />
+        </form>
+
+    </div>
+    </div>
+    <?php
+}
+
+// admin buttons
+function likebtn_like_button_admin_buttons() {
+
+    global $likebtn_like_button_entities;
+    global $likebtn_like_button_styles;
+    global $likebtn_like_button_default_languages;
+    global $likebtn_like_button_settings;
+
+    // retrieve post formats
+    $post_formats = _likebtn_like_button_get_post_formats();
+
+    // run sunchronization
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+    $likebtn->runSyncLocales();
+    $likebtn->runSyncStyles();
+
+    $locales = get_option('likebtn_like_button_locales');
+
+    $languages = array();
+    $languages['auto'] = 'auto - ' . __("Detect from client browser", LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
+    if ($locales) {
+        // Locales have been loaded using API.
+        foreach ($locales as $locale_code => $locale_info) {
+            $lang_option = $locale_code . ' - ' . $locale_info['name'];
+            if ($locale_code != 'en') {
+                $lang_option .= ' (' . $locale_info['en_name'] . ')';
+            }
+            $languages[$locale_code] = $lang_option;
+        }
+    } else {
+        // Locales have not been loaded using API yet, load default languages.
+        foreach ($likebtn_like_button_default_languages as $lang_code => $lang_title) {
+            $languages[$lang_code] = $lang_title;
+        }
+    }
+
+    // Get styles
+    $styles = get_option('likebtn_like_button_styles');
+
+    $style_options = array();
+    if (!$styles) {
+      // Styles have not been loaded using API yet, load default languages
+      $styles = $likebtn_like_button_styles;
+    }
+    foreach ($styles as $style) {
+      $style_options[] = $style;
+    }
+
+    likebtn_like_button_admin_header();
+    ?>
+    <script type="text/javascript">
+        var reset_settings = [];
+        reset_settings['post_view_mode'] = 'both';
+        reset_settings['post_format'] = 'all';
+        reset_settings['exclude_sections'] = '';
+        reset_settings['exclude_categories'] = '';
+        reset_settings['allow_ids'] = '';
+        reset_settings['exclude_ids'] = '';
+        reset_settings['position'] = 'bottom';
+        reset_settings['alignment'] = 'left';
+        reset_settings['user_logged_in'] = '';
+    <?php foreach ($likebtn_like_button_settings as $option_name => $option_info): ?>
+            reset_settings['settings_<?php echo $option_name ?>'] = '<?php echo $option_info['default'] ?>';
+    <?php endforeach ?>
+
+        jQuery(document).ready(function() {
+            planChange('<?php echo get_option('likebtn_like_button_plan'); ?>');
+        });
+    </script>
+
+    <div id="poststuff" class="metabox-holder has-right-sidebar">
+        <form method="post" action="options.php">
+            <?php settings_fields('likebtn_like_button_buttons'); ?>
+
             <?php
             foreach ($likebtn_like_button_entities as $entity_name => $entity_title):
 
@@ -519,6 +576,12 @@ function likebtn_like_button_admin_settings() {
                 if (!is_array($excluded_categories)) {
                     $excluded_categories = array();
                 }
+
+                // just in case
+                if (!is_array(get_option('likebtn_like_button_post_format_' . $entity_name))) {
+                    update_option('likebtn_like_button_post_format_' . $entity_name, array('all'));
+                }
+
                 ?>
 
                 <div class="postbox">
@@ -948,9 +1011,8 @@ function likebtn_like_button_admin_settings() {
                         </div>
                     </div>
                 </div>
+                 <input class="button-primary" type="submit" name="Save" value="<?php _e('Save', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" /><br/><br/>
             <?php endforeach ?>
-
-            <input class="button-primary" type="submit" name="Save" value="<?php _e('Save', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" />
         </form>
 
     </div>
@@ -1300,7 +1362,33 @@ function likebtn_like_button_admin_help() {
             <br/><br/>
             <?php _e('The following post types are available:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
             <code>post, page, attachment, revision, nav_menu_item, comment</code>
-            </ul>
+        </p>
+        <strong>3. <?php _e('Identifier structure.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
+        <p>
+            <?php _e('The <a href="http://www.likebtn.com/en/#settings_identifier" target="_blank">identifer</a> parameter in WordPress LikeBtn plugin has the following structure:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> <strong><?php _e('Post type', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> + _ + <?php _e('Post ID', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong><br/><br/>
+            <?php _e('Examples:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
+            ● post_1<br/>
+            ● page_7<br/>
+            <br/>
+            <?php _e('So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify <code>identifier</code> parameter as follows:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
+            <code>data-identifier=&quot;post_&lt;?php the_ID()?&gt;&quot;</code>
+        </p>
+        <strong>4. <?php _e('Sort posts by likes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
+        <p>
+            <?php _e('After enabling synchronization WordPress Like Button plugin adds 3 custom fields to posts:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
+            ● Likes<br/>
+            ● Dislikes<br/>
+            ● Likes minus dislikes<br/><br/>
+            <?php _e('You can sort posts in WordPress by custom fields values using <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts()</a> function. At first determine the template for inserting the code, it can be index.php, page.php, archive.php or any other depending on your needs and WordPress theme you are using. Then find the <a href="http://codex.wordpress.org/The_Loop" target="_blank">Loop</a> in the template. Finally insert the query_posts() function call above the Loop:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/><br/>
+            <code>
+                &lt;?php query_posts($query_string . '&amp;meta_key=Likes&amp;orderby=meta_value&amp;order=DESC'); ?&gt;<br/>&lt;?php /* Start the Loop */ ?&gt;<br/>&lt;?php while ( have_posts() ) : the_post(); ?&gt;<br/>    &lt;?php get_template_part( 'content', get_post_format() ); ?&gt;<br/>&lt;?php endwhile; ?&gt;
+            </code>
+            <br/><br/>
+            <?php _e('In <code>meta_key</code> parameter specify one of the 3 custom fields provided by LikeBtn plugin. In <code>order</code> parameter specify the desired sort order: DESC (descending), ASC (ascending).', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+        </p>
+        <strong>4. <?php _e('Using WordPress Like Button plugin in a Multisite network.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
+        <p>
+            <?php _e('You can use LikeBtn plugin in a domain-based <a href="http://codex.wordpress.org/Create_A_Network" target="_blank">multisite networks</a> in which sites use subdomains. Using LikeBtn plugin in a path-based multisite networks in which on-demand sites use paths is not recommended for now, as vote results will intersect between sub-sites.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
         </p>
     </div>
     </div>
@@ -1408,6 +1496,10 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         $data = 'data-identifier="' . $values['identifier'] . '"';
     } else {
         $data = 'data-identifier="' . $entity_name . '_' . $entity_id . '"';
+    }
+
+    if (get_option('likebtn_like_button_local_domain')) {
+        $data = 'data-local_domain="' . get_option('likebtn_like_button_local_domain') . '"';
     }
 
     foreach ($likebtn_like_button_settings as $option_name => $option_info) {

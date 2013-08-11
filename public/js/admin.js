@@ -1,10 +1,5 @@
 var plans={free:0,plus:1,pro:2,vip:3,ultra:4};
 
-jQuery(document).ready(function() {
-    planChange(jQuery(":input[name='likebtn_like_button_plan']").val());
-});
-
-
 // Show/hide entity options
 function entityShowChange(el, entity_name)
 {

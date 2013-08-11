@@ -65,14 +65,37 @@ Available content types: `post, page, attachment, revision, nav_menu_item, comme
 
 <strong>3. Identifier structure.</strong>
 
-The `idenfitifer` parameter in WordPress LikeBtn plugin has the following structure: **Post type** + **_** + **Post ID**
+The `identifier` parameter in WordPress LikeBtn plugin has the following structure: **Post type** + **_** + **Post ID**
 
-Examples: post_1, page_7
+Examples:
+<ul>
+<li>post_1</li>
+<li>page_7</li>
+</ul>
 
-So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify `identifier`-parameter as follows:
+So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify `identifier` parameter as follows:
 `data-identifier="post_<?php the_ID()?>"`
 
+<strong>4. Sort posts by likes.</strong>
 
+After enabling synchronization WordPress Like Button plugin adds 3 custom fields to posts:
+<ul>
+<li>Likes</li>
+<li>Dislikes</li>
+<li>Likes minus dislikes</li>
+</ul>
+
+You can sort posts in WordPress by custom fields values using <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts()</a> function. At first determine the template for inserting the code, it can be index.php, page.php, archive.php or any other depending on your needs and WordPress theme you are using. Then find the <a href="http://codex.wordpress.org/The_Loop" target="_blank">Loop</a> in the template. Finally insert the query_posts() function call above the Loop:
+`<?php query_posts($query_string . '&meta_key=Likes&orderby=meta_value&order=DESC'); ?>
+<?php /* Start the Loop */ ?>
+<?php while ( have_posts() ) : the_post(); ?>
+    <?php get_template_part( 'content', get_post_format() ); ?>
+<?php endwhile; ?>`
+In `meta_key` parameter specify one of the 3 custom fields provided by LikeBtn plugin. In `order` parameter specify the desired sort order: DESC (descending), ASC (ascending).
+
+<strong>5. Using WordPress Like Button plugin in a Multisite network.</strong>
+
+You can use LikeBtn plugin in a domain-based <a href="http://codex.wordpress.org/Create_A_Network" target="_blank">multisite networks</a> in which sites use subdomains. Using LikeBtn plugin in a path-based multisite networks in which on-demand sites use paths is not recommended for now, as vote results will intersect between sub-sites.
 
 == Screenshots ==
 1. Like Button
@@ -83,11 +106,28 @@ So if you need to insert the LikeBtn HTML-code directly into WordPress post temp
 
 == Changelog ==
 
-= 1.0 =
-* LikeBtn Like Button plugin launched.
+= 1.6 =
+* Fixed bug in sorting of the Most liked content widget
+* Disabled synchronization for revisions
+* Added user authorization option
 
-= 1.1 =
-* LikeBtn admin panel now available.
+= 1.5 =
+* Import latest styles from LikeBtn.com in the background.
+* Added JavaScript callback function serving as an event handler option.
+* Added Show Like Button option.
+* Added Reset likes and dislikes feature.
+
+= 1.4 =
+* Popup position options.
+* Show copyright link in the share popup option.
+* Popup style option.
+* Time range option in Widget displaying most liked content.
+
+= 1.3 =
+* Synchronization test.
+* Added shortcode to place a list of the most liked content inside the post/page using a shortcode.
+* Added Reset button in Settings.
+* Added auto disabling/enabling options depending on the plan selected.
 
 = 1.2 =
 * Synchronization of the vote results from LikeBtn.com into website database.
@@ -96,28 +136,11 @@ So if you need to insert the LikeBtn HTML-code directly into WordPress post temp
 * Added center alignment.
 * Added shortcode to place the Like Button inside the post/page content.
 
-= 1.3 =
-* Synchronization test.
-* Added shortcode to place a list of the most liked content inside the post/page using a shortcode.
-* Added Reset button in Settings.
-* Added auto disabling/enabling options depending on the plan selected.
+= 1.1 =
+* LikeBtn admin panel now available.
 
-= 1.4 =
-* Popup position options.
-* Show copyright link in the share popup option.
-* Popup style option.
-* Time range option in Widget displaying most liked content.
-
-= 1.5 =
-* Import latest styles from LikeBtn.com in the background.
-* Added JavaScript callback function serving as an event handler option.
-* Added Show Like Button option.
-* Added Reset likes and dislikes feature.
-
-= 1.6 =
-* Fixed bug in sorting of the Most liked content widget
-* Disabled synchronization for revisions
-* Added user authorization option
+= 1.0 =
+* LikeBtn Like Button plugin launched.
 
 == Upgrade Notice ==
 
