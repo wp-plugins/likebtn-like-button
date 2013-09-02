@@ -290,6 +290,8 @@ function likebtn_like_button_unistall() {
         delete_option('likebtn_like_button_user_logged_in_' . $entity_name);
         delete_option('likebtn_like_button_position_' . $entity_name);
         delete_option('likebtn_like_button_alignment_' . $entity_name);
+        delete_option('likebtn_like_button_html_before_' . $entity_name);
+        delete_option('likebtn_like_button_html_after_' . $entity_name);
         // settings
         foreach ($likebtn_like_button_settings as $option => $option_info) {
             delete_option('likebtn_like_button_settings_' . $option . '_' . $entity_name);
@@ -327,6 +329,8 @@ function likebtn_like_button_activation_hook() {
         add_option('likebtn_like_button_user_logged_in_' . $entity_name, '');
         add_option('likebtn_like_button_position_' . $entity_name, LIKEBTN_LIKE_BUTTON_POSITION_BOTTOM);
         add_option('likebtn_like_button_alignment_' . $entity_name, LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT);
+        add_option('likebtn_like_button_html_before_' . $entity_name, '');
+        add_option('likebtn_like_button_html_after_' . $entity_name, '');
         // settings
         foreach ($likebtn_like_button_settings as $option => $option_info) {
             add_option('likebtn_like_button_settings_' . $option . '_' . $entity_name, $option_info['default']);
@@ -362,6 +366,8 @@ function likebtn_like_button_register_settings() {
         register_setting('likebtn_like_button_buttons', 'likebtn_like_button_user_logged_in_' . $entity_name);
         register_setting('likebtn_like_button_buttons', 'likebtn_like_button_position_' . $entity_name);
         register_setting('likebtn_like_button_buttons', 'likebtn_like_button_alignment_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_before_' . $entity_name);
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_after_' . $entity_name);
 
         // settings
         foreach ($likebtn_like_button_settings as $option => $option_info) {
@@ -656,7 +662,7 @@ function likebtn_like_button_admin_buttons() {
                                                 <input type="checkbox" name="likebtn_like_button_exclude_sections_<?php echo $entity_name; ?>[]" value="home" <?php if (in_array('home', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Home'); ?>&nbsp;&nbsp;&nbsp;
                                                 <input type="checkbox" name="likebtn_like_button_exclude_sections_<?php echo $entity_name; ?>[]" value="archive" <?php if (in_array('archive', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Archive', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
                                                 <br/>
-                                                <span class="description"><?php _e('Choose sections where you do not want to show the Like Button.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
+                                                <span class="description"><?php _e('Choose sections where you DO NOT want to show the Like Button.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
                                             </td>
                                         </tr>
                                         <tr valign="top">
@@ -696,8 +702,8 @@ function likebtn_like_button_admin_buttons() {
                                         <tr valign="top">
                                             <th scope="row"><label><?php _e('User authorization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                             <td>
-                                                <input type="radio" name="likebtn_like_button_user_logged_in_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_user_logged_in_' . $entity_name)) ?> /> <?php _e('Not logged in', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                <input type="radio" name="likebtn_like_button_user_logged_in_<?php echo $entity_name; ?>" value="0" <?php checked('0', get_option('likebtn_like_button_user_logged_in_' . $entity_name)) ?> /> <?php _e('Logged in', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="likebtn_like_button_user_logged_in_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_user_logged_in_' . $entity_name)) ?> /> <?php _e('Logged in', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" name="likebtn_like_button_user_logged_in_<?php echo $entity_name; ?>" value="0" <?php checked('0', get_option('likebtn_like_button_user_logged_in_' . $entity_name)) ?> /> <?php _e('Not logged in', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
                                                 <input type="radio" name="likebtn_like_button_user_logged_in_<?php echo $entity_name; ?>" value="" <?php checked('', get_option('likebtn_like_button_user_logged_in_' . $entity_name)) ?> /> <?php _e('For all', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
                                                 <br/>
                                                 <span class="description"><?php _e('Show the Like Button when user is logged in, not logged in or show for all.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
@@ -722,6 +728,20 @@ function likebtn_like_button_admin_buttons() {
                                                 &nbsp;&nbsp;&nbsp;
                                                 <input type="radio" name="likebtn_like_button_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT; ?>" <?php if (LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT == get_option('likebtn_like_button_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Right'); ?>
 
+                                            </td>
+                                        </tr>
+                                        <tr valign="top">
+                                            <th scope="row"><label><?php _e('Insert HTML before', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                            <td>
+                                                <textarea name="likebtn_like_button_html_before_<?php echo $entity_name; ?>" cols="40" rows="2"><?php echo get_option('likebtn_like_button_html_before_' . $entity_name); ?></textarea>
+                                                <span class="description"><?php _e('HTML code to insert before the Like Button', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
+                                            </td>
+                                        </tr>
+                                        <tr valign="top">
+                                            <th scope="row"><label><?php _e('Insert HTML after', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                            <td>
+                                                <textarea name="likebtn_like_button_html_after_<?php echo $entity_name; ?>" cols="40" rows="2"><?php echo get_option('likebtn_like_button_html_after_' . $entity_name); ?></textarea>
+                                                <span class="description"><?php _e('HTML code to insert after the Like Button', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
                                             </td>
                                         </tr>
                                     </table>
@@ -811,11 +831,11 @@ function likebtn_like_button_admin_buttons() {
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Language', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <th scope="row"><label><?php _e('Counter type', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <select name="likebtn_like_button_settings_counter_type_<?php echo $entity_name; ?>">
-                                                            <option value="number" <?php selected('number', get_option('likebtn_like_button_settings_counter_type_' . $entity_name)); ?> >number</option>
-                                                            <option value="percent" <?php selected('percent', get_option('likebtn_like_button_settings_counter_type_' . $entity_name)); ?> >percent</option>
+                                                            <option value="number" <?php selected('number', get_option('likebtn_like_button_settings_counter_type_' . $entity_name)); ?> ><?php _e('number', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                                            <option value="percent" <?php selected('percent', get_option('likebtn_like_button_settings_counter_type_' . $entity_name)); ?> ><?php _e('percent', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
                                                         </select>
                                                         <span class="description">counter_type</span>
                                                     </td>
@@ -859,10 +879,10 @@ function likebtn_like_button_admin_buttons() {
                                                     <th scope="row"><label><?php _e('Popup position', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <select name="likebtn_like_button_settings_popup_position_<?php echo $entity_name; ?>">
-                                                            <option value="top" <?php selected('top', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >top</option>
-                                                            <option value="right" <?php selected('right', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >right</option>
-                                                            <option value="bottom" <?php selected('bottom', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >bottom</option>
-                                                            <option value="left" <?php selected('left', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> >left</option>
+                                                            <option value="top" <?php selected('top', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> ><?php _e('top', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                                            <option value="right" <?php selected('right', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> ><?php _e('right', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                                            <option value="bottom" <?php selected('bottom', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> ><?php _e('bottom', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                                            <option value="left" <?php selected('left', get_option('likebtn_like_button_settings_popup_position_' . $entity_name)); ?> ><?php _e('left', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
                                                         </select>
                                                         <span class="description">popup_position</span>
                                                     </td>
@@ -871,8 +891,8 @@ function likebtn_like_button_admin_buttons() {
                                                     <th scope="row"><label><?php _e('Popup style', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <select name="likebtn_like_button_settings_popup_style_<?php echo $entity_name; ?>">
-                                                            <option value="light" <?php selected('light', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> >light</option>
-                                                            <option value="dark" <?php selected('dark', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> >dark</option>
+                                                            <option value="light" <?php selected('light', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> ><?php _e('light', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
+                                                            <option value="dark" <?php selected('dark', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> ><?php _e('dark', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
                                                         </select>
                                                         <span class="description">popup_style</span>
                                                     </td>
@@ -900,7 +920,7 @@ function likebtn_like_button_admin_buttons() {
                                     </div>
 
                                     <div class="postbox">
-                                        <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_like_button_collapse_trigger"><small>►</small> <?php _e('Statistics', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
+                                        <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_like_button_collapse_trigger"><small>►</small> <?php _e('Sharing', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
                                         <div class="inside hidden">
                                             <table class="form-table">
                                                 <tr valign="top">
@@ -963,7 +983,7 @@ function likebtn_like_button_admin_buttons() {
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Dislike Button tooltip after "liking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <th scope="row"><label><?php _e('Dislike Button tooltip after "disliking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <input type="text" name="likebtn_like_button_settings_i18n_undislike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_undislike_tooltip_' . $entity_name); ?>" size="60"/>
                                                         <span class="description">i18n_undislike_tooltip</span>
@@ -1003,7 +1023,7 @@ function likebtn_like_button_admin_buttons() {
                                     <tr valign="top">
                                         <th scope="row"><label><?php _e('Demo', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                         <td>
-                                            <?php echo _likebtn_like_button_get_markup($entity_name, 'demo') ?>
+                                            <?php echo _likebtn_like_button_get_markup($entity_name, 'demo', array(), get_option('likebtn_like_button_use_settings_from_' . $entity_name)) ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -1483,7 +1503,7 @@ add_shortcode('likebtn_most_liked', 'likebtn_like_button_most_liked_widget_short
 ### Frontend ###
 ################
 
-function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = null) {
+function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = null, $use_entity_name = '') {
 
     global $likebtn_like_button_settings;
 
@@ -1498,8 +1518,12 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         $data = 'data-identifier="' . $entity_name . '_' . $entity_id . '"';
     }
 
+    if (!$use_entity_name) {
+        $use_entity_name = $entity_name;
+    }
+
     if (get_option('likebtn_like_button_local_domain')) {
-        $data = 'data-local_domain="' . get_option('likebtn_like_button_local_domain') . '"';
+        $data .= 'data-local_domain="' . get_option('likebtn_like_button_local_domain') . '"';
     }
 
     foreach ($likebtn_like_button_settings as $option_name => $option_info) {
@@ -1508,7 +1532,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
             // if values passed
             $option_value = $values[$option_name];
         } else {
-            $option_value = get_option('likebtn_like_button_settings_' . $option_name . '_' . $entity_name);
+            $option_value = get_option('likebtn_like_button_settings_' . $option_name . '_' . $use_entity_name);
         }
 
         // do not add option if it has default value
@@ -1542,22 +1566,57 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         }
     }
 
+    $public_url = _likebtn_like_button_get_public_url();
+
     $markup = <<<MARKUP
-<!-- LikeBtn.com BEGIN -->
-<span class="likebtn-wrapper" {$data}></span>
-<script type="text/javascript" src="//www.likebtn.com/js/widget.js" async="async"></script>
-<!-- LikeBtn.com END -->
+<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}><img src="{$public_url}img/button_loader.gif" /></span><script type="text/javascript" src="//www.likebtn.com/js/widget.js" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
 MARKUP;
 
-    // alignment
-    if (get_option('likebtn_like_button_alignment_' . $entity_name) == LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT) {
-        $markup = '<div style="text-align:right">' . $markup . '</div>';
+    // HTML before
+    $html_before = '';
+    if (isset($values['html_before'])) {
+        $html_before = $values['html_before'];
+    } elseif (get_option('likebtn_like_button_html_before_' . $use_entity_name)) {
+        $html_before = get_option('likebtn_like_button_html_before_' . $use_entity_name);
     }
-    if (get_option('likebtn_like_button_alignment_' . $entity_name) == LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER) {
-        $markup = '<div style="text-align:center">' . $markup . '</div>';
+    if (trim($html_before)) {
+        $markup = $html_before . $markup;
+    }
+
+    // HTML after
+    $html_after = '';
+    if (isset($values['html_after'])) {
+        $html_after = $values['html_after'];
+    } elseif (get_option('likebtn_like_button_html_after_' . $use_entity_name)) {
+        $html_after = get_option('likebtn_like_button_html_after_' . $use_entity_name);
+    }
+    if (trim($html_after)) {
+        $markup = $markup . $html_after;
+    }
+
+    // alignment
+    $alignment = get_option('likebtn_like_button_alignment_' . $use_entity_name);
+    if ($alignment == LIKEBTN_LIKE_BUTTON_ALIGNMENT_RIGHT) {
+        $markup = '<div style="text-align:right" class="likebtn_container">' . $markup . '</div>';
+    } elseif ($alignment == LIKEBTN_LIKE_BUTTON_ALIGNMENT_CENTER) {
+        $markup = '<div style="text-align:center" class="likebtn_container">' . $markup . '</div>';
+    } else {
+        $markup = '<div class="likebtn_container">' . $markup . '</div>';
     }
 
     return $markup;
+}
+
+// get Entity settings
+function _likebtn_get_entity_settings($entity_name) {
+
+    global $likebtn_like_button_settings;
+    $settings = array();
+
+    foreach ($likebtn_like_button_settings as $option_name => $option_info) {
+        $settings[$option_name] = get_option('likebtn_like_button_settings_' . $option_name . '_' . $entity_name);
+    }
+    return $settings;
 }
 
 // add Like Button to the entity (except Comment)
@@ -1571,7 +1630,7 @@ function likebtn_like_button_the_content($content) {
     $real_entity_name = get_post_type();
 
     // get entity name whose settings should be copied
-    $use_entity_name = get_option('likebtn_like_button_use_settings_from_' . $entity_name);
+    $use_entity_name = get_option('likebtn_like_button_use_settings_from_' . $real_entity_name);
     if ($use_entity_name) {
         $entity_name = $use_entity_name;
     } else {
@@ -1630,8 +1689,6 @@ function likebtn_like_button_the_content($content) {
             break;
     }
 
-
-
     // check Post format
     $post_format = get_post_format($entity_id);
     if (!$post_format) {
@@ -1656,7 +1713,7 @@ function likebtn_like_button_the_content($content) {
         }
     }
 
-    $html = _likebtn_like_button_get_markup($real_entity_name, $entity_id);
+    $html = _likebtn_like_button_get_markup($real_entity_name, $entity_id, array(), $entity_name);
 
     $position = get_option('likebtn_like_button_position_' . $entity_name);
 
@@ -1686,7 +1743,7 @@ function likebtn_like_button_comment_text($content) {
     $real_entity_name = LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT;
 
     // get entity name whose settings should be copied
-    $use_entity_name = get_option('likebtn_like_button_use_settings_from_' . $entity_name);
+    $use_entity_name = get_option('likebtn_like_button_use_settings_from_' . $real_entity_name);
     if ($use_entity_name) {
         $entity_name = $use_entity_name;
     } else {
@@ -1746,7 +1803,7 @@ function likebtn_like_button_comment_text($content) {
         return $content;
     }
 
-    $html = _likebtn_like_button_get_markup($real_entity_name, $comment_id);
+    $html = _likebtn_like_button_get_markup($real_entity_name, $comment_id, array(), $entity_name);
 
     $position = get_option('likebtn_like_button_position_' . $entity_name);
 
