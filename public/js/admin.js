@@ -75,9 +75,11 @@ function testSync(loader_src)
             likebtn_like_button_account_api_key: jQuery(":input[name='likebtn_like_button_account_api_key']:first").val()
         },
         success: function(response) {
+            var result_text = '';
             if (typeof(response.result_text) != "undefined") {
-                jQuery(".likebtn_like_button_test_sync_container:first").text(response.result_text);
+                result_text = response.result_text;
             }
+            jQuery(".likebtn_like_button_test_sync_container:first").text(result_text);
             if (typeof(response.result) == "undefined" || response.result != "success") {
                 jQuery(".likebtn_like_button_test_sync_container:first").css('color', 'red');
                 if (typeof(response.message) != "undefined") {
@@ -90,7 +92,7 @@ function testSync(loader_src)
 
         },
         error: function(response) {
-            jQuery(".likebtn_like_button_test_sync_container:first").html('Error').css('color', 'red');
+            jQuery(".likebtn_like_button_test_sync_container:first").html('Error occured. Disable WP HTTP Compression plugin if you have it enabled.').css('color', 'red');
         }
     });
 }

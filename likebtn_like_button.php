@@ -40,6 +40,9 @@ define('LIKEBTN_LIKE_BUTTON_POST_VIEW_MODE_BOTH', 'both');
 // statistics page size
 define('LIKEBTN_LIKE_BUTTON_STATISTIC_PAGE_SIZE', 50);
 
+// Share title max length
+define('LIKEBTN_LIKE_BUTTON_SHARE_TITLE_MAX_LENGTH', 100);
+
 // custom fields names
 define('LIKEBTN_LIKE_BUTTON_META_KEY_LIKES', 'Likes');
 define('LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES', 'Dislikes');
@@ -95,9 +98,12 @@ $likebtn_like_button_settings = array(
     "local_domain" => array("default" => ''),
     "share_url" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
+    "share_title" => array("default" => ''),
+    "share_description" => array("default" => ''),
+    "share_image" => array("default" => ''),
     "show_like_label" => array("default" => '1'),
     "show_dislike_label" => array("default" => '0'),
-    "dislike_share" => array("default" => '0'),
+    "popup_dislike" => array("default" => '0'),
     "like_enabled" => array("default" => '1'),
     "dislike_enabled" => array("default" => '1'),
     "counter_clickable" => array("default" => '0'),
@@ -782,13 +788,6 @@ function likebtn_like_button_admin_buttons() {
                                         <div class="inside hidden">
                                             <table class="form-table">
                                                 <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Offer to share a link in social networks after "liking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PLUS, PRO, VIP, ULTRA)</label></th>
-                                                    <td>
-                                                        <input type="checkbox" name="likebtn_like_button_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_share_enabled_' . $entity_name)); ?> class="plan_dependent plan_plus" />
-                                                        <span class="description">share_enabled</span>
-                                                    </td>
-                                                </tr>
-                                                <tr valign="top">
                                                     <th scope="row"><label><?php _e('Show "like"-label', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_show_like_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_show_like_label_' . $entity_name)); ?> />
@@ -800,13 +799,6 @@ function likebtn_like_button_admin_buttons() {
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_show_dislike_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_show_dislike_label_' . $entity_name)); ?> />
                                                         <span class="description">show_dislike_label</span>
-                                                    </td>
-                                                </tr>
-                                                <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Offer to share a link in social networks after "disliking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
-                                                    <td>
-                                                        <input type="checkbox" name="likebtn_like_button_settings_dislike_share_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_dislike_share_' . $entity_name)); ?> />
-                                                        <span class="description">dislike_share</span>
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
@@ -923,6 +915,20 @@ function likebtn_like_button_admin_buttons() {
                                         <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_like_button_collapse_trigger"><small>►</small> <?php _e('Sharing', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
                                         <div class="inside hidden">
                                             <table class="form-table">
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Offer to share a link in social networks after "liking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PLUS, PRO, VIP, ULTRA)</label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_share_enabled_' . $entity_name)); ?> class="plan_dependent plan_plus" />
+                                                        <span class="description">share_enabled</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Show popup on disliking', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_popup_dislike_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_popup_dislike_' . $entity_name)); ?> />
+                                                        <span class="description">popup_dislike</span>
+                                                    </td>
+                                                </tr>
                                                 <tr valign="top">
                                                     <th scope="row"><label><?php _e('AddThis <a href="https://www.addthis.com/settings/publisher" target="_blank">Profile ID</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP, ULTRA)</label></th>
                                                     <td>
@@ -1506,6 +1512,8 @@ add_shortcode('likebtn_most_liked', 'likebtn_like_button_most_liked_widget_short
 function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = null, $use_entity_name = '') {
 
     global $likebtn_like_button_settings;
+    $prepared_settings = array();
+
 
     // Run sunchronization
     require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
@@ -1535,34 +1543,47 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
             $option_value = get_option('likebtn_like_button_settings_' . $option_name . '_' . $use_entity_name);
         }
 
+        $option_value_prepared = _likebtn_prepare_option($option_name, $option_value);
+        $prepared_settings[$option_name] = $option_value_prepared;
+
         // do not add option if it has default value
         if ($option_value == $likebtn_like_button_settings[$option_name]['default'] ||
                 ($option_value === '' && $likebtn_like_button_settings[$option_name]['default'] == '0')
         ) {
             // option has default value
         } else {
-            $option_value_prepared = $option_value;
-
-            // do not format i18n options
-            if (!strstr($option_name, 'i18n')) {
-                if (is_int($option_value)) {
-                    if ($option_value) {
-                        $option_value_prepared = 'true';
-                    } else {
-                        $option_value_prepared = 'false';
-                    }
-                }
-                if ($option_value === '1') {
-                    $option_value_prepared = 'true';
-                }
-                if ($option_value === '0' || $option_value === '') {
-                    $option_value_prepared = 'false';
-                }
-            }
-            // Replace quotes with &quot; to avoid XSS.
-            $option_value_prepared = str_replace('"', '&quot;', $option_value_prepared);
-
             $data .= ' data-' . $option_name . '="' . $option_value_prepared . '" ';
+        }
+    }
+
+    // Add share options
+    if ($prepared_settings['share_enabled'] == 'true') {
+
+        $entity = null;
+        $entity_url = '';
+        $entity_title = '';
+
+        if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT) {
+            $entity = get_comment($entity_id);
+            if ($entity) {
+                $entity_url = get_comment_link($entity->comment_ID);
+                $entity_title = $entity->comment_content;
+            }
+        } else {
+            $entity = get_post($entity_id);
+            if ($entity) {
+                $entity_url = get_permalink($entity->ID);
+                $entity_title = $entity->post_title;
+            }
+        }
+
+        if ($entity_url && !$prepared_settings['share_url']) {
+            $data .= ' data-share_url="' . $entity_url . '" ';
+        }
+        if ($entity_title && !$prepared_settings['share_title']) {
+            $entity_title = preg_replace('/\s+/', ' ', $entity_title);
+            $entity_title = htmlspecialchars(mb_substr($entity_title, 0, LIKEBTN_LIKE_BUTTON_SHARE_TITLE_MAX_LENGTH));
+            $data .= ' data-share_title="' . $entity_title . '" ';
         }
     }
 
@@ -1605,6 +1626,38 @@ MARKUP;
     }
 
     return $markup;
+}
+
+// prepare option value
+function _likebtn_prepare_option($option_name, $option_value)
+{
+    global $likebtn_like_button_settings;
+
+    $option_value_prepared = $option_value;
+
+    // do not format i18n options
+    if (!strstr($option_name, 'i18n') &&
+       (!isset($likebtn_like_button_settings[$option_name]) || $likebtn_like_button_settings[$option_name]['default'] !== ''))
+    {
+        if (is_int($option_value)) {
+            if ($option_value) {
+                $option_value_prepared = 'true';
+            } else {
+                $option_value_prepared = 'false';
+            }
+        }
+        if ($option_value === '1') {
+            $option_value_prepared = 'true';
+        }
+        if ($option_value === '0' || $option_value === '') {
+            $option_value_prepared = 'false';
+        }
+    }
+    // Replace quotes with &quot; to avoid XSS.
+    //$option_value_prepared = str_replace('"', '&quot;', $option_value_prepared);
+    $option_value_prepared = htmlspecialchars($option_value_prepared);
+
+    return $option_value_prepared;
 }
 
 // get Entity settings
@@ -1896,9 +1949,9 @@ function likebtn_like_button_test_sync_callback() {
         'message' => $test_response['message'],
     );
 
+    define( 'DOING_AJAX', true );
     ob_clean();
-    echo json_encode($response);
-    exit();
+    wp_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_like_button_test_sync', 'likebtn_like_button_test_sync_callback');

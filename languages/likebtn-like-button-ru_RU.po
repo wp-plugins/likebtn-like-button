@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LikeBtn Like Button\n"
-"POT-Creation-Date: 2013-09-02 18:42+0400\n"
-"PO-Revision-Date: 2013-09-02 18:42+0400\n"
+"POT-Creation-Date: 2013-09-05 18:18+0400\n"
+"PO-Revision-Date: 2013-09-05 18:20+0400\n"
 "Last-Translator: LikeBtn <info@likebtn.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -464,9 +464,8 @@ msgid "Show \"dislike\"-label"
 msgstr "Выводить надпись «Не нравится»"
 
 #: ../likebtn_like_button.php:806
-msgid "Offer to share a link in social networks after \"disliking\""
-msgstr ""
-"Предлагать поделиться ссылкой в социальных сетях после нажатия «Не нравится»"
+msgid "Show popup on disliking"
+msgstr "Показывать всплывающее окно после нажатия «Не нравится»"
 
 #: ../likebtn_like_button.php:820
 msgid "Show Dislike Button"
@@ -1022,6 +1021,11 @@ msgstr "Выводить количество дислайков"
 #: ../likebtn_like_button_most_liked_widget.class.php:255
 msgid "No items liked yet."
 msgstr "Нет понравившихся элементов."
+
+#~ msgid "Offer to share a link in social networks after \"disliking\""
+#~ msgstr ""
+#~ "Предлагать поделиться ссылкой в социальных сетях после нажатия «Не "
+#~ "нравится»"
 
 #, fuzzy
 #~ msgid ""
