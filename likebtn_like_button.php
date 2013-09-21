@@ -115,9 +115,13 @@ $likebtn_like_button_settings = array(
     "addthis_pubid" => array("default" => ''),
     "addthis_service_codes" => array("default" => ''),
     "show_copyright" => array("default" => '1'),
+    "popup_html" => array("default" => ''),
+    "popup_donate" => array("default" => ''),
+    "popup_content_order" => array("default" => 'popup_share,popup_donate,popup_html'),
     "popup_enabled" => array("default" => '1'),
     "popup_position" => array("default" => 'top'),
     "popup_style" => array("default" => 'light'),
+    "popup_hide_on_outside_click" => array("default" => '1'),
     "event_handler" => array("default" => ''),
     "i18n_like" => array("default" => ''),
     "i18n_dislike" => array("default" => ''),
@@ -127,7 +131,8 @@ $likebtn_like_button_settings = array(
     "i18n_undislike_tooltip" => array("default" => ''),
     "i18n_share_text" => array("default" => ''),
     "i18n_popup_close" => array("default" => ''),
-    "i18n_popup_text" => array("default" => '')
+    "i18n_popup_text" => array("default" => ''),
+    "i18n_popup_donate" => array("default" => '')
 );
 
 // plans
@@ -186,6 +191,12 @@ $likebtn_like_button_sync_intervals = array(
     120,
 );
 
+// LikeBtn website locales available
+global $likebtn_like_button_website_locales;
+$likebtn_like_button_website_locales = array(
+    'en', 'ru'
+);
+
 ###############
 ### Backend ###
 ###############
@@ -242,10 +253,19 @@ add_action('admin_menu', 'likebtn_like_button_admin_menu');
 
 // plugin header
 function likebtn_like_button_admin_head() {
+    global $likebtn_like_button_website_locales;
+
     $url_css = _likebtn_like_button_get_public_url() . 'css/admin.css?v=' . _likebtn_like_button_get_plugin_version();
     $url_js = _likebtn_like_button_get_public_url() . 'js/admin.js?v=' . _likebtn_like_button_get_plugin_version();
+    $likebtn_website_locale = substr(get_bloginfo('language'), 0, 2);
+
+    if (!in_array($likebtn_website_locale, $likebtn_like_button_website_locales)) {
+        $likebtn_website_locale = 'en';
+    }
+
     echo '<link rel="stylesheet" type="text/css" href="' . $url_css . '" />';
     echo '<script src="' . $url_js . '" type="text/javascript"></script>';
+    echo '<script src="http://www.likebtn.com/' . $likebtn_website_locale . '/js/donate_generator.js" type="text/javascript"></script>';
 }
 
 add_action('admin_head', 'likebtn_like_button_admin_head');
@@ -861,6 +881,27 @@ function likebtn_like_button_admin_buttons() {
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Custom HTML to insert into the popup', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP, ULTRA)</label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_popup_html_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_popup_html_' . $entity_name); ?>" size="60" class="plan_dependent plan_pro"/>
+                                                        <span class="description">popup_html</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Donate buttons to display in the popup', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (VIP, ULTRA)</label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_popup_donate_<?php echo $entity_name; ?>" value="<?php echo htmlspecialchars(get_option('likebtn_like_button_settings_popup_donate_' . $entity_name)); ?>" size="60" id="popup_donate_input" class="plan_dependent plan_vip"/> <a href="javascript:likebtnDG('popup_donate_input');void(0);"><img class="popup_donate_trigger" src="<?php echo _likebtn_like_button_get_public_url() ?>img/popup_donate.png" alt="<?php _e('Configure donate buttons', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>"></a>
+                                                        <span class="description">popup_donate</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Order of the content in the popup', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_popup_content_order_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_popup_content_order_' . $entity_name); ?>" size="60" />
+                                                        <span class="description">popup_content_order</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
                                                     <th scope="row"><label><?php _e('Show popop after "liking"', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (VIP, ULTRA)</label></th>
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_popup_enabled_' . $entity_name)); ?> class="plan_dependent plan_vip" />
@@ -887,6 +928,13 @@ function likebtn_like_button_admin_buttons() {
                                                             <option value="dark" <?php selected('dark', get_option('likebtn_like_button_settings_popup_style_' . $entity_name)); ?> ><?php _e('dark', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></option>
                                                         </select>
                                                         <span class="description">popup_style</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Hide popup when clicking outside', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_popup_hide_on_outside_click_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_popup_hide_on_outside_click_' . $entity_name)); ?> />
+                                                        <span class="description">popup_hide_on_outside_click</span>
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
@@ -1014,6 +1062,13 @@ function likebtn_like_button_admin_buttons() {
                                                     <td>
                                                         <input type="text" name="likebtn_like_button_settings_i18n_popup_text_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_popup_text_' . $entity_name); ?>" size="60"/>
                                                         <span class="description">i18n_popup_text</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Text before donate buttons in the popup', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_i18n_popup_donate_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_popup_donate_' . $entity_name); ?>" size="60"/>
+                                                        <span class="description">i18n_popup_donate</span>
                                                     </td>
                                                 </tr>
                                             </table>

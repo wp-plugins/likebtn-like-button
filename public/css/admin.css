@@ -21,3 +21,8 @@
 #likebtn_like_button .tablenav input {
     float: left;
 }
+.popup_donate_trigger {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
