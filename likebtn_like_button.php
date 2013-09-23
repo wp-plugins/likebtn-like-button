@@ -96,6 +96,7 @@ $likebtn_like_button_settings = array(
     "lang" => array("default" => "en"),
     "group_identifier " => array("default" => ""),
     "local_domain" => array("default" => ''),
+    "domain_from_parent" => array("default" => '0'),
     "share_url" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
     "share_title" => array("default" => ''),
@@ -265,7 +266,7 @@ function likebtn_like_button_admin_head() {
 
     echo '<link rel="stylesheet" type="text/css" href="' . $url_css . '" />';
     echo '<script src="' . $url_js . '" type="text/javascript"></script>';
-    echo '<script src="http://www.likebtn.com/' . $likebtn_website_locale . '/js/donate_generator.js" type="text/javascript"></script>';
+    echo '<script src="//www.likebtn.com/' . $likebtn_website_locale . '/js/donate_generator.js" type="text/javascript"></script>';
 }
 
 add_action('admin_head', 'likebtn_like_button_admin_head');
@@ -991,6 +992,21 @@ function likebtn_like_button_admin_buttons() {
                                                         <input type="text" name="likebtn_like_button_settings_addthis_service_codes_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_addthis_service_codes_' . $entity_name); ?>" size="60" class="plan_dependent plan_pro"/>
                                                         <span class="description">addthis_service_codes</span><br/>
                                                         <span class="description"><?php _e('Service codes separated by comma (max 8). Used to specify which buttons are displayed in share popup.<br/>Example: google_plusone_share, facebook, twitter', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="postbox">
+                                        <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_like_button_collapse_trigger"><small>►</small> <?php _e('Domains', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
+                                        <div class="inside hidden">
+                                            <table class="form-table">
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Use domain of the parent window', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_domain_from_parent_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_domain_from_parent_' . $entity_name)); ?> />
+                                                        <span class="description">domain_from_parent</span>
                                                     </td>
                                                 </tr>
                                             </table>
