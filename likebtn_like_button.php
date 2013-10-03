@@ -124,6 +124,7 @@ $likebtn_like_button_settings = array(
     "popup_style" => array("default" => 'light'),
     "popup_hide_on_outside_click" => array("default" => '1'),
     "event_handler" => array("default" => ''),
+    "info_message" => array("default" => '1'),
     "i18n_like" => array("default" => ''),
     "i18n_dislike" => array("default" => ''),
     "i18n_like_tooltip" => array("default" => ''),
@@ -954,6 +955,13 @@ function likebtn_like_button_admin_buttons() {
                                                         ● "likebtn.undislike"<br/>
                                                         <code>settings</code> – <?php _e('button settings', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
                                                         <code>wrapper</code> – <?php _e('button DOM-element', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Show information message when the button is restricted by the tariff plan', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_info_message_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_info_message_' . $entity_name)); ?> />
+                                                        <span class="description">info_message</span>
                                                     </td>
                                                 </tr>
                                             </table>
