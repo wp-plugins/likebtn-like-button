@@ -32,9 +32,9 @@ class LikeBtnLikeButton {
 
         $last_sync_time = get_option('likebtn_like_button_last_sync_time');
 
-//        $now = time();
-//        update_option('likebtn_like_button_last_sync_time', $now);
-//        return true;
+        //$now = time();
+        //update_option('likebtn_like_button_last_sync_time', $now);
+        //return true;
 
         $now = time();
         if (!$last_sync_time) {
@@ -209,7 +209,7 @@ class LikeBtnLikeButton {
                     $comment = get_comment($entity_id);
 
                     // check if post exists and is not revision
-                    if (!empty($comment) && !empty($comment->comment_type) && $comment->comment_type != 'revision') {
+                    if (!empty($comment) && $comment->comment_type != 'revision') {
                         if (count(get_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES)) > 1) {
                             delete_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES);
                             add_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES, $likes, true);

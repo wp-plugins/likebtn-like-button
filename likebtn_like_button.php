@@ -2070,3 +2070,57 @@ function likebtn_like_button_reset($entity_name, $items)
     }
     return $counter;
 }
+
+// get comments sorted by likes
+function likebtn_comments_sorted_by_likes()
+{
+    // function for sorting comments by Likes
+    function sort_comments_by_likes($comment_a, $comment_b)
+    {
+        $comment_a_meta = get_comment_meta($comment_a->comment_ID, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES);
+        $comment_b_meta = get_comment_meta($comment_b->comment_ID, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES);
+
+        $comment_a_likes = (int)$comment_a_meta[0];
+        $comment_b_likes = (int)$comment_b_meta[0];
+
+        if ($comment_a_likes > $comment_b_likes) {
+            return -1;
+        } elseif ($comment_a_likes < $comment_b_likes) {
+            return 1;
+        }
+        return 0;
+    }
+
+    global $wp_query;
+    $comments = $wp_query->comments;
+    usort($comments, 'sort_comments_by_likes');
+
+    return $comments;
+}
+
+// get comments sorted by dislikes
+function likebtn_comments_sorted_by_dislikes()
+{
+    // function for sorting comments by Likes
+    function sort_comments_by_dislikes($comment_a, $comment_b)
+    {
+        $comment_a_meta = get_comment_meta($comment_a->comment_ID, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES);
+        $comment_b_meta = get_comment_meta($comment_b->comment_ID, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES);
+
+        $comment_a_dislikes = (int)$comment_a_meta[0];
+        $comment_b_dislikes = (int)$comment_b_meta[0];
+
+        if ($comment_a_dislikes > $comment_b_dislikes) {
+            return -1;
+        } elseif ($comment_a_dislikes < $comment_b_dislikes) {
+            return 1;
+        }
+        return 0;
+    }
+
+    global $wp_query;
+    $comments = $wp_query->comments;
+    usort($comments, 'sort_comments_by_dislikes');
+
+    return $comments;
+}
