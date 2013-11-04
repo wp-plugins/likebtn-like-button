@@ -41,7 +41,7 @@ define('LIKEBTN_LIKE_BUTTON_POST_VIEW_MODE_BOTH', 'both');
 define('LIKEBTN_LIKE_BUTTON_STATISTIC_PAGE_SIZE', 50);
 
 // Share title max length
-define('LIKEBTN_LIKE_BUTTON_SHARE_TITLE_MAX_LENGTH', 100);
+define('LIKEBTN_LIKE_BUTTON_ITEM_TITLE_MAX_LENGTH', 100);
 
 // custom fields names
 define('LIKEBTN_LIKE_BUTTON_META_KEY_LIKES', 'Likes');
@@ -97,17 +97,18 @@ $likebtn_like_button_settings = array(
     "group_identifier " => array("default" => ""),
     "local_domain" => array("default" => ''),
     "domain_from_parent" => array("default" => '0'),
-    "share_url" => array("default" => ''),
+    "item_url" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
-    "share_title" => array("default" => ''),
-    "share_description" => array("default" => ''),
-    "share_image" => array("default" => ''),
+    "item_title" => array("default" => ''),
+    "item_description" => array("default" => ''),
+    "item_image" => array("default" => ''),
     "show_like_label" => array("default" => '1'),
     "show_dislike_label" => array("default" => '0'),
     "popup_dislike" => array("default" => '0'),
     "like_enabled" => array("default" => '1'),
     "dislike_enabled" => array("default" => '1'),
     "counter_clickable" => array("default" => '0'),
+    "counter_show" => array("default" => '1'),
     "counter_type" => array("default" => "number"),
     "display_only" => array("default" => '0'),
     "substract_dislikes" => array("default" => '0'),
@@ -842,6 +843,13 @@ function likebtn_like_button_admin_buttons() {
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_counter_clickable_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_counter_clickable_' . $entity_name)); ?> />
                                                         <span class="description">counter_clickable</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Show votes counter', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_like_button_settings_counter_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_counter_show_' . $entity_name)); ?> />
+                                                        <span class="description">counter_show</span>
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
@@ -1656,13 +1664,13 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
             }
         }
 
-        if ($entity_url && !$prepared_settings['share_url']) {
-            $data .= ' data-share_url="' . $entity_url . '" ';
+        if ($entity_url && !$prepared_settings['item_url']) {
+            $data .= ' data-item_url="' . $entity_url . '" ';
         }
-        if ($entity_title && !$prepared_settings['share_title']) {
+        if ($entity_title && !$prepared_settings['item_title']) {
             $entity_title = preg_replace('/\s+/', ' ', $entity_title);
-            $entity_title = htmlspecialchars(mb_substr($entity_title, 0, LIKEBTN_LIKE_BUTTON_SHARE_TITLE_MAX_LENGTH));
-            $data .= ' data-share_title="' . $entity_title . '" ';
+            $entity_title = htmlspecialchars(mb_substr($entity_title, 0, LIKEBTN_LIKE_BUTTON_ITEM_TITLE_MAX_LENGTH));
+            $data .= ' data-item_title="' . $entity_title . '" ';
         }
     }
 
