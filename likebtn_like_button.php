@@ -94,7 +94,7 @@ $likebtn_like_button_post_statuses = array_reverse(get_post_statuses());
 global $likebtn_like_button_settings;
 $likebtn_like_button_settings = array(
     "lang" => array("default" => "en"),
-    "group_identifier " => array("default" => ""),
+    "group_identifier" => array("default" => ""),
     "local_domain" => array("default" => ''),
     "domain_from_parent" => array("default" => '0'),
     "item_url" => array("default" => ''),
@@ -1600,7 +1600,6 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
 
     global $likebtn_like_button_settings;
     $prepared_settings = array();
-
 
     // Run sunchronization
     require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
