@@ -90,8 +90,9 @@ class LikeBtnLikeButton {
 
         $email = trim(get_option('likebtn_like_button_account_email'));
         $api_key = trim(get_option('likebtn_like_button_account_api_key'));
+        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
         $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'];
+        $domain = $parse_url['host'].$subdirectory;
 
         $updated_after = '';
 
@@ -145,7 +146,8 @@ class LikeBtnLikeButton {
         $api_key = trim($api_key);
 
         $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'];
+        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
+        $domain = $parse_url['host'].$subdirectory;
 
         $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=stat&email={$email}&api_key={$api_key}&domain={$domain}&output=json&page_size=1&nocache=.php";
 
@@ -342,8 +344,9 @@ class LikeBtnLikeButton {
 
         $email = trim(get_option('likebtn_like_button_account_email'));
         $api_key = trim(get_option('likebtn_like_button_account_api_key'));
+        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
         $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'];
+        $domain = $parse_url['host'].$subdirectory;
 
         $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=reset&email={$email}&api_key={$api_key}&domain={$domain}&identifier_filter={$identifier}&nocache=.php";
 

@@ -123,7 +123,7 @@ You can use LikeBtn plugin in a domain-based <a href="http://codex.wordpress.org
 * Added Popup HTML option
 * Fixed conflict with WP HTTP Compression plugin
 * Added HTML before and after options
-* Added <div> wrapper around button
+* Added div wrapper around button
 * Added Group identifier option
 * Added Local domain option
 * Extended Help section
