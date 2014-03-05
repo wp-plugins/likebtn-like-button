@@ -4,7 +4,7 @@ Donate link: http://likebtn.com
 Tags: like button, like, vote, facebook, i like this
 Requires at least: 2.8
 Tested up to: 3.8
-Stable tag: 1.7
+Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,14 @@ You can use LikeBtn plugin in a domain-based <a href="http://codex.wordpress.org
 
 == Changelog ==
 
+= 1.8 =
+* Added the feature allowing to change number of likes and dislikes in the admin
+* Added Spanish language
+* Added substract_dislikes to counter_type option
+* Added single_number to counter_type option
+* Added tooltip_enabled option
+* Extended Help section
+
 = 1.7 =
 * Added TRIAL plan
 * Added Website subdirectory option
@@ -123,7 +131,7 @@ You can use LikeBtn plugin in a domain-based <a href="http://codex.wordpress.org
 * Added Popup HTML option
 * Fixed conflict with WP HTTP Compression plugin
 * Added HTML before and after options
-* Added <div> wrapper around button
+* Added div wrapper around button
 * Added Group identifier option
 * Added Local domain option
 * Extended Help section
