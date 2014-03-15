@@ -46,7 +46,7 @@ function postFormatAllChange(el, entity_name)
 function accountChange()
 {
     var account_data_filled = true;
-    jQuery(".likebtn_like_button_account input").each(function(index, element) {
+    jQuery("input.likebtn_like_button_account").each(function(index, element) {
         if (!jQuery(element).val()) {
             account_data_filled = false;
         }

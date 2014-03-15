@@ -462,32 +462,25 @@ function likebtn_like_button_admin_settings() {
 
             <br/>
 
-            <div class="postbox likebtn_like_button_account">
-                <h3><?php _e('Your account data on LikeBtn.com', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP, ULTRA)</h3>
+            <div class="postbox ">
+                <h3><?php _e('Automatic syncing of likes into the local database', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP, ULTRA)</h3>
                 <div class="inside">
-                    <?php _e('Enter this information to be able to enable Synchronization of likes from LikeBtn.com into your database.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
+                    <?php _e('Enter this information in order to enable synchronization of likes from LikeBtn.com system into your database.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
                     <table class="form-table">
                         <tr valign="top">
                             <th scope="row"><label><?php _e('E-mail', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_like_button_account_email" value="<?php echo get_option('likebtn_like_button_account_email') ?>" size="60" onkeyup="accountChange(this)" class="plan_dependent plan_pro"/><br/>
+                                <input type="text" name="likebtn_like_button_account_email" value="<?php echo get_option('likebtn_like_button_account_email') ?>" size="60" onkeyup="accountChange(this)" class="likebtn_like_button_account plan_dependent plan_pro"/><br/>
                                 <span class="description"><?php _e('Your LikeBtn.com account email. Can be found on <a href="http://likebtn.com/en/customer.php/profile/edit" target="_blank">Profile page</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
                             </td>
                         </tr>
                         <tr valign="top">
                             <th scope="row"><label><?php _e('API key', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_like_button_account_api_key" value="<?php echo get_option('likebtn_like_button_account_api_key') ?>" size="60" onkeyup="accountChange(this)" class="plan_dependent plan_pro"/><br/>
+                                <input type="text" name="likebtn_like_button_account_api_key" value="<?php echo get_option('likebtn_like_button_account_api_key') ?>" size="60" onkeyup="accountChange(this)" class="likebtn_like_button_account plan_dependent plan_pro"/><br/>
                                 <span class="description"><?php _e('Your website API key on LikeBtn.com. Can be obtained on <a href="http://likebtn.com/en/customer.php/websites" target="_blank">Websites page</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
                             </td>
                         </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="postbox likebtn_like_button_account">
-                <h3><?php _e('Synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></h3>
-                <div class="inside">
-                    <table class="form-table">
                         <tr valign="top">
                             <th scope="row"><label><?php _e('Synchronization interval', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
                             <td>
@@ -1183,6 +1176,8 @@ function likebtn_like_button_admin_statistics() {
     global $wpdb;
 
     // get parameters
+    // For translation
+    __('Comment');
     $entity_name = $_GET['likebtn_like_button_entity_name'];
     if (!array_key_exists($entity_name, $likebtn_like_button_entities)) {
         $entity_name = LIKEBTN_LIKE_BUTTON_ENTITY_POST;
@@ -1447,6 +1442,9 @@ function likebtn_like_button_admin_statistics() {
                 <tr>
                     <th><input type="checkbox" onclick="statisticsItemsCheckbox(this)" value="all" style="margin:0"></th>
                     <th>ID</th>
+                    <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST): ?>
+                        <th><?php _e('Thumbnail') ?></th>
+                    <?php endif ?>
                     <th><?php _e('Title') ?></th>
                     <th><?php _e('Likes', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></th>
                     <th><?php _e('Dislikes', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></th>
@@ -1469,6 +1467,9 @@ function likebtn_like_button_admin_statistics() {
                     <tr id="item_<?php echo $statistics_item->post_id; ?>">
                         <td><input type="checkbox" class="item_checkbox" value="<?php echo $statistics_item->post_id; ?>" name="item[]"></td>
                         <td><?php echo $statistics_item->post_id; ?></td>
+                        <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST): ?>
+                            <td><?php echo get_the_post_thumbnail($statistics_item->post_id, 'thumbnail'); ?>&nbsp;</td>
+                        <?php endif ?>
                         <td><a href="<?php echo $post_url ?>" target="_blank"><?php echo htmlspecialchars($statistics_item->post_title); ?></a></td>
                         <td><a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'like', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_like"><?php echo $statistics_item->likes; ?></a></td>
                         <td><a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'dislike', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_dislike"><?php echo $statistics_item->dislikes; ?></a></td>
@@ -1714,9 +1715,9 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
     $likebtn->runSyncVotes();
 
     if ($values && $values['identifier']) {
-        $data = 'data-identifier="' . $values['identifier'] . '"';
+        $data = ' data-identifier="' . $values['identifier'] . '" ';
     } else {
-        $data = 'data-identifier="' . $entity_name . '_' . $entity_id . '"';
+        $data = ' data-identifier="' . $entity_name . '_' . $entity_id . '" ';
     }
 
     if (!$use_entity_name) {
@@ -1725,12 +1726,12 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
 
     // Local domain
     if (get_option('likebtn_like_button_local_domain')) {
-        $data .= 'data-local_domain="' . get_option('likebtn_like_button_local_domain') . '"';
+        $data .= ' data-local_domain="' . get_option('likebtn_like_button_local_domain') . '" ';
     }
 
     // Website subdirectory
     if (get_option('likebtn_like_button_subdirectory')) {
-        $data .= 'data-subdirectory="' . get_option('likebtn_like_button_subdirectory') . '"';
+        $data .= ' data-subdirectory="' . get_option('likebtn_like_button_subdirectory') . '" ';
     }
 
     foreach ($likebtn_like_button_settings as $option_name => $option_info) {
@@ -1758,10 +1759,11 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         }
     }
 
-    // Add title and URL
+    // Add item options
     $entity = null;
     $entity_url = '';
     $entity_title = '';
+    $entity_image = '';
 
     if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT) {
         $entity = get_comment($entity_id);
@@ -1769,11 +1771,15 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
             $entity_url = get_comment_link($entity->comment_ID);
             $entity_title = $entity->comment_content;
         }
-    } else {
+    } elseif ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST) {
         $entity = get_post($entity_id);
         if ($entity) {
             $entity_url = get_permalink($entity->ID);
             $entity_title = $entity->post_title;
+            $entity_image_url = wp_get_attachment_image_src(get_post_thumbnail_id($entity->ID), 'large');
+            if (!empty($entity_image_url[0])) {
+                $entity_image = $entity_image_url[0];
+            }
         }
     }
 
@@ -1784,6 +1790,9 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         $entity_title = preg_replace('/\s+/', ' ', $entity_title);
         $entity_title = htmlspecialchars($entity_title);
         $data .= ' data-item_title="' . $entity_title . '" ';
+    }
+    if ($entity_image && !$prepared_settings['item_image']) {
+        $data .= ' data-item_image="' . $entity_image . '" ';
     }
 
     $public_url = _likebtn_like_button_get_public_url();

@@ -8,6 +8,8 @@ define('LIKEBTN_LIKE_BUTTON_STYLES_SYNC_INTERVAL', 57600);
 class LikeBtnLikeButton {
 
     protected static $synchronized = false;
+    // Cached API request URL.
+    protected static $apiurl = '';
 
     /**
      * Constructor.
@@ -100,15 +102,13 @@ class LikeBtnLikeButton {
             $updated_after = get_option('likebtn_like_button_last_successfull_sync_time') - LIKEBTN_LIKE_BUTTON_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
         }
 
-        $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=stat&email={$email}&api_key={$api_key}&domain={$domain}&output=json&last_sync_time=" . $last_sync_time;
-
+        $url = "output=json&last_sync_time=" . $last_sync_time;
         if ($updated_after) {
             $url .= '&updated_after=' . $updated_after;
         }
 
         // retrieve first page
-        $response_string = $this->curl($url);
-        $response = $this->jsonDecode($response_string);
+        $response = $this->apiRequest('stat', $url);
 
         if (!$this->updateVotes($response)) {
             $sync_result = false;
@@ -119,8 +119,7 @@ class LikeBtnLikeButton {
             $total_pages = ceil((int) $response['response']['total'] / (int) $response['response']['page_size']);
 
             for ($page = 2; $page <= $total_pages; $page++) {
-                $response_string = $this->curl($url . '&page=' . $page);
-                $response = $this->jsonDecode($response_string);
+                $response = $this->apiRequest('stat', $url . '&page=' . $page);
 
                 if (!$this->updateVotes($response)) {
                     $sync_result = false;
@@ -140,19 +139,10 @@ class LikeBtnLikeButton {
      * @param type $site_api_key
      */
     public function testSync($email, $api_key) {
-        $last_sync_time = number_format(get_option('likebtn_like_button_last_sync_time'), 0, '', '');
-
         $email = trim($email);
         $api_key = trim($api_key);
 
-        $parse_url = parse_url(get_site_url());
-        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
-        $domain = $parse_url['host'].$subdirectory;
-
-        $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=stat&email={$email}&api_key={$api_key}&domain={$domain}&output=json&page_size=1&nocache=.php";
-
-        $response_string = $this->curl($url);
-        $response = $this->jsonDecode($response_string);
+        $response = $this->apiRequest('stat', 'output=json&page_size=1', $email, $api_key);
 
         return $response;
     }
@@ -200,13 +190,13 @@ class LikeBtnLikeButton {
         }
         // check if entity is supported
         if (!array_key_exists($entity_name, $likebtn_like_button_entities)) {
-            continue;
+            return false;
         }
         $entity_id = '';
         if (!empty($identifier_parts[1])) {
             $entity_id = $identifier_parts[1];
             if (!is_numeric($entity_id)) {
-                continue;
+                return false;
             }
         }
 
@@ -392,7 +382,7 @@ class LikeBtnLikeButton {
      * @param type $site_api_key
      */
     public function edit($identifier, $type, $value) {
-        $response = $this->apiRequest("identifier_filter={$identifier}&type={$type}&value={$value}");
+        $response = $this->apiRequest('edit', "identifier_filter={$identifier}&type={$type}&value={$value}");
         return $response;
     }
 
@@ -402,14 +392,27 @@ class LikeBtnLikeButton {
      * @param type $identifier
      * @return string
      */
-    public function apiRequest($request) {
-        $email = trim(get_option('likebtn_like_button_account_email'));
-        $api_key = trim(get_option('likebtn_like_button_account_api_key'));
-        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
-        $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'].$subdirectory;
+    public function apiRequest($action, $request, $email = '', $api_key = '') {
+        if (!self::$apiurl) {
+            if (!$email) {
+                $email = trim(get_option('likebtn_like_button_account_email'));
+            }
+            if (!$api_key) {
+                $api_key = trim(get_option('likebtn_like_button_account_api_key'));
+            }
+            $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
+            $local_domain = trim(get_option('likebtn_like_button_local_domain'));
+            if ($local_domain) {
+              $domain = $local_domain;
+            }
+            else {
+              $parse_url = parse_url(get_site_url());
+              $domain    = $parse_url['host'] . $subdirectory;
+            }
 
-        $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=edit&email={$email}&api_key={$api_key}&domain={$domain}&nocache=.php&source=wordpress&" . $request;
+            self::$apiurl = LIKEBTN_LIKE_BUTTON_API_URL . "?email={$email}&api_key={$api_key}&domain={$domain}&nocache=.php&source=wordpress&";
+        }
+        $url = self::$apiurl . "action={$action}&" . $request;
 
         $response_string = $this->curl($url);
         $response = $this->jsonDecode($response_string);
