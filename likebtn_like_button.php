@@ -54,15 +54,7 @@ $likebtn_like_button_custom_fields = array(
 
 // entities for which plugin can be enabled
 global $likebtn_like_button_entities;
-$likebtn_like_button_entities = array(
-    'post' => __('Post'),
-    'page' => __('Page'),
-    'attachment' => __('Attachment'),
-    'revision' => __('Revision'),
-    'nav_menu_item' => __('Nav menu item'),
-    //'comment' => __('Comment'),
-);
-$likebtn_like_button_entities = _likebtn_like_button_get_entities($likebtn_like_button_entities);
+//$likebtn_like_button_entities = _likebtn_like_button_get_entities($likebtn_like_button_entities);
 
 // post format: just to translate
 $post_formats = array(
@@ -301,8 +293,9 @@ HEADER;
 
 // uninstall hook
 function likebtn_like_button_unistall() {
-    global $likebtn_like_button_entities;
     global $likebtn_like_button_settings;
+
+    $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
     // set default values for options
     delete_option('likebtn_like_button_plan');
@@ -340,8 +333,7 @@ register_uninstall_hook(__FILE__, 'likebtn_like_button_unistall');
 // activation hook
 function likebtn_like_button_activation_hook() {
 
-    global $likebtn_like_button_entities;
-    global $likebtn_like_button_settings;
+    $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
     // set default values for options
     add_option('likebtn_like_button_plan', LIKEBTN_LIKE_BUTTON_PLAN_TRIAL);
@@ -351,35 +343,44 @@ function likebtn_like_button_activation_hook() {
     add_option('likebtn_like_button_local_domain', '');
     add_option('likebtn_like_button_subdirectory', '');
 
+    // set default options for post types
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
-        add_option('likebtn_like_button_show_' . $entity_name, '0');
-        add_option('likebtn_like_button_use_settings_from_' . $entity_name, '');
-        add_option('likebtn_like_button_post_view_mode_' . $entity_name, LIKEBTN_LIKE_BUTTON_POST_VIEW_MODE_BOTH);
-        add_option('likebtn_like_button_post_format_' . $entity_name, array('all'));
-        add_option('likebtn_like_button_exclude_sections_' . $entity_name, array());
-        add_option('likebtn_like_button_exclude_categories_' . $entity_name, array());
-        add_option('likebtn_like_button_allow_ids_' . $entity_name, '');
-        add_option('likebtn_like_button_exclude_ids_' . $entity_name, '');
-        add_option('likebtn_like_button_user_logged_in_' . $entity_name, '');
-        add_option('likebtn_like_button_position_' . $entity_name, LIKEBTN_LIKE_BUTTON_POSITION_BOTTOM);
-        add_option('likebtn_like_button_alignment_' . $entity_name, LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT);
-        add_option('likebtn_like_button_html_before_' . $entity_name, '');
-        add_option('likebtn_like_button_html_after_' . $entity_name, '');
-        // settings
-        foreach ($likebtn_like_button_settings as $option => $option_info) {
-            add_option('likebtn_like_button_settings_' . $option . '_' . $entity_name, $option_info['default']);
-        }
+        _likebtn_like_button_set_default_options($entity_name);
     }
+
     add_option('likebtn_like_button_last_sync_time', 0);
     add_option('likebtn_like_button_last_successfull_sync_time', 0);
+}
+
+// set default options for post type
+function _likebtn_like_button_set_default_options($entity_name) {
+    global $likebtn_like_button_settings;
+
+    add_option('likebtn_like_button_show_' . $entity_name, '0');
+    add_option('likebtn_like_button_use_settings_from_' . $entity_name, '');
+    add_option('likebtn_like_button_post_view_mode_' . $entity_name, LIKEBTN_LIKE_BUTTON_POST_VIEW_MODE_BOTH);
+    add_option('likebtn_like_button_post_format_' . $entity_name, array('all'));
+    add_option('likebtn_like_button_exclude_sections_' . $entity_name, array());
+    add_option('likebtn_like_button_exclude_categories_' . $entity_name, array());
+    add_option('likebtn_like_button_allow_ids_' . $entity_name, '');
+    add_option('likebtn_like_button_exclude_ids_' . $entity_name, '');
+    add_option('likebtn_like_button_user_logged_in_' . $entity_name, '');
+    add_option('likebtn_like_button_position_' . $entity_name, LIKEBTN_LIKE_BUTTON_POSITION_BOTTOM);
+    add_option('likebtn_like_button_alignment_' . $entity_name, LIKEBTN_LIKE_BUTTON_ALIGNMENT_LEFT);
+    add_option('likebtn_like_button_html_before_' . $entity_name, '');
+    add_option('likebtn_like_button_html_after_' . $entity_name, '');
+
+    // settings
+    foreach ($likebtn_like_button_settings as $option => $option_info) {
+        add_option('likebtn_like_button_settings_' . $option . '_' . $entity_name, $option_info['default']);
+    }
 }
 
 register_activation_hook(__FILE__, 'likebtn_like_button_activation_hook');
 
 // registering settings
 function likebtn_like_button_register_settings() {
-    global $likebtn_like_button_entities;
-    global $likebtn_like_button_settings;
+    $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_plan');
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_account_email');
@@ -390,24 +391,32 @@ function likebtn_like_button_register_settings() {
 
     // entities settings
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_show_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_use_settings_from_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_view_mode_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_format_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_sections_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_categories_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_allow_ids_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_ids_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_user_logged_in_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_position_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_alignment_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_before_' . $entity_name);
-        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_after_' . $entity_name);
+        _likebtn_like_button_register_entity_settings($entity_name);
+    }
+}
 
-        // settings
-        foreach ($likebtn_like_button_settings as $option => $option_info) {
-            register_setting('likebtn_like_button_buttons', 'likebtn_like_button_settings_' . $option . '_' . $entity_name);
-        }
+// register entity settings
+function _likebtn_like_button_register_entity_settings($entity_name)
+{
+    global $likebtn_like_button_settings;
+
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_show_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_use_settings_from_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_view_mode_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_post_format_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_sections_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_categories_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_allow_ids_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_exclude_ids_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_user_logged_in_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_position_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_alignment_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_before_' . $entity_name);
+    register_setting('likebtn_like_button_buttons', 'likebtn_like_button_html_after_' . $entity_name);
+
+    // settings
+    foreach ($likebtn_like_button_settings as $option => $option_info) {
+        register_setting('likebtn_like_button_buttons', 'likebtn_like_button_settings_' . $option . '_' . $entity_name);
     }
 }
 
@@ -543,10 +552,11 @@ function likebtn_like_button_admin_settings() {
 // admin buttons
 function likebtn_like_button_admin_buttons() {
 
-    global $likebtn_like_button_entities;
     global $likebtn_like_button_styles;
     global $likebtn_like_button_default_languages;
     global $likebtn_like_button_settings;
+
+    $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
     // retrieve post formats
     $post_formats = _likebtn_like_button_get_post_formats();
@@ -1170,10 +1180,11 @@ function likebtn_like_button_admin_buttons() {
 // admin vote statistics
 function likebtn_like_button_admin_statistics() {
 
-    global $likebtn_like_button_entities;
     global $likebtn_like_button_page_sizes;
     global $likebtn_like_button_post_statuses;
     global $wpdb;
+
+    $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
     // get parameters
     // For translation
@@ -1646,17 +1657,30 @@ function _likebtn_like_button_get_post_formats() {
 }
 
 // Get entity types
-function _likebtn_like_button_get_entities($entities) {
+function _likebtn_like_button_get_entities() {
+    global $likebtn_like_button_entities;
 
-    $post_types = get_post_types();
+    if (count($likebtn_like_button_entities)) {
+        return $likebtn_like_button_entities;
+    }
+    /*$likebtn_like_button_entities = array(
+        'post' => __('Post'),
+        'page' => __('Page'),
+        'attachment' => __('Attachment'),
+        'revision' => __('Revision'),
+        'nav_menu_item' => __('Nav menu item'),
+        //'comment' => __('Comment'),
+    );*/
+    $post_types = get_post_types(array('public'=>true));
+
     if (!empty($post_types)) {
         foreach ($post_types as $post_type) {
-            $entities[$post_type] = str_replace('_', ' ', ucfirst($post_type));
+            $likebtn_like_button_entities[$post_type] = __(str_replace('_', ' ', ucfirst($post_type)));
         }
     }
 
     // append Comments
-    $entities[LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT] = ucfirst(LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT);
+    $likebtn_like_button_entities[LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT] = ucfirst(LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT);
 
     // translate entity names
     // does not work here
@@ -1666,7 +1690,7 @@ function _likebtn_like_button_get_entities($entities) {
       $entities[$entity_name] = __($entity_title, LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
       } */
 
-    return $entities;
+    return $likebtn_like_button_entities;
 }
 
 // short code
