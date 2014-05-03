@@ -144,22 +144,34 @@ $likebtn_like_button_plans = array(
 // styles
 global $likebtn_like_button_styles;
 $likebtn_like_button_styles = array(
-    "white",
-    "lightgray",
-    "gray",
-    "black",
-    "padded",
-    "drop",
-    "line",
-    "github",
-    "transparent",
-    "youtube",
-    "habr",
-    "heartcross",
-    "plusminus",
-    "google",
-    "greenred",
-    "large"
+    'white',
+    'lightgray',
+    'gray',
+    'black',
+    'padded',
+    'drop',
+    'line',
+    'github',
+    'transparent',
+    'youtube',
+    'habr',
+    'heartcross',
+    'plusminus',
+    'google',
+    'greenred',
+    'large',
+    'elegant',
+    'disk',
+    'squarespace',
+    'slideshare',
+    'baidu',
+    'uwhite',
+    'ublack',
+    'uorange',
+    'ublue',
+    'ugreen',
+    'direct',
+    'homeshop'
 );
 
 // languages
@@ -534,7 +546,7 @@ function likebtn_like_button_admin_settings() {
                                 <input type="text" name="likebtn_like_button_subdirectory" value="<?php echo get_option('likebtn_like_button_subdirectory') ?>" size="60" /><br/>
                                 <strong class="description"><?php _e('Example:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?> /subdirectory/</strong>
                                 <br/><br/>
-                                <span class="description"><?php _e('If your whole website is located in a subdirectory (for example http://website.com/subdirectory/), enter subdirectory (for example /subdirectory/). Required for path-based <a href="http://codex.wordpress.org/Create_A_Network" target="_blank">multisite networks</a> in which on-demand sites use paths.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
+                                <span class="description"><?php _e('If your website is one of websites located in different subdirectories of one domain and you want to have a separate from other websites on this domain statistics, enter subdirectory (for example /subdirectory/). Required for path-based <a href="http://codex.wordpress.org/Create_A_Network" target="_blank">multisite networks</a> in which on-demand sites use paths.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
                             </td>
                         </tr>
                     </table>
@@ -1200,6 +1212,63 @@ function likebtn_like_button_admin_statistics() {
         $reseted = likebtn_like_button_reset($entity_name, $_POST['item']);
     }
 
+    // Multisite - available for super admin only
+    $blogs = array();
+    $blog_list = array();
+    $statistics_blog_id = '';
+    $prefix_prepared = $wpdb->prefix;
+    if (is_multisite() && is_super_admin()) {
+
+        global $blog_id;
+
+        $blog_list = $wpdb->get_results("
+            SELECT blog_id, domain
+            FROM {$wpdb->blogs}
+            WHERE site_id = '{$wpdb->siteid}'
+            AND spam = '0'
+            AND deleted = '0'
+            AND archived = '0'
+            ORDER BY blog_id
+        ");
+
+        // Place current blog on the first place
+        foreach ($blog_list as $blog) {
+            if ($blog->blog_id == $blog_id) {
+                $blogs["{$blog->blog_id}"] = get_blog_option($blog->blog_id, 'blogname') . ' - ' . $blog->domain;
+                break;
+            }
+        }
+
+        foreach ($blog_list as $blog) {
+            if ($blog->blog_id != $blog_id) {
+                $blogs["{$blog->blog_id}"] = get_blog_option($blog->blog_id, 'blogname') . ' - ' . $blog->domain;
+            }
+        }
+
+        // Add all
+        $blogs['all'] = __('All Sites');
+
+        // Determine selected blog id
+        if (isset($_GET['likebtn_like_button_blog_id'])) {
+            if ($_GET['likebtn_like_button_blog_id'] == 'all') {
+                $statistics_blog_id = $_GET['likebtn_like_button_blog_id'];
+            } else {
+                // Check if blog with ID exists
+                foreach ($blog_list as $blog) {
+                    if ($blog->blog_id == (int)$_GET['likebtn_like_button_blog_id']) {
+                        $statistics_blog_id = (int)$_GET['likebtn_like_button_blog_id'];
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Prepare prefix if this is not main blog
+        if ($blog_id != 1) {
+            $prefix_prepared = substr($wpdb->prefix, 0, strlen($wpdb->prefix)-strlen($blog_id)-1);
+        }
+    }
+
     // Run sunchronization
     require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
     $likebtn = new LikeBtnLikeButton();
@@ -1254,11 +1323,8 @@ function likebtn_like_button_admin_statistics() {
         $p->page = $_GET['paging'];
     }
 
-    //Query for limit paging
+    // query for limit paging
     $query_limit = "LIMIT " . ($p->page - 1) * $p->limit . ", " . $p->limit;
-
-    // build statistics
-    $statistics = array();
 
     // query parameters
     $query_where = '';
@@ -1292,64 +1358,40 @@ function likebtn_like_button_admin_statistics() {
     // order by
     switch ($sort_by) {
         case 'likes':
-            $query_orderby = 'likes';
+            $query_orderby = 'ORDER BY likes DESC';
             break;
         case 'dislikes':
-            $query_orderby = 'dislikes';
+            $query_orderby = 'ORDER BY dislikes DESC';
             break;
-        case 'last_updated':
-            $query_orderby = 'pm_likes.meta_id';
-            break;
+        /*case 'last_updated':
+            $query_orderby = 'ORDER BY pm_likes.meta_id DESC';
+            break;*/
     }
 
-    if ($entity_name != LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT) {
-        // post
-        $query = "
-             SELECT SQL_CALC_FOUND_ROWS
-                p.ID as 'post_id',
-                p.post_title,
-                pm_likes.meta_value as 'likes',
-                pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
-             FROM {$wpdb->prefix}postmeta pm_likes
-             LEFT JOIN {$wpdb->prefix}posts p
-                 ON (p.ID = pm_likes.post_id)
-             LEFT JOIN {$wpdb->prefix}postmeta pm_dislikes
-                 ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES . "')
-             LEFT JOIN {$wpdb->prefix}postmeta pm_likes_minus_dislikes
-                 ON (pm_likes_minus_dislikes.post_id = pm_likes.post_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES . "')
-             WHERE
-                pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "'
-                {$query_where}
-             ORDER BY
-                {$query_orderby} DESC
-             {$query_limit}";
+    // For Multisite
+    $query = '';
+    if ($statistics_blog_id && $statistics_blog_id != 1 && $statistics_blog_id != 'all') {
+        $prefix = "{$prefix_prepared}{$statistics_blog_id}_";
+        $query = _likebtn_like_button_get_statistics_sql($entity_name, $prefix, $query_where, $query_orderby, $query_limit);
+        $query_prepared = $wpdb->prepare($query, $query_parameters);
+    } else if ($statistics_blog_id == 'all') {
+        foreach ($blog_list as $blog) {
+            if ($blog->blog_id == 1) {
+                $prefix = $prefix_prepared;
+            } else {
+                $prefix = "{$prefix_prepared}{$blog->blog_id}_";
+            }
+            $query_list[] = $wpdb->prepare(_likebtn_like_button_get_statistics_sql($entity_name, $prefix, $query_where, '', '', $blog->blog_id . ' as blog_id, '), $query_parameters);
+        }
+        $query_prepared = ' SELECT SQL_CALC_FOUND_ROWS * from (' . implode(' UNION ', $query_list) . ") query {$query_orderby} {$query_limit} ";
     } else {
-        // comment
-        $query = "
-             SELECT SQL_CALC_FOUND_ROWS
-                p.comment_ID as 'post_id',
-                p.comment_content as post_title,
-                pm_likes.meta_value as 'likes',
-                pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
-             FROM {$wpdb->prefix}commentmeta pm_likes
-             LEFT JOIN {$wpdb->prefix}comments p
-                 ON (p.comment_ID = pm_likes.comment_id)
-             LEFT JOIN {$wpdb->prefix}commentmeta pm_dislikes
-                 ON (pm_dislikes.comment_id = pm_likes.comment_id AND pm_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES . "')
-             LEFT JOIN {$wpdb->prefix}commentmeta pm_likes_minus_dislikes
-                 ON (pm_likes_minus_dislikes.comment_id = pm_likes.comment_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES . "')
-             WHERE
-                pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "'
-                {$query_where}
-             ORDER BY
-                {$query_orderby} DESC
-             {$query_limit}";
+        $query = _likebtn_like_button_get_statistics_sql($entity_name, $prefix_prepared, $query_where, $query_orderby, $query_limit);
+        $query_prepared = $wpdb->prepare($query, $query_parameters);
     }
+
 //    echo "<pre>";
 //    echo $wpdb->prepare($query, $query_parameters);
-    $statistics = $wpdb->get_results($wpdb->prepare($query, $query_parameters));
+    $statistics = $wpdb->get_results($query_prepared);
 
     $total_found = 0;
     if (isset($statistics[0])) {
@@ -1380,6 +1422,15 @@ function likebtn_like_button_admin_statistics() {
         <form action="" method="get" id="statistics_form">
             <input type="hidden" name="page" value="likebtn_like_button_statistics" />
 
+            <?php if ($blogs): ?>
+                <label><?php _e('Site', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>:</label>
+                <select name="likebtn_like_button_blog_id" >
+                    <?php foreach ($blogs as $blog_id_value => $blog_title): ?>
+                        <option value="<?php echo $blog_id_value; ?>" <?php selected($statistics_blog_id, $blog_id_value); ?> ><?php echo $blog_title; ?></option>
+                    <?php endforeach ?>
+                </select>
+                &nbsp;&nbsp;
+            <?php endif ?>
 
             <label><?php _e('Type'); ?>:</label>
             <select name="likebtn_like_button_entity_name" >
@@ -1456,7 +1507,10 @@ function likebtn_like_button_admin_statistics() {
                     <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST): ?>
                         <th><?php _e('Thumbnail') ?></th>
                     <?php endif ?>
-                    <th><?php _e('Title') ?></th>
+                    <th width="100%"><?php _e('Title') ?></th>
+                    <?php if ($blogs && $statistics_blog_id == 'all'): ?>
+                        <th><?php _e('Site') ?></th>
+                    <?php endif ?>
                     <th><?php _e('Likes', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></th>
                     <th><?php _e('Dislikes', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></th>
                     <th><?php _e('Likes minus dislikes', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></th>
@@ -1464,11 +1518,21 @@ function likebtn_like_button_admin_statistics() {
             </thead>
             <tbody>
                 <?php foreach ($statistics as $statistics_item): ?>
-                    <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT): ?>
-                        <?php $post_url = get_comment_link($statistics_item->post_id); ?>
+
+                    <?php if (!$blogs): ?>
+                        <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT): ?>
+                            <?php $post_url = get_comment_link($statistics_item->post_id); ?>
+                        <?php else: ?>
+                            <?php $post_url = get_permalink($statistics_item->post_id); ?>
+                        <?php endif ?>
                     <?php else: ?>
-                        <?php $post_url = get_permalink($statistics_item->post_id); ?>
+                        <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT): ?>
+                            <?php $post_url = _likebtn_like_button_get_blog_comment_link($statistics_item->blog_id, $statistics_item->post_id); ?>
+                        <?php else: ?>
+                            <?php $post_url = get_blog_permalink($statistics_item->blog_id, $statistics_item->post_id); ?>
+                        <?php endif ?>
                     <?php endif ?>
+
                     <?php if (mb_strlen($statistics_item->post_title) > 100): ?>
                         <?php $statistics_item->post_title = mb_substr($statistics_item->post_title, 0, 100) . '...'; ?>
                     <?php endif ?>
@@ -1476,14 +1540,29 @@ function likebtn_like_button_admin_statistics() {
                         <?php $statistics_item->post_title = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($statistics_item->post_title); ?>
                     <?php endif ?>
                     <tr id="item_<?php echo $statistics_item->post_id; ?>">
-                        <td><input type="checkbox" class="item_checkbox" value="<?php echo $statistics_item->post_id; ?>" name="item[]"></td>
+                        <td><input type="checkbox" class="item_checkbox" value="<?php echo $statistics_item->post_id; ?>" name="item[]" <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>disabled="disabled"<?php endif ?>></td>
                         <td><?php echo $statistics_item->post_id; ?></td>
                         <?php if ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST): ?>
-                            <td><?php echo get_the_post_thumbnail($statistics_item->post_id, 'thumbnail'); ?>&nbsp;</td>
+                            <td><?php echo get_the_post_thumbnail($statistics_item->post_id, array(32,32)); ?>&nbsp;</td>
                         <?php endif ?>
                         <td><a href="<?php echo $post_url ?>" target="_blank"><?php echo htmlspecialchars($statistics_item->post_title); ?></a></td>
-                        <td><a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'like', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_like"><?php echo $statistics_item->likes; ?></a></td>
-                        <td><a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'dislike', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_dislike"><?php echo $statistics_item->dislikes; ?></a></td>
+                        <?php if ($blogs && $statistics_blog_id == 'all'): ?>
+                            <td><?php echo get_blog_option($statistics_item->blog_id, 'blogname') ?></td>
+                        <?php endif ?>
+                        <td>
+                            <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>
+                                <?php echo $statistics_item->likes; ?>
+                            <?php else: ?>
+                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'like', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_like"><?php echo $statistics_item->likes; ?></a>
+                            <?php endif ?>
+                        </td>
+                        <td>
+                            <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>
+                                <?php echo $statistics_item->dislikes; ?>
+                            <?php else: ?>
+                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'dislike', '<?php echo get_option('likebtn_like_button_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" class="item_dislike"><?php echo $statistics_item->dislikes; ?></a>
+                            <?php endif ?>
+                        </td>
                         <td><?php echo $statistics_item->likes_minus_dislikes; ?></td>
                     </tr>
                 <?php endforeach ?>
@@ -1504,123 +1583,66 @@ function likebtn_like_button_admin_statistics() {
     <?php
 }
 
+// get SQL query for retrieving statistics
+function _likebtn_like_button_get_statistics_sql($entity_name, $prefix, $query_where, $query_orderby, $query_limit, $query_select = 'SQL_CALC_FOUND_ROWS')
+{
+    if ($entity_name != LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT) {
+        // post
+        $query = "
+             SELECT {$query_select}
+                p.ID as 'post_id',
+                p.post_title,
+                pm_likes.meta_value as 'likes',
+                pm_dislikes.meta_value as 'dislikes',
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+             FROM {$prefix}postmeta pm_likes
+             LEFT JOIN {$prefix}posts p
+                 ON (p.ID = pm_likes.post_id)
+             LEFT JOIN {$prefix}postmeta pm_dislikes
+                 ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES . "')
+             LEFT JOIN {$prefix}postmeta pm_likes_minus_dislikes
+                 ON (pm_likes_minus_dislikes.post_id = pm_likes.post_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES . "')
+             WHERE
+                pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "'
+                {$query_where}
+             {$query_orderby}
+             {$query_limit}";
+    } else {
+        // comment
+        $query = "
+             SELECT {$query_select}
+                p.comment_ID as 'post_id',
+                p.comment_content as post_title,
+                pm_likes.meta_value as 'likes',
+                pm_dislikes.meta_value as 'dislikes',
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+             FROM {$prefix}commentmeta pm_likes
+             LEFT JOIN {$prefix}comments p
+                 ON (p.comment_ID = pm_likes.comment_id)
+             LEFT JOIN {$prefix}commentmeta pm_dislikes
+                 ON (pm_dislikes.comment_id = pm_likes.comment_id AND pm_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES . "')
+             LEFT JOIN {$prefix}commentmeta pm_likes_minus_dislikes
+                 ON (pm_likes_minus_dislikes.comment_id = pm_likes.comment_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES . "')
+             WHERE
+                pm_likes.meta_key = '" . LIKEBTN_LIKE_BUTTON_META_KEY_LIKES . "'
+                {$query_where}
+             {$query_orderby}
+             {$query_limit}";
+    }
+
+    return $query;
+}
+
 // admin help
 function likebtn_like_button_admin_help() {
     likebtn_like_button_admin_header();
     ?>
     <div id="poststuff" class="metabox-holder has-right-sidebar">
-
-        <ol>
-            <li><a href="#q1"><?php _e('How can I place the Like Button inside the post/page content using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q2"><?php _e('How can I display a list the most liked content inside the post/page using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q3"><?php _e('Identifier structure.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q4"><?php _e('Sort posts by likes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q5"><?php _e('Sort comments by likes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q6"><?php _e('Using WordPress Like Button plugin in a Multisite network.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q7"><?php _e('Display number of likes and dislikes in the post.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q8"><?php _e('Where are the votes stored in the plugin?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-            <li><a href="#q9"><?php _e("I've activated the plugin and checked the 'both' choice on the post view format, but in excerpt version of the post the like button doesn't appear", LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></a></li>
-        </ol>
-
-        <?php _e('See also <a href="http://likebtn.com/en/faq" target="_blank" title="Like Button FAQ">LikeBtn FAQ</a>.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>
-        <br/><br/>
-        <strong id="q1">1. <?php _e('How can I place the Like Button inside the post/page content using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('Use the following shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            <code>[likebtn]</code>
-            <br/>
-            <?php _e('You can pass Like Button setttings as parameters in the shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            <code>[likebtn identifier="my_button_in_post" style="large"]</code>
-            <br/>
-            <?php _e('If <code>identifier</code> parameter is not specified, post ID is used.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            <?php _e('Use space to separate parameters, do not use commas or any other characters.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-        </p>
-        <br/>
-        <strong id="q2">2. <?php _e('How can I display a list the most liked content inside the post/page using a shortcode?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> (PRO, VIP, ULTRA)</strong>
-        <p>
-            <?php _e('Use the following shortcode:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            <code>[likebtn_most_liked content_types="post,comment" title="Most liked posts and comments on my website" show_date="1" show_likes="0" show_dislikes="1" number="3"]</code>
-            <br/><br/>
-            <?php _e('The following post types are available:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            <code>post, page, attachment, revision, nav_menu_item, comment</code>
-        </p>
-        <br/>
-        <strong id="q3">3. <?php _e('Identifier structure.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('The <a href="http://likebtn.com/en/#settings_identifier" target="_blank">identifer</a> parameter in WordPress LikeBtn plugin has the following structure:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> <strong><?php _e('Post type', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?> + _ + <?php _e('Post ID', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong><br/><br/>
-            <?php _e('Examples:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            ● post_1<br/>
-            ● page_7<br/>
-            <br/>
-            <?php _e('So if you need to insert the LikeBtn HTML-code directly into WordPress post template, you can specify <code>identifier</code> parameter as follows:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            <code>data-identifier=&quot;post_&lt;?php the_ID()?&gt;&quot;</code>
-        </p>
-        <br/>
-        <strong id="q4">4. <?php _e('Sort posts by likes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('Upgrade your website to the tariff plan allowing to retrieve Statistics. On the plugin configuration page enable synchronization of likes into your website database.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/><br/>
-            <?php _e('After enabling synchronization WordPress Like Button plugin adds 3 custom fields to posts:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            ● Likes<br/>
-            ● Dislikes<br/>
-            ● Likes minus dislikes<br/><br/>
-            <?php _e('You can sort posts in WordPress by custom fields values using <a href="http://codex.wordpress.org/Function_Reference/query_posts" target="_blank">query_posts()</a> function. At first determine the template for inserting the code, it can be index.php, page.php, archive.php or any other depending on your needs and WordPress theme you are using. Then find the <a href="http://codex.wordpress.org/The_Loop" target="_blank">Loop</a> in the template. Finally insert the query_posts() function call above the Loop:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/><br/>
-            <code>&lt;?php query_posts($query_string . '&amp;meta_key=Likes&amp;orderby=meta_value&amp;order=DESC'); ?&gt;<br/>&lt;?php /* Start the Loop */ ?&gt;<br/>&lt;?php while ( have_posts() ) : the_post(); ?&gt;<br/>    &lt;?php get_template_part( 'content', get_post_format() ); ?&gt;<br/>&lt;?php endwhile; ?&gt;
-            </code>
-            <br/><br/>
-            <?php _e('In <code>meta_key</code> parameter specify one of the 3 custom fields provided by LikeBtn plugin. In <code>order</code> parameter specify the desired sort order: DESC (descending), ASC (ascending).', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-        </p>
-        <br/>
-        <strong id="q5">5. <?php _e('Sort comments by likes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <ol>
-            <li>
-               <?php _e('Upgrade your website to the tariff plan allowing to retrieve Statistics.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-            <li>
-               <?php _e('Enable synchronization of likes into your WordPress database.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-            <li>
-               <?php _e('Find the <code>comments.php</code> template of your current WordPress theme (for example <code>/wp-content/themes/twentytwelve/comments.php</code>)', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-            <li>
-               <?php _e('Add the second argument to all the calls of <code>wp_list_comments()</code> function in <code>comments.php</code>:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/><br/>
-               <code>// Before<br/>// wp_list_comments( array( 'callback' =&gt; 'twentytwelve_comment', 'style' =&gt; 'ol' ));<br/><br/>// After<br/>$comments_sorted = likebtn_comments_sorted_by_likes();<br/>wp_list_comments( array( 'callback' =&gt; 'twentytwelve_comment', 'style' =&gt; 'ol' ), $comments_sorted );
-               </code>
-               <br/><br/>
-               <?php _e('Use <code>likebtn_comments_sorted_by_dislikes()</code> function to sort comments by dislikes.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-        </ol>
-        <br/>
-        <strong id="q6">6. <?php _e('Display number of likes and dislikes in the post.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('Upgrade your website to the tariff plan allowing to retrieve Statistics. Enable synchronization of likes into your WordPress database.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/><br/>
-            <?php _e('To display number of likes and dislikes in the posts list, insert the following code:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            <code>&lt;?php $post_custom = get_post_custom( get_the_ID() ); ?&gt;<br/>Likes: &lt;?php echo (int)$post_custom['Likes'][0]; ?&gt; |<br/>Dislikes: &lt;?php echo (int)$post_custom['Dislikes'][0]; ?&gt;</code><br/><br/>
-            <?php _e('into the posts loop in the index.php, page.php, home.php or any other template depending on the WordPress theme you are using (for example /wp-content/themes/twentytwelve/index.php):', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            <code>&lt;?php /* Start the Loop */ ?&gt;<br/>&lt;?php while ( have_posts() ) : the_post(); ?&gt;<br/>    &lt;?php get_template_part( 'content', get_post_format() ); ?&gt;<br/><br/>    &lt;?php /* Get and display number of likes and dislikes */ ?&gt;<br/>    &lt;?php $post_custom = get_post_custom( get_the_ID() ); ?&gt;<br/>    Likes: &lt;?php echo (int)$post_custom['Likes'][0]; ?&gt; |<br/>    Dislikes: &lt;?php echo (int)$post_custom['Dislikes'][0]; ?&gt;<br/>&lt;?php endwhile; ?&gt;<br/></code><br/>
-            <?php _e('To display number of likes and dislikes in excerpts and full posts, insert the following code into the content.php or any other template depending on the WordPress theme you are using (for example /wp-content/themes/twentytwelve/content.php):', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-            <code>&lt;?php $post_custom = get_post_custom( get_the_ID() ); ?&gt;<br/>Likes: &lt;?php echo (int)$post_custom['Likes'][0]; ?&gt; |<br/>Dislikes: &lt;?php echo (int)$post_custom['Dislikes'][0]; ?&gt;<br/></code>
-        </p>
-        <br/>
-        <strong id="q7">7. <?php _e('Using WordPress Like Button plugin in a Multisite network.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('You can use LikeBtn plugin in a <a href="http://codex.wordpress.org/Create_A_Network" target="_blank">multisite networks</a>. Make sure to specify the "Subdirectory" on the plugin Settings page in a path-based multisite network in which on-demand sites use paths.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-        </p>
-        <br/>
-        <strong id="q8">8. <?php _e('Where are the votes stored in the plugin?', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <p>
-            <?php _e('Votes are stored in the LikeBtn system and during synchronization plugin saves them in the Custom fields, which are stored in <code>postmeta</code> and <code>commentmeta</code> WordPress tables.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?><br/>
-        </p>
-        <br/>
-        <strong id="q9">9. <?php _e("I've activated the plugin and checked the 'both' choice on the post view format, but in excerpt version of the post the like button doesn't appear", LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></strong>
-        <ol>
-            <li>
-               <?php _e('Install <a href="http://wordpress.org/plugins/advanced-excerpt/installation/" target="_blank">Advanced Excerpt</a> plugin.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-            <li>
-               <?php _e('Go to "Excerpt" under the "Settings" menu of the plugin and check "Don\'t remove any markup" checkbox.', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
-            </li>
-        </ol>
-    </div>
+        <ul>
+            <li><?php echo __('<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank">WordPress LikeBtn Plugin FAQ</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
+            <li><?php echo __('<a href="http://likebtn.com/en/faq" target="_blank">LikeBtn FAQ</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
+            <li><?php echo __('<a href="http://forum.likebtn.com/forums/34-WordPress" target="_blank">Forum</a>', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></li>
+        </ul>
     </div>
     <?php
 }
@@ -1822,7 +1844,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
     $public_url = _likebtn_like_button_get_public_url();
 
     $markup = <<<MARKUP
-<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}><img src="{$public_url}img/button_loader.gif" /></span><script type="text/javascript" src="//likebtn.com/js/widget.js" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
+<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}><img src="{$public_url}img/button_loader.gif" /></span><script type="text/javascript" src="//w.likebtn.com/js/w/widget.js" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
 MARKUP;
 
     // HTML before
@@ -2016,6 +2038,7 @@ function likebtn_like_button_the_content($content) {
 }
 
 add_filter('the_content', 'likebtn_like_button_the_content');
+add_filter('the_excerpt', 'likebtn_like_button_the_content');
 
 // add Like Button to the Comment
 function likebtn_like_button_comment_text($content) {
@@ -2346,4 +2369,16 @@ function likebtn_comments_sorted_by_dislikes()
     usort($comments, 'sort_comments_by_dislikes');
 
     return $comments;
+}
+
+/**
+ * Get the permalink for a comment on another blog.
+ *
+ */
+function _likebtn_like_button_get_blog_comment_link( $blog_id, $comment_id ) {
+	switch_to_blog( $blog_id );
+	$link = get_comment_link( $comment_id );
+	restore_current_blog();
+
+	return $link;
 }

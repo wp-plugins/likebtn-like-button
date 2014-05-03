@@ -83,18 +83,12 @@ class LikeBtnLikeButton {
     }
 
     /**
-     * Comment sync function.
+     * Sync votes from LikeBtn.com to local DB.
      */
     public function syncVotes() {
         $sync_result = true;
 
         $last_sync_time = number_format(get_option('likebtn_like_button_last_sync_time'), 0, '', '');
-
-        $email = trim(get_option('likebtn_like_button_account_email'));
-        $api_key = trim(get_option('likebtn_like_button_account_api_key'));
-        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
-        $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'].$subdirectory;
 
         $updated_after = '';
 
@@ -180,8 +174,7 @@ class LikeBtnLikeButton {
      * Update entity custom fields
      */
     public function updateCustomFields($identifier, $likes, $dislikes) {
-        global $likebtn_like_button_entities;
-        global $likebtn_like_button_custom_fields;
+        $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
         $identifier_parts = explode('_', $identifier);
         $entity_name = '';
@@ -355,17 +348,8 @@ class LikeBtnLikeButton {
     public function reset($identifier) {
         $result = false;
 
-        $email = trim(get_option('likebtn_like_button_account_email'));
-        $api_key = trim(get_option('likebtn_like_button_account_api_key'));
-        $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
-        $parse_url = parse_url(get_site_url());
-        $domain = $parse_url['host'].$subdirectory;
-
-        $url = $this->getApiUrl() . "identifier_filter={$identifier}";
-
-        // retrieve first page
-        $response_string = $this->curl($url);
-        $response = $this->jsonDecode($response_string);
+        $url = "identifier_filter={$identifier}";
+        $response = $this->apiRequest('reset', $url);
 
         // check result
         if (isset($response['response']['reseted']) && $response['response']['reseted']) {

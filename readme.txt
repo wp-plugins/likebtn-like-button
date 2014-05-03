@@ -46,8 +46,8 @@ This plugin integrates the LikeBtn Like Button into your WordPress website to al
 == Frequently Asked Questions ==
 
 * <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button Plugin<">WordPress LikeBtn Plugin FAQ</a>
-* <a href="http://forum.likebtn.com/forums/34-WordPress" target="_blank" title="WordPress Like Button Forum<">Forum</a>
 * <a href="http://likebtn.com/en/faq" target="_blank" title="Like Button FAQ">LikeBtn FAQ</a>
+* <a href="http://forum.likebtn.com/forums/34-WordPress" target="_blank" title="WordPress Like Button Forum">Forum</a>
 
 == Screenshots ==
 1. Like Buttons
