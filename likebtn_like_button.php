@@ -120,6 +120,8 @@ $likebtn_like_button_settings = array(
     "info_message" => array("default" => '1'),
     "i18n_like" => array("default" => ''),
     "i18n_dislike" => array("default" => ''),
+    "i18n_after_like" => array("default" => ''),
+    "i18n_after_dislike" => array("default" => ''),
     "i18n_like_tooltip" => array("default" => ''),
     "i18n_dislike_tooltip" => array("default" => ''),
     "i18n_unlike_tooltip" => array("default" => ''),
@@ -1101,6 +1103,20 @@ function likebtn_like_button_admin_buttons() {
                                                     <td>
                                                         <input type="text" name="likebtn_like_button_settings_i18n_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_dislike_' . $entity_name); ?>" size="60"/>
                                                         <span class="description">i18n_dislike</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Like Button label after liking', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_i18n_after_like_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_after_like_' . $entity_name); ?>" size="60"/>
+                                                        <span class="description">i18n_after_like</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Dislike Button label after disliking', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_i18n_after_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_i18n_after_dislike_' . $entity_name); ?>" size="60"/>
+                                                        <span class="description">i18n_after_dislike</span>
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
