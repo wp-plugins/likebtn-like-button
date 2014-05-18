@@ -104,6 +104,7 @@ $likebtn_like_button_settings = array(
     "display_only" => array("default" => '0'),
     "unlike_allowed" => array("default" => '1'),
     "like_dislike_at_the_same_time" => array("default" => '0'),
+    "revote_period" => array("default" => ''),
     "style" => array("default" => 'white'),
     "addthis_pubid" => array("default" => ''),
     "addthis_service_codes" => array("default" => ''),
@@ -923,6 +924,13 @@ function likebtn_like_button_admin_buttons() {
                                                     <td>
                                                         <input type="checkbox" name="likebtn_like_button_settings_like_dislike_at_the_same_time_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_like_button_settings_like_dislike_at_the_same_time_' . $entity_name)); ?> />
                                                         <span class="description">like_dislike_at_the_same_time</span>
+                                                    </td>
+                                                </tr>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('The period of time in seconds after which it is allowed to vote again', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="text" name="likebtn_like_button_settings_revote_period_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_like_button_settings_revote_period_' . $entity_name); ?>" size="60"/>
+                                                        <span class="description">revote_period</span>
                                                     </td>
                                                 </tr>
                                                 <tr valign="top">
