@@ -14,7 +14,7 @@ Like Button allows visitors to like and dislike pages, posts, custom post types 
 
 <strong><a href="http://likebtn.com" target="_blank" title="Like Button">LikeBtn.com</a></strong> is the service providing a fully customizable like button widget for websites. This plugin integrates LikeBtn Like Button into your WordPress website and allows visitors to like and dislike pages, posts, custom post types and comments anonymously.
 
-Keep in mind that this is not a standalone plugin as it depends <a href="http://likebtn.com" target="_blank" title="Like Button for website">LikeBtn.com</a> widget. The LikeBtn service provides a 5-days TRIAL period when all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>).
+Keep in mind that this is not a standalone plugin as it depends on <a href="http://likebtn.com" target="_blank" title="Like Button for website">LikeBtn.com</a> widget. The LikeBtn service provides a 5-days TRIAL period when all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>).
 
 = Demo =
 <a href="http://wordpress.likebtn.com/wordpress-like-button-plugin/" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
