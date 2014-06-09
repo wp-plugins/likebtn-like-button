@@ -114,10 +114,22 @@ class LikeBtnLikeButtonMostLiked {
             extract($args);
         }
 
-        $title = $instance['title'];
-        $show_date = $instance['show_date'];
-        $show_likes = $instance['show_likes'];
-        $show_dislikes = $instance['show_dislikes'];
+        $title = '';
+        if (isset($instance['title'])) {
+            $title = $instance['title'];
+        }
+        $show_date = '';
+        if (isset($instance['show_date'])) {
+            $show_date = $instance['show_date'];
+        }
+        $show_likes = '';
+        if (isset($instance['show_likes'])) {
+            $show_likes = $instance['show_likes'];
+        }
+        $show_dislikes = '';
+        if (isset($instance['show_dislikes'])) {
+            $show_dislikes = $instance['show_dislikes'];
+        }
 
         // validate parameters
         if ($show_date == 'true') {
@@ -136,7 +148,7 @@ class LikeBtnLikeButtonMostLiked {
         $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
 
         $query_limit = '';
-        if ((int) $instance['number'] > 0) {
+        if (isset($instance['number']) && (int) $instance['number'] > 0) {
             $query_limit = "LIMIT " . (int) $instance['number'];
         }
 

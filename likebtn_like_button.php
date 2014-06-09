@@ -1759,7 +1759,9 @@ function likebtn_like_button_most_liked_widget_shortcode($args) {
     global $LikeBtnLikeButtonMostLiked;
     $options = $args;
 
-    $options['number'] = (int) $options['number'];
+    if (isset($options['number'])) {
+        $options['number'] = (int) $options['number'];
+    }
     $options['entity_name'] = array();
     if (isset($options['content_types'])) {
         $options['entity_name'] = explode(',', $options['content_types']);
