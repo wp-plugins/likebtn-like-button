@@ -59,6 +59,23 @@ Keep in mind that this is not a standalone plugin as it depends on <a href="http
 
 == Changelog ==
 
+= 1.9 =
+* Added thumbnails on Statistics page
+* Added custom post types on Statistics page
+* 12 new styles
+* Statistics for multisite networks
+* Added after liking tooltip option
+* Added revote_period option
+* Added loader_image option
+* Added loader_show option
+* Added lazy_load option
+* Added counter_padding option
+* Added counter_zero_show option
+* Added icon_like_show option
+* Added icon_dislike_show option
+* Added thumbnail and post excerpt to the Most Liked Content widget
+* Custom items in Statistics
+
 = 1.8 =
 * Added the feature allowing to change number of likes and dislikes in the admin
 * Added Spanish language
