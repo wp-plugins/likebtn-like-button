@@ -23,7 +23,7 @@ class LikeBtnLikeButton {
      */
     public function runSyncVotes() {
         if (!self::$synchronized && get_option('likebtn_like_button_account_email') && get_option('likebtn_like_button_account_api_key') && get_option('likebtn_like_button_sync_inerval') && $this->timeToSyncVotes(get_option('likebtn_like_button_sync_inerval') * 60)) {
-            $this->syncVotes(get_option('likebtn_like_button_account_email'), get_option('likebtn_like_button_account_api_key'));
+            $this->syncVotes();
         }
     }
 
@@ -64,7 +64,7 @@ class LikeBtnLikeButton {
 
         $cms_version = $wp_version;
 
-        $likebtn_version = _likebtn_like_button_get_plugin_version;
+        $likebtn_version = _likebtn_like_button_get_plugin_version();
         $php_version = phpversion();
         $useragent = "WordPress $wp_version; likebtn plugin $likebtn_version; PHP $php_version";
 
@@ -85,14 +85,13 @@ class LikeBtnLikeButton {
     /**
      * Sync votes from LikeBtn.com to local DB.
      */
-    public function syncVotes() {
+    public function syncVotes($email = '', $api_key = '', $full = false) {
         $sync_result = true;
 
         $last_sync_time = number_format(get_option('likebtn_like_button_last_sync_time'), 0, '', '');
 
         $updated_after = '';
-
-        if (get_option('likebtn_like_button_last_successfull_sync_time')) {
+        if (!$full && get_option('likebtn_like_button_last_successfull_sync_time')) {
             $updated_after = get_option('likebtn_like_button_last_successfull_sync_time') - LIKEBTN_LIKE_BUTTON_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
         }
 
@@ -102,7 +101,7 @@ class LikeBtnLikeButton {
         }
 
         // retrieve first page
-        $response = $this->apiRequest('stat', $url);
+        $response = $this->apiRequest('stat', $url, $email, $api_key);
 
         if (!$this->updateVotes($response)) {
             $sync_result = false;
@@ -113,7 +112,7 @@ class LikeBtnLikeButton {
             $total_pages = ceil((int) $response['response']['total'] / (int) $response['response']['page_size']);
 
             for ($page = 2; $page <= $total_pages; $page++) {
-                $response = $this->apiRequest('stat', $url . '&page=' . $page);
+                $response = $this->apiRequest('stat', $url . '&page=' . $page, $email, $api_key);
 
                 if (!$this->updateVotes($response)) {
                     $sync_result = false;
@@ -121,9 +120,14 @@ class LikeBtnLikeButton {
             }
         }
 
-        if ($sync_result) {
+        if ($sync_result && !$full) {
             update_option('likebtn_like_button_last_successfull_sync_time', $last_sync_time);
         }
+
+        return array(
+            'result' => $response['result'],
+            'message' => $response['message']
+        );
     }
 
     /**

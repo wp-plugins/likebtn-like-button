@@ -410,30 +410,53 @@ function likebtn_like_button_db_update_1() {
 
     $table_name = $wpdb->prefix . LIKEBTN_LIKE_BUTTON_TABLE_ITEM;
 
-    if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) != $table_name ) {
-        $sql = "CREATE TABLE {$table_name} (
-            `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-            `identifier` text NOT NULL,
-            `url` text,
-            `title` text,
-            `description` text,
-            `image` text,
-            `likes` int(11) NOT NULL DEFAULT '0',
-            `dislikes` int(11) NOT NULL DEFAULT '0',
-            `likes_minus_dislikes` int(11) NOT NULL DEFAULT '0',
-            PRIMARY KEY (`ID`),
-            UNIQUE KEY `identifier` (`identifier`(1)),
-            KEY `title` (`title`(1)),
-            KEY `likes` (`likes`),
-            KEY `dislikes` (`dislikes`),
-            KEY `likes_minus_dislikes` (`likes_minus_dislikes`)
-        );";
+    $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+        `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `identifier` text NOT NULL,
+        `url` text,
+        `title` text,
+        `description` text,
+        `image` text,
+        `likes` int(11) NOT NULL DEFAULT '0',
+        `dislikes` int(11) NOT NULL DEFAULT '0',
+        `likes_minus_dislikes` int(11) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`ID`),
+        UNIQUE KEY `identifier` (`identifier`(1)),
+        KEY `title` (`title`(1)),
+        KEY `likes` (`likes`),
+        KEY `dislikes` (`dislikes`),
+        KEY `likes_minus_dislikes` (`likes_minus_dislikes`)
+    );";
 
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta($sql);
-    }
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta($sql);
 
     update_option("likebtn_like_button_db_version", 1);
+}
+
+// database update function
+function likebtn_like_button_db_update_2() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . LIKEBTN_LIKE_BUTTON_TABLE_ITEM;
+
+    if ($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") == $table_name) {
+
+        // Remove UNIQUE from identifier
+        $sql = "DROP INDEX identifier ON {$table_name};";
+        $wpdb->query($sql);
+
+        $sql = "CREATE INDEX identifier ON {$table_name} (identifier(1));";
+        $wpdb->query($sql);
+
+        $sql = "ALTER TABLE {$table_name} ADD identifier_hash varchar(32) DEFAULT NULL, ADD UNIQUE (identifier_hash);";
+        $wpdb->query($sql);
+
+        $sql = "UPDATE {$table_name} SET identifier_hash = md5(identifier);";
+        $wpdb->query($sql);
+    }
+
+    update_option("likebtn_like_button_db_version", 2);
 }
 
 // set default options for post type
@@ -599,8 +622,10 @@ function likebtn_like_button_admin_settings() {
                                 </select>
                                 <br/>
                                 <span class="description"><?php _e('Time interval in minutes in which fetching of vote results from LikeBtn.com into your database is being launched. When synchronization is enabled you can view Statistics, number of likes and dislikes for each post as Custom Field, sort posts by vote results, use Like Button widgets. The less the interval the heavier your database load (60 minutes interval is recommended)', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?></span>
-                                <br/>
-                                <input class="button-primary" type="button" name="TestSync" value="<?php _e('Test synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onclick="testSync('<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_like_button_test_sync_container"><img src="<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                                <br/><br/>
+                                <input class="button-primary" type="button" value="<?php _e('Test synchronization', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onclick="testSync('<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_like_button_test_sync_container"><img src="<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                                <br/><br/>
+                                <input class="button-secondary likebtn_tooltip" type="button" value="<?php _e('Run full synchronization manually', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>" onclick="manualSync('<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif')" title="<?php _e("ATTENTION: Use this feature carefully since full synchronization may affect your website performance. If you don't experience any problems with likes synchronization better to avoid using this feature.", LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?>" /> &nbsp;<strong class="likebtn_like_button_manual_sync_container"><img src="<?php echo _likebtn_like_button_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
                             </td>
                         </tr>
                     </table>
@@ -2392,6 +2417,42 @@ function likebtn_comment($comment_id = NULL) {
 
     echo $html;
 }
+
+// test synchronization callback
+function likebtn_like_button_manual_sync_callback() {
+
+    $likebtn_like_button_account_email = '';
+    if (isset($_POST['likebtn_like_button_account_email'])) {
+        $likebtn_like_button_account_email = $_POST['likebtn_like_button_account_email'];
+    }
+
+    $likebtn_like_button_account_api_key = '';
+    if (isset($_POST['likebtn_like_button_account_api_key'])) {
+        $likebtn_like_button_account_api_key = $_POST['likebtn_like_button_account_api_key'];
+    }
+
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+    $sync_response = $likebtn->syncVotes($likebtn_like_button_account_email, $likebtn_like_button_account_api_key, true);
+
+    if ($sync_response['result'] == 'success') {
+        $result_text = __('OK', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
+    } else {
+        $result_text = __('Error', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN);
+    }
+
+    $response = array(
+        'result' => $sync_response['result'],
+        'result_text' => $result_text,
+        'message' => $sync_response['message'],
+    );
+
+    define( 'DOING_AJAX', true );
+    ob_clean();
+    wp_send_json($response);
+}
+
+add_action('wp_ajax_likebtn_like_button_manual_sync', 'likebtn_like_button_manual_sync_callback');
 
 // test synchronization callback
 function likebtn_like_button_test_sync_callback() {
