@@ -1892,8 +1892,12 @@ function _likebtn_like_button_get_public_url() {
 
 // get plugin version
 function _likebtn_like_button_get_plugin_version() {
-    $plugin_data = get_plugin_data(__FILE__);
-    return $plugin_data['Version'];
+    if (function_exists('get_plugin_data')) {
+        $plugin_data = get_plugin_data(__FILE__);
+        return $plugin_data['Version'];
+    } else {
+        return '';
+    }
 }
 
 // Get supported by current theme Post Formats
