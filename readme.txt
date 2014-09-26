@@ -3,8 +3,8 @@ Contributors: likebtn
 Donate link: http://likebtn.com
 Tags: like button, vote, voting, rating, dislike
 Requires at least: 2.8
-Tested up to: 3.9
-Stable tag: 1.9
+Tested up to: 4.0
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ Keep in mind that this is not a standalone plugin as it depends on <a href="http
 
 == Changelog ==
 
+= 2.0 =
+* Added full sync feature
+* Added site_id option
+* Removed div container for like button inserted using shortcode
+* Removed local_domain and subdirectory configuration parameters
+
 = 1.9 =
 * Added thumbnails on Statistics page
 * Added custom post types on Statistics page
@@ -79,7 +85,7 @@ Keep in mind that this is not a standalone plugin as it depends on <a href="http
 = 1.8 =
 * Added the feature allowing to change number of likes and dislikes in the admin
 * Added Spanish language
-* Added substract_dislikes to counter_type option
+* Added subtract_dislikes to counter_type option
 * Added single_number to counter_type option
 * Added tooltip_enabled option
 * Extended Help section
