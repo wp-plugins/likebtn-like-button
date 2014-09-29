@@ -101,9 +101,9 @@ $likebtn_like_button_settings = array(
     "icon_dislike_show" => array("default" => '1'),
     "site_id" => array("default" => ""),
     "group_identifier" => array("default" => ""),
-    "local_domain" => array("default" => ''),
+    //"local_domain" => array("default" => ''),
     "domain_from_parent" => array("default" => '0'),
-    "subdirectory" => array("default" => ''),
+    //"subdirectory" => array("default" => ''),
     "item_url" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
     "item_title" => array("default" => ''),
@@ -352,8 +352,8 @@ function likebtn_like_button_unistall() {
     delete_option('likebtn_like_button_account_api_key');
     delete_option('likebtn_like_button_sync_inerval');
     delete_option('likebtn_like_button_site_id');
-    delete_option('likebtn_like_button_local_domain');
-    delete_option('likebtn_like_button_subdirectory');
+    //delete_option('likebtn_like_button_local_domain');
+    //delete_option('likebtn_like_button_subdirectory');
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
         delete_option('likebtn_like_button_show_' . $entity_name);
         delete_option('likebtn_like_button_use_settings_from_' . $entity_name);
@@ -392,8 +392,8 @@ function likebtn_like_button_activation_hook() {
     add_option('likebtn_like_button_account_api_key', '');
     add_option('likebtn_like_button_sync_inerval', '');
     add_option('likebtn_like_button_site_id', '');
-    add_option('likebtn_like_button_local_domain', '');
-    add_option('likebtn_like_button_subdirectory', '');
+    //add_option('likebtn_like_button_local_domain', '');
+    //add_option('likebtn_like_button_subdirectory', '');
 
     // set default options for post types
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
@@ -568,8 +568,8 @@ function likebtn_like_button_admin_init() {
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_account_api_key');
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_sync_inerval');
     register_setting('likebtn_like_button_settings', 'likebtn_like_button_site_id');
-    register_setting('likebtn_like_button_settings', 'likebtn_like_button_local_domain');
-    register_setting('likebtn_like_button_settings', 'likebtn_like_button_subdirectory');
+    //register_setting('likebtn_like_button_settings', 'likebtn_like_button_local_domain');
+    //register_setting('likebtn_like_button_settings', 'likebtn_like_button_subdirectory');
 
     // entities settings
     foreach ($likebtn_like_button_entities as $entity_name => $entity_title) {
@@ -717,9 +717,9 @@ function likebtn_like_button_admin_settings() {
                     <table class="form-table">
                         <tr valign="top">
                             <th scope="row">&nbsp;</th>
-                            <td>*/ ?>
+                            <td> ?>
                                 <input type="hidden" name="likebtn_like_button_local_domain" value="<?php echo get_option('likebtn_like_button_local_domain') ?>" size="60" />
-                                <?php /*
+                                <?php
                                 <br/>
                                 <strong class="description"><?php _e('Example:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?> localdomain!50f358d30acf358d30ac000001</strong>
                                 <br/><br/>
@@ -735,9 +735,9 @@ function likebtn_like_button_admin_settings() {
                     <table class="form-table">
                         <tr valign="top">
                             <th scope="row">&nbsp;</th>
-                            <td>*/ ?>
+                            <td> ?>
                                 <input type="hidden" name="likebtn_like_button_subdirectory" value="<?php echo get_option('likebtn_like_button_subdirectory') ?>" size="60" />
-                                <?php /*
+                                <?php
                                 <br/>
                                 <strong class="description"><?php _e('Example:', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN) ?> /subdirectory/</strong>
                                 <br/><br/>
@@ -2122,17 +2122,15 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
         $data .= ' data-site_id="' . get_option('likebtn_like_button_site_id') . '" ';
     }
 
-    // local_domain and subdirectory are kept for backward compatibility
-
     // Local domain
-    if (get_option('likebtn_like_button_local_domain')) {
+    /*if (get_option('likebtn_like_button_local_domain')) {
         $data .= ' data-local_domain="' . get_option('likebtn_like_button_local_domain') . '" ';
     }
 
     // Website subdirectory
     if (get_option('likebtn_like_button_subdirectory')) {
         $data .= ' data-subdirectory="' . get_option('likebtn_like_button_subdirectory') . '" ';
-    }
+    }*/
 
     foreach ($likebtn_like_button_settings as $option_name => $option_info) {
 

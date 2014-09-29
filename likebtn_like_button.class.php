@@ -409,7 +409,7 @@ class LikeBtnLikeButton {
             }
 
             // local_domain and subdirectory are kept for backward compatibility
-            $subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
+            /*$subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
             $local_domain = trim(get_option('likebtn_like_button_local_domain'));
             if ($local_domain) {
               $domain = $local_domain;
@@ -417,9 +417,20 @@ class LikeBtnLikeButton {
             else {
               $parse_url = parse_url(get_site_url());
               $domain    = $parse_url['host'] . $subdirectory;
+            }*/
+            $domain_site_id = '';
+
+            $site_id = trim(get_option('likebtn_like_button_site_id'));
+            if ($site_id) {
+                $domain_site_id .= "site_id={$site_id}&";
+            } else {
+                $parse_url = parse_url(get_site_url());
+                $domain    = $parse_url['host'];
+
+                $domain_site_id .= "domain={$domain}&";
             }
 
-            self::$apiurl = LIKEBTN_LIKE_BUTTON_API_URL . "?email={$email}&api_key={$api_key}&domain={$domain}&nocache=.php&source=wordpress&";
+            self::$apiurl = LIKEBTN_LIKE_BUTTON_API_URL . "?email={$email}&api_key={$api_key}&nocache=.php&source=wordpress&" . $domain_site_id;
         }
         $url = self::$apiurl . "action={$action}&" . $request;
 
