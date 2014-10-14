@@ -1,41 +1,42 @@
-=== LikeBtn Like Button ===
+=== Like Button Voting & Rating ===
 Contributors: likebtn
 Donate link: http://likebtn.com
-Tags: like button, vote, voting, rating, dislike
+Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, buddypress, bbpress, poll, survey, donate, donations
 Requires at least: 2.8
 Tested up to: 4.0
 Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Like Button allows visitors to like and dislike pages, posts, custom post types and comments anonymously.
+Add a Like Button to your site! Let your visitors like and dislike posts, pages, comments and custom post types. Sort content by likes. Get instant voting statistics and insights.
 
 == Description ==
 
-<strong><a href="http://likebtn.com" target="_blank" title="Like Button">LikeBtn.com</a></strong> is the service providing a fully customizable like button widget for websites. This plugin integrates LikeBtn Like Button into your WordPress website and allows visitors to like and dislike pages, posts, custom post types and comments anonymously.
+The **Like Button Voting & Rating** plugin allows you to add a cool looking fully customizable Like Button to your WordPress website.
 
-Keep in mind that this is not a standalone plugin as it depends on <a href="http://likebtn.com" target="_blank" title="Like Button for website">LikeBtn.com</a> widget. The LikeBtn service provides a 5-days TRIAL period when all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>).
+> = Demo =
+> <a href="http://wordpress.likebtn.com/wordpress-like-button-plugin/" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
-= Demo =
-<a href="http://wordpress.likebtn.com/wordpress-like-button-plugin/" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
+> = Features =
+> * More than 50 parameters.
+> * More than 25 themes.
+> * More than 11 languages.
+> * Allows visitors to like and dislike posts, pages, comments and custom post types anonymously.
+> * Visitors do not have to register or log in to vote using Like Button.
+> * After voting visitors can share a link in social networks: Facebook, Twitter etc.
+> * Sorting posts by likes.
+> * Statistics on vote results (PRO, VIP, ULTRA).
+> * Widget displaying most liked content (PRO, VIP, ULTRA).
+> * Adds "Likes", "Dislikes" and "Likes minus dislikes" custom fields to posts and comments (PRO, VIP, ULTRA).
+> * Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
+> * Shortcode to place a list of the most liked content inside the post/page (PRO, VIP, ULTRA): <code>[likebtn_most_liked]</code>
+> * Customizable position and alignment.
+> * Can be displayed depending on the post view mode, format, category, ID.
+> * Full access to Like Button CSS.
+> * Custom texts.
+> * Allows to collect donations using donate buttons in pop-up.
 
-= Features =
-* Allows visitors to like and dislike pages, posts, custom post types and comments anonymously.
-* Visitors do not have to register or log in to use the Like Button.
-* After liking visitors can share a link in social networks: Facebook, Twitter etc.
-* Adds "Likes", "Dislikes" and "Likes minus dislikes" Custom Fields to posts and comments (PRO, VIP, ULTRA).
-* Statistics on vote results (PRO, VIP, ULTRA).
-* Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
-* Shortcode to place a list of the most liked content inside the post/page using a shortcode (PRO, VIP, ULTRA): <code>[likebtn_most_liked]</code>
-* Widget displaying most liked content (PRO, VIP, ULTRA).
-* Customizable position and alignment.
-* Can be displayed depending on the post view mode, format, category, ID.
-* Appearance is controlled through CSS.
-* Built-in styles.
-* Built-in support for a number of languages.
-* Allows to change all labels texts.
-* Allows to collect donations using donate buttons in the popup.
-* All <a href="http://likebtn.com/en/#settings" target="_blank" title="Like Button Settings">LikeBtn.com settings</a> are available.
+The <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Like Button</a> widget is hosted by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>. The LikeBtn service provides a 5-days TRIAL period during which all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>) and you can continue using FREE plan or upgrade.
 
 == Installation ==
 
@@ -45,14 +46,14 @@ Keep in mind that this is not a standalone plugin as it depends on <a href="http
 
 == Frequently Asked Questions ==
 
-* <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button Plugin<">WordPress LikeBtn Plugin FAQ</a>
-* <a href="http://likebtn.com/en/faq" target="_blank" title="Like Button FAQ">LikeBtn FAQ</a>
+* <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button Plugin<">WordPress Like Button Plugin FAQ</a>
+* <a href="http://likebtn.com/en/faq" target="_blank" title="Like Button FAQ">LikeBtn.com FAQ</a>
 * <a href="http://forum.likebtn.com/forums/34-WordPress" target="_blank" title="WordPress Like Button Forum">Forum</a>
 
 == Screenshots ==
 1. Like Buttons
-2. Like Button styles
-3. Plugin settings
+2. Like Button Themes
+3. Plugin Settings
 4. Statistics
 5. Most Liked Content Widget admin view
 6. Most Liked Content Widget frontend view

@@ -1,8 +1,8 @@
 <?php
 /*
-  Plugin Name: LikeBtn Like Button
+  Plugin Name: Like Button Voting & Rating
   Plugin URI: http://likebtn.com
-  Description: <strong><a href="http://likebtn.com" target="_blank" title="Like Button">LikeBtn.com</a></strong> - is the service providing a fully customizable like button widget for websites. The Like Button can be installed on any website for FREE. The service also offers a range of plans giving access to additional options and tools - see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>. This module allows to integrate the LikeBtn Like Button into your WordPress website to allow visitors to like and dislike pages, posts, custom post types and comments anonymously.
+  Description: Add a Like Button to your site! Let your visitors like and dislike posts, pages, comments and custom post types. Sort content by likes. Get instant voting statistics and insights.
   Version: 2.0
   Author: likebtn
   Author URI: http://likebtn.com
