@@ -1,7 +1,7 @@
 === Like Button Voting & Rating ===
-Contributors: likebtn
+Contributors: LikeBtn
 Donate link: http://likebtn.com
-Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, buddypress, bbpress, poll, survey, donate, donations
+Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
 Tested up to: 4.0
 Stable tag: 2.0
@@ -27,16 +27,15 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 > * Sorting posts by likes.
 > * Statistics on vote results (PRO, VIP, ULTRA).
 > * Widget displaying most liked content (PRO, VIP, ULTRA).
-> * Adds "Likes", "Dislikes" and "Likes minus dislikes" custom fields to posts and comments (PRO, VIP, ULTRA).
 > * Shortcode to place the Like Button inside the post/page content: <code>[likebtn]</code>
 > * Shortcode to place a list of the most liked content inside the post/page (PRO, VIP, ULTRA): <code>[likebtn_most_liked]</code>
 > * Customizable position and alignment.
 > * Can be displayed depending on the post view mode, format, category, ID.
 > * Full access to Like Button CSS.
 > * Custom texts.
-> * Allows to collect donations using donate buttons in pop-up.
+> * Allows to collect donations using donate buttons in popup.
 
-The Like Button widget is hosted by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>. The LikeBtn service provides a 5-days TRIAL period during which all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>) and you can continue using FREE plan or upgrade.
+The Like Button widget is powered by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>. The LikeBtn service provides a 5-days TRIAL period during which all the features are available. After this period your website is switched to the FREE plan (see <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>) and you can continue using FREE plan or upgrade.
 
 == Installation ==
 

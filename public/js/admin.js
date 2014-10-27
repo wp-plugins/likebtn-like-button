@@ -1,8 +1,11 @@
 var plans={trial:9,free:0,plus:1,pro:2,vip:3,ultra:4};
+var likebtn_popup;
 
 jQuery(document).ready(function(jQuery) {
-    jQuery('#review_link a:first').tipsy({gravity: 'se'});
-    jQuery('#poststuff .likebtn_tooltip').tipsy({gravity: 's'});
+    //jQuery('#review_link a:first').tipsy({gravity: 'se'});
+    jQuery('#likebtn_like_button .likebtn_ttip').tipsy({gravity: 's'});
+    jQuery('#likebtn_like_button .premium_feature').tipsy({gravity: 's'});
+    jQuery('#likebtn_like_button .likebtn_help').tipsy({gravity: 's'});
 });
 
 // Show/hide entity options
@@ -10,8 +13,10 @@ function entityShowChange(el, entity_name)
 {
     if (jQuery(el).is(':checked')) {
         jQuery("#entity_container_"+entity_name).show();
+        jQuery("#likebtn_subpage_tab_wrapper .likebtn_like_button_tab_"+entity_name+" .likebtn_show_marker").removeClass('hidden');
     } else {
         jQuery("#entity_container_"+entity_name).hide();
+        jQuery("#likebtn_subpage_tab_wrapper .likebtn_like_button_tab_"+entity_name+" .likebtn_show_marker").addClass('hidden');
     }
 }
 
@@ -176,9 +181,15 @@ function planChange(plan_id)
         }
 
         if (available) {
-            jQuery(this).removeAttr('disabled');
+            jQuery(this).removeAttr('readonly').removeClass('disabled');
+            /*if (this.tagName.toUpperCase() === 'SELECT') {
+                jQuery(this).removeAttr('onchange');
+            }*/
         } else {
-            jQuery(this).attr('disabled', 'disabled');
+            jQuery(this).attr('readonly', 'readonly').addClass('disabled');
+            /*if (this.tagName.toUpperCase() === 'SELECT') {
+                jQuery(this).attr('onchange', "this.defaultIndex=this.selectedIndex;");
+            }*/
         }
     });
 }
@@ -188,6 +199,11 @@ function resetSettings(entity_name, parameters)
 {
     var input;
     var default_value;
+
+    if (!confirm(likebtn_msg_reset)) {
+        return false;
+    }
+
     for (option_name in parameters) {
         input = jQuery('#use_settings_from_container_'+entity_name+' :input[name^="likebtn_like_button_'+option_name+'_'+entity_name+'"]');
 
@@ -293,4 +309,46 @@ function statisticsEdit(entity_name, entity_id, type, plan, text_enter, text_upg
     });
 
     return true;
+}
+
+// Show subpage
+function likebtnGotoSubpage(subpage) {
+
+    if (!jQuery("#likebtn_like_button_subpage_wrapper_"+subpage).size()) {
+        return;
+    }
+
+    // Content
+    jQuery(".likebtn_like_button_subpage").addClass('hidden');
+    jQuery("#likebtn_like_button_subpage_wrapper_"+subpage).removeClass('hidden');
+
+    // Tab
+    jQuery("#likebtn_subpage_tab_wrapper .nav-tab").removeClass('nav-tab-active');
+    jQuery("#likebtn_subpage_tab_wrapper .nav-tab.likebtn_like_button_tab_"+subpage).addClass('nav-tab-active');
+
+    jQuery("#likebtn_like_button_subpage").val(subpage);
+}
+
+// Detect if subpage is selected and goto it
+function likebtnDetectSubpage()
+{
+    hash = window.location.hash;
+
+    if (hash && hash.substr(0, 29) == '#likebtn_like_button_subpage_') {
+        likebtnGotoSubpage(hash.substr(29));
+    }
+}
+
+// Open popup window
+function likebtnPopup(url, name, height, width)
+{
+    if (typeof(width) === "undefined" || !width) {
+        width = 800;
+    }
+    if (typeof(height) === "undefined" || !height) {
+        height = 620;
+    }
+
+    likebtn_popup = window.open(url, name, 'height='+height+',width='+width+',toolbar=0,scrollbars=yes');
+    likebtn_popup.focus();
 }
