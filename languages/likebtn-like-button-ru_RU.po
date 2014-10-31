@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LikeBtn Like Button\n"
-"POT-Creation-Date: 2014-10-27 11:30+0300\n"
-"PO-Revision-Date: 2014-10-27 11:30+0300\n"
+"POT-Creation-Date: 2014-10-31 16:53+0300\n"
+"PO-Revision-Date: 2014-10-31 16:53+0300\n"
 "Last-Translator: LikeBtn <info@likebtn.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -15,67 +15,87 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../likebtn_like_button.php:68
+#: ../likebtn_like_button.php:74
 msgid "Standard"
 msgstr "Стандартный"
 
-#: ../likebtn_like_button.php:69
+#: ../likebtn_like_button.php:75
 msgid "Aside"
 msgstr "Заметка"
 
-#: ../likebtn_like_button.php:70
+#: ../likebtn_like_button.php:76
 msgid "Image"
 msgstr "Изображение"
 
-#: ../likebtn_like_button.php:71
+#: ../likebtn_like_button.php:77
 msgid "Link"
 msgstr "Ссылка"
 
-#: ../likebtn_like_button.php:72
+#: ../likebtn_like_button.php:78
 msgid "Quote"
 msgstr "Цитата"
 
-#: ../likebtn_like_button.php:73 ../likebtn_like_button.php:1813
+#: ../likebtn_like_button.php:79 ../likebtn_like_button.php:1966
 msgid "Status"
 msgstr "Статус"
 
-#: ../likebtn_like_button.php:253 ../likebtn_like_button.php:978
+#: ../likebtn_like_button.php:91
+msgid "Post"
+msgstr "Запись"
+
+#: ../likebtn_like_button.php:92
+msgid "Page"
+msgstr "Страница"
+
+#: ../likebtn_like_button.php:93
+msgid "Post List"
+msgstr "Список Записей"
+
+#: ../likebtn_like_button.php:94
+msgid "WooCommerce Product"
+msgstr "Товар WooCommerce"
+
+#: ../likebtn_like_button.php:95
+msgid "WooCommerce Product List"
+msgstr "Список Товаров WooCommerce"
+
+#: ../likebtn_like_button.php:310 ../likebtn_like_button.php:1106
 msgid "Settings"
 msgstr "Настройки"
 
-#: ../likebtn_like_button.php:265
+#: ../likebtn_like_button.php:322
 msgid "Like Buttons"
 msgstr "Кнопки Like"
 
-#: ../likebtn_like_button.php:267 ../likebtn_like_button.php:322
+#: ../likebtn_like_button.php:324 ../likebtn_like_button.php:387
 msgid "Buttons"
 msgstr "Кнопки"
 
-#: ../likebtn_like_button.php:267 ../likebtn_like_button.php:271
+#: ../likebtn_like_button.php:324 ../likebtn_like_button.php:328
 msgid "LikeBtn Like Button"
 msgstr "LikeBtn Like Button"
 
-#: ../likebtn_like_button.php:271 ../likebtn_like_button.php:323
+#: ../likebtn_like_button.php:328 ../likebtn_like_button.php:388
 msgid "Synchronization"
 msgstr "Синхронизация"
 
-#: ../likebtn_like_button.php:274 ../likebtn_like_button.php:324
+#: ../likebtn_like_button.php:331 ../likebtn_like_button.php:389
 msgid "Statistics"
 msgstr "Статистика"
 
-#: ../likebtn_like_button.php:277 ../likebtn_like_button.php:325
+#: ../likebtn_like_button.php:334 ../likebtn_like_button.php:390
 msgid "Help"
 msgstr "Помощь"
 
-#: ../likebtn_like_button.php:329
+#: ../likebtn_like_button.php:394
 msgid "Premium / Trial features"
 msgstr "Функции Премиум / Триал"
 
-#: ../likebtn_like_button.php:628
+#: ../likebtn_like_button.php:764
 msgid "Current plan"
 msgstr "Текущий план"
 
-#: ../likebtn_like_button.php:636
+#: ../likebtn_like_button.php:772
 msgid ""
 "Premium features are available only if your website is upgraded to the "
 "corresponding tariff plan (PLUS, PRO, VIP, ULTRA). Keep in mind that only "
@@ -89,11 +109,11 @@ msgstr ""
 "\" target=\"_blank\">PLUS</a> и выше могут выводить более 1-й кнопки на "
 "странице."
 
-#: ../likebtn_like_button.php:637
+#: ../likebtn_like_button.php:773
 msgid "To upgrade your website..."
 msgstr "Чтобы обновить тарифный план вашего сайта..."
 
-#: ../likebtn_like_button.php:639 ../likebtn_like_button.php:662
+#: ../likebtn_like_button.php:775 ../likebtn_like_button.php:798
 msgid ""
 "Register on <a href=\"http://likebtn.com/en/customer.php/register/\" target="
 "\"_blank\">LikeBtn.com</a>"
@@ -101,7 +121,7 @@ msgstr ""
 "Зарегистрируйтесь на <a href=\"http://likebtn.com/ru/customer.php/register/"
 "\" target=\"_blank\">LikeBtn.com</a>"
 
-#: ../likebtn_like_button.php:640
+#: ../likebtn_like_button.php:776
 msgid ""
 "Add your website to your account and activate it on <a href=\"http://likebtn."
 "com/en/customer.php/websites\" target=\"_blank\">Websites page</a>"
@@ -109,11 +129,11 @@ msgstr ""
 "Добавьте ваш сайт в ваш аккаунт и активируйте на странице <a href=\"http://"
 "likebtn.com/ru/customer.php/websites\" target=\"_blank\">Сайты</a>"
 
-#: ../likebtn_like_button.php:641
+#: ../likebtn_like_button.php:777
 msgid "Upgrade your website to the desired plan."
 msgstr "Обновите ваш сайт до нужного тарифного плана."
 
-#: ../likebtn_like_button.php:649
+#: ../likebtn_like_button.php:785
 msgid ""
 "Enter this information in order to enable synchronization of likes from "
 "LikeBtn.com system into your database and get the opportunity to use the "
@@ -123,27 +143,27 @@ msgstr ""
 "системы LikeBtn.com в вашу базу данных и получить возможность использовать "
 "следующие функции:"
 
-#: ../likebtn_like_button.php:650
+#: ../likebtn_like_button.php:786
 msgid "View statistics on Statistics tab."
 msgstr "Просматривать статистику по голосам на вкладке Статистика."
 
-#: ../likebtn_like_button.php:651
+#: ../likebtn_like_button.php:787
 msgid "Sort posts and comments by votes."
 msgstr "Сортировать посты и комментарии по голосам."
 
-#: ../likebtn_like_button.php:652
+#: ../likebtn_like_button.php:788
 msgid "Use Most Liked Content widget."
 msgstr "Использовать виджет для отображения наиболее понравившихся материалов."
 
-#: ../likebtn_like_button.php:657
+#: ../likebtn_like_button.php:793
 msgid "LikeBtn.com Account"
 msgstr "Аккаунт LikeBtn.com"
 
-#: ../likebtn_like_button.php:660
+#: ../likebtn_like_button.php:796
 msgid "To get your account data:"
 msgstr "Чтобы получить данные аккаунта:"
 
-#: ../likebtn_like_button.php:663
+#: ../likebtn_like_button.php:799
 msgid ""
 "Add your website to your account on <a href=\"http://likebtn.com/en/customer."
 "php/websites\" target=\"_blank\">Websites</a> page."
@@ -151,19 +171,19 @@ msgstr ""
 "Добавьте ваш сайт в ваш аккаунт на странице <a href=\"http://likebtn.com/ru/"
 "customer.php/websites\" target=\"_blank\">Сайты</a>"
 
-#: ../likebtn_like_button.php:666
+#: ../likebtn_like_button.php:802
 msgid "Get Account Data"
 msgstr "Получить данные аккаунта"
 
-#: ../likebtn_like_button.php:666
+#: ../likebtn_like_button.php:802
 msgid "http://likebtn.com/en/customer.php/register/"
 msgstr "http://likebtn.com/ru/customer.php/register/"
 
-#: ../likebtn_like_button.php:669
+#: ../likebtn_like_button.php:805
 msgid "E-mail"
 msgstr "Электронная почта"
 
-#: ../likebtn_like_button.php:672
+#: ../likebtn_like_button.php:808
 msgid ""
 "Your LikeBtn.com account email. Can be found on <a href=\"http://likebtn.com/"
 "en/customer.php/profile/edit\" target=\"_blank\">Profile</a> page"
@@ -171,11 +191,11 @@ msgstr ""
 "Ваш Email на LikeBtn.com. Можно найти на странице <a href=\"http://likebtn."
 "com/ru/customer.php/profile/edit\" target=\"_blank\">Профиль</a>"
 
-#: ../likebtn_like_button.php:676
+#: ../likebtn_like_button.php:812
 msgid "API key"
 msgstr "API-ключ"
 
-#: ../likebtn_like_button.php:679
+#: ../likebtn_like_button.php:815
 msgid ""
 "Your website API key on LikeBtn.com. Can be obtained on <a href=\"http://"
 "likebtn.com/en/customer.php/websites\" target=\"_blank\">Websites</a> page"
@@ -183,11 +203,11 @@ msgstr ""
 "API-ключ вашего сайта на LikeBtn.com.  Можно получить на странице <a href="
 "\"http://likebtn.com/en/customer.php/websites\" target=\"_blank\">Сайты</a>"
 
-#: ../likebtn_like_button.php:683
+#: ../likebtn_like_button.php:819
 msgid "Site ID"
 msgstr "ID сайта"
 
-#: ../likebtn_like_button.php:690
+#: ../likebtn_like_button.php:826
 msgid ""
 "Your Site ID on LikeBtn.com. Can be obtained on <a href=\"http://likebtn.com/"
 "en/customer.php/websites\" target=\"_blank\">Websites</a> page."
@@ -195,19 +215,11 @@ msgstr ""
 "Ваш ID сайта на LikeBtn.com.  Можно получить на странице <a href=\"http://"
 "likebtn.com/en/customer.php/websites\" target=\"_blank\">Сайты</a>"
 
-#: ../likebtn_like_button.php:702
+#: ../likebtn_like_button.php:838
 msgid "Synchronization Interval"
 msgstr "Интервал синхронизации"
 
-#: ../likebtn_like_button.php:705
-msgid "Do not fetch votes from LikeBtn.com into my database"
-msgstr "Не копировать информацию о голосах из LikeBtn.com в мою базу данных"
-
-#: ../likebtn_like_button.php:707
-msgid "min"
-msgstr "мин"
-
-#: ../likebtn_like_button.php:710
+#: ../likebtn_like_button.php:839
 msgid ""
 "Time interval in minutes in which fetching of vote results from LikeBtn.com "
 "into your database is being launched. When synchronization is enabled you "
@@ -222,15 +234,23 @@ msgstr ""
 "голосования, использовать виджеты кнопки «Мне нравится». Чем меньше "
 "интервал, тем больше нагрузка на вашу базу данных."
 
-#: ../likebtn_like_button.php:712
+#: ../likebtn_like_button.php:843
+msgid "Do not fetch votes from LikeBtn.com into my database"
+msgstr "Не копировать информацию о голосах из LikeBtn.com в мою базу данных"
+
+#: ../likebtn_like_button.php:845
+msgid "min"
+msgstr "мин"
+
+#: ../likebtn_like_button.php:849
 msgid "Test sync"
 msgstr "Проверить синхронизацию"
 
-#: ../likebtn_like_button.php:714
+#: ../likebtn_like_button.php:851
 msgid "Run full sync manually"
 msgstr "Запустить полную сихронизацию вручную"
 
-#: ../likebtn_like_button.php:714
+#: ../likebtn_like_button.php:851
 msgid ""
 "ATTENTION: Use this feature carefully since full synchronization may affect "
 "your website performance. If you don't experience any problems with likes "
@@ -241,182 +261,192 @@ msgstr ""
 "испытываете проблем с синхронизацией лайков, лучше воздержаться от "
 "использования этой функции."
 
-#: ../likebtn_like_button.php:757 ../likebtn_like_button.php:1523
+#: ../likebtn_like_button.php:894 ../likebtn_like_button.php:1676
 msgid "Save Changes"
 msgstr "Сохранить настройки"
 
-#: ../likebtn_like_button.php:786
-msgid "Browser language"
-msgstr "Язык браузера"
+#: ../likebtn_like_button.php:924
+msgid "Automatic"
+msgstr "Автоматически"
 
-#: ../likebtn_like_button.php:866
+#: ../likebtn_like_button.php:999
 msgid "Are you sure you want to reset settings for this entity?"
 msgstr "Вы действительно хотите сбросить настройки для этого элемента?"
 
-#: ../likebtn_like_button.php:884
+#: ../likebtn_like_button.php:1017
 msgid "Like Button enabled"
 msgstr "Кнопка включена"
 
-#: ../likebtn_like_button.php:933
+#: ../likebtn_like_button.php:1046
 msgid "Enable Like Button"
 msgstr "Отображать кнопку"
 
-#: ../likebtn_like_button.php:943
+#: ../likebtn_like_button.php:1056
 msgid "Copy Settings From"
 msgstr "Скопировать настройки из"
 
-#: ../likebtn_like_button.php:956
+#: ../likebtn_like_button.php:1057
 msgid "Choose the entity from which you want to copy settings"
 msgstr "Выберите элемент, с которого вы хотите скопировать настройки"
 
-#: ../likebtn_like_button.php:962
+#: ../likebtn_like_button.php:1077
 msgid "Preview"
 msgstr "Предварительный просмотр"
 
-#: ../likebtn_like_button.php:967
+#: ../likebtn_like_button.php:1082
 msgid "Like it?"
 msgstr "Нравится?"
 
-#: ../likebtn_like_button.php:969
+#: ../likebtn_like_button.php:1084
 msgid "Support the plugin with 5 Stars"
 msgstr "Поддержать плагин 5-ю звёздами"
 
-#: ../likebtn_like_button.php:983
+#: ../likebtn_like_button.php:1111
 msgid "Theme"
 msgstr "Тема"
 
-#: ../likebtn_like_button.php:993
+#: ../likebtn_like_button.php:1121
 msgid "Language"
 msgstr "Язык"
 
-#: ../likebtn_like_button.php:1003
+#: ../likebtn_like_button.php:1131
 msgid "Show buttons"
 msgstr "Показывать кнопки"
 
-#: ../likebtn_like_button.php:1006 ../likebtn_like_button.php:1016
-#: ../likebtn_like_button.php:1026
+#: ../likebtn_like_button.php:1134 ../likebtn_like_button.php:1144
+#: ../likebtn_like_button.php:1154
 msgid "Like"
 msgstr "Нравится"
 
-#: ../likebtn_like_button.php:1009 ../likebtn_like_button.php:1019
-#: ../likebtn_like_button.php:1029
+#: ../likebtn_like_button.php:1137 ../likebtn_like_button.php:1147
+#: ../likebtn_like_button.php:1157
 msgid "Dislike"
 msgstr "Не нравится"
 
-#: ../likebtn_like_button.php:1013
+#: ../likebtn_like_button.php:1141
 msgid "Show labels"
 msgstr "Показывать надписи"
 
-#: ../likebtn_like_button.php:1023
+#: ../likebtn_like_button.php:1151
 msgid "Show icons"
 msgstr "Показывать иконки"
 
-#: ../likebtn_like_button.php:1033
+#: ../likebtn_like_button.php:1161
 msgid "Counter type"
 msgstr "Тип счётчика"
 
-#: ../likebtn_like_button.php:1036
+#: ../likebtn_like_button.php:1164
 msgid "Number"
 msgstr "Число"
 
-#: ../likebtn_like_button.php:1037
+#: ../likebtn_like_button.php:1165
 msgid "Percent"
 msgstr "Процент"
 
-#: ../likebtn_like_button.php:1038
+#: ../likebtn_like_button.php:1166
 msgid "Subtract dislikes"
 msgstr "Вычитать лайки"
 
-#: ../likebtn_like_button.php:1039
+#: ../likebtn_like_button.php:1167
 msgid "Next to Dislike button"
 msgstr "Рядом с «Не нравится»"
 
-#: ../likebtn_like_button.php:1044
+#: ../likebtn_like_button.php:1172
 msgid "Show tooltips"
 msgstr "Показывать всплывающие подсказки"
 
-#: ../likebtn_like_button.php:1050
+#: ../likebtn_like_button.php:1178
 msgid "Like button text"
 msgstr "Текст кнопки «Нравится»"
 
-#: ../likebtn_like_button.php:1056
+#: ../likebtn_like_button.php:1184
 msgid "Dislike button text"
 msgstr "Текст кнопки «Не нравится»"
 
-#: ../likebtn_like_button.php:1062
+#: ../likebtn_like_button.php:1190
 msgid "White-label"
 msgstr "Без копирайта"
 
-#: ../likebtn_like_button.php:1065
+#: ../likebtn_like_button.php:1191
 msgid "No LikeBtn branding link"
 msgstr "Убрать ссылку-копирайт LikeBtn"
 
-#: ../likebtn_like_button.php:1072
+#: ../likebtn_like_button.php:1198
+msgid "Position"
+msgstr "Расположение по вертикали"
+
+#: ../likebtn_like_button.php:1200
+msgid "Top of Content"
+msgstr "В верхней части"
+
+#: ../likebtn_like_button.php:1201
+msgid "Bottom of Content"
+msgstr "В нижней части"
+
+#: ../likebtn_like_button.php:1202
+msgid "Top and Bottom"
+msgstr "Сверху и снизу"
+
+#: ../likebtn_like_button.php:1208
+msgid "Alignment"
+msgstr "Расположение по горизонтали"
+
+#: ../likebtn_like_button.php:1210
+msgid "Left"
+msgstr "Слева"
+
+#: ../likebtn_like_button.php:1212
+msgid "Center"
+msgstr "По центру"
+
+#: ../likebtn_like_button.php:1214
+msgid "Right"
+msgstr "Справа"
+
+#: ../likebtn_like_button.php:1223
 msgid "Extended Settings"
 msgstr "Расширенные настройки"
 
-#: ../likebtn_like_button.php:1079
+#: ../likebtn_like_button.php:1230
 msgid "General"
 msgstr "Основные"
 
-#: ../likebtn_like_button.php:1084
-msgid "Post view mode"
-msgstr "Режим отображения Записи"
+#: ../likebtn_like_button.php:1247
+msgid "Format"
+msgstr "Формат"
 
-#: ../likebtn_like_button.php:1086
-msgid "Full"
-msgstr "Полный"
-
-#: ../likebtn_like_button.php:1087
-msgid "Excerpt"
-msgstr "Сокращённый"
-
-#: ../likebtn_like_button.php:1088
-msgid "Both"
-msgstr "Оба"
-
-#: ../likebtn_like_button.php:1090
-msgid "Choose post display modes for which you want to show the Like Button"
-msgstr ""
-"Выберите режимы отображения  Записи, для которых вы хотите отображать кнопку "
-"«Мне нравится»."
-
-#: ../likebtn_like_button.php:1095
-msgid "Post format"
-msgstr "Формат Записи"
-
-#: ../likebtn_like_button.php:1097
-msgid "All"
-msgstr "Все"
-
-#: ../likebtn_like_button.php:1103
+#: ../likebtn_like_button.php:1248
 msgid "Select post formats for which you want to show the Like Button"
 msgstr ""
 "Выберите форматы Записей, для которых вы хотите отображать кнопку «Мне "
 "нравится»."
 
-#: ../likebtn_like_button.php:1108
+#: ../likebtn_like_button.php:1251
+msgid "All"
+msgstr "Все"
+
+#: ../likebtn_like_button.php:1261
 msgid "Exclude on selected sections"
 msgstr "Запретить в выбранных разделах"
 
-#: ../likebtn_like_button.php:1110
-msgid "Home"
-msgstr "Главная"
-
-#: ../likebtn_like_button.php:1111
-msgid "Archive"
-msgstr "Архив"
-
-#: ../likebtn_like_button.php:1112
+#: ../likebtn_like_button.php:1262
 msgid "Choose sections where you DO NOT want to show the Like Button"
 msgstr ""
 "Выберите разделы, в которых вы НЕ хотите отображать кнопку «Мне нравится»."
 
-#: ../likebtn_like_button.php:1116
+#: ../likebtn_like_button.php:1265
+msgid "Home"
+msgstr "Главная"
+
+#: ../likebtn_like_button.php:1266
+msgid "Archive"
+msgstr "Архив"
+
+#: ../likebtn_like_button.php:1270
 msgid "Exclude in selected categories"
 msgstr "Запретить в выбранных рубриках"
 
-#: ../likebtn_like_button.php:1132
+#: ../likebtn_like_button.php:1271
 msgid ""
 "Select categories where you DO NOT want to show the Like Button (use CTRL "
 "key to pick categories)"
@@ -424,11 +454,11 @@ msgstr ""
 "Выберите рубрики, в которых вы НЕ хотите отображать кнопку «Мне "
 "нравится» (используйте клавишу CTRL, чтобы выбрать рубрики)."
 
-#: ../likebtn_like_button.php:1136
+#: ../likebtn_like_button.php:1291
 msgid "Allow post/page IDs"
 msgstr "Разрешить для Записей/Страниц с ID"
 
-#: ../likebtn_like_button.php:1139
+#: ../likebtn_like_button.php:1292
 msgid ""
 "Suppose you have a post which belongs to more than one category and you have "
 "excluded one of those categories. So the Like Button will not be available "
@@ -441,141 +471,77 @@ msgstr ""
 "Записей, для которых вы хотите отображать кнопку «Мне нравится», несмотря на "
 "то, что кнопка в рубрике запрещена."
 
-#: ../likebtn_like_button.php:1143
+#: ../likebtn_like_button.php:1299
 msgid "Exclude post/page IDs"
 msgstr "Запретить для Записей/Страниц с ID"
 
-#: ../likebtn_like_button.php:1146
+#: ../likebtn_like_button.php:1300
 msgid ""
 "Comma separated post/page IDs where you DO NOT want to show the Like Button"
 msgstr ""
 "Разделённые запятыми ID Записей/Страниц, на которых вы НЕ хотите отображать "
 "кнопку «Мне нравится»."
 
-#: ../likebtn_like_button.php:1150
+#: ../likebtn_like_button.php:1307
 msgid "User authorization"
 msgstr "Авторизация пользователя"
 
-#: ../likebtn_like_button.php:1152
-msgid "Logged in"
-msgstr "Авторизован"
-
-#: ../likebtn_like_button.php:1153
-msgid "Not logged in"
-msgstr "Не авторизован"
-
-#: ../likebtn_like_button.php:1154
-msgid "For all"
-msgstr "Для всех"
-
-#: ../likebtn_like_button.php:1155
+#: ../likebtn_like_button.php:1308
 msgid ""
 "Show the Like Button when user is logged in, not logged in or show always"
 msgstr ""
 "Отображать кнопку «Мне нравится»  для авторизованных, неавторизованных "
 "пользователей либо для всех."
 
-#: ../likebtn_like_button.php:1160
-msgid "Position"
-msgstr "Расположение по вертикали"
+#: ../likebtn_like_button.php:1311
+msgid "Logged in"
+msgstr "Авторизован"
 
-#: ../likebtn_like_button.php:1162
-msgid "Top of Content"
-msgstr "В верхней части"
+#: ../likebtn_like_button.php:1312
+msgid "Not logged in"
+msgstr "Не авторизован"
 
-#: ../likebtn_like_button.php:1163
-msgid "Bottom of Content"
-msgstr "В нижней части"
+#: ../likebtn_like_button.php:1313
+msgid "For all"
+msgstr "Для всех"
 
-#: ../likebtn_like_button.php:1164
-msgid "Top and Bottom"
-msgstr "Сверху и снизу"
-
-#: ../likebtn_like_button.php:1169
-msgid "Alignment"
-msgstr "Расположение по горизонтали"
-
-#: ../likebtn_like_button.php:1171
-msgid "Left"
-msgstr "Слева"
-
-#: ../likebtn_like_button.php:1173
-msgid "Center"
-msgstr "По центру"
-
-#: ../likebtn_like_button.php:1175
-msgid "Right"
-msgstr "Справа"
-
-#: ../likebtn_like_button.php:1180
+#: ../likebtn_like_button.php:1318
 msgid "Insert HTML before"
 msgstr "HTML-код перед"
 
-#: ../likebtn_like_button.php:1183
+#: ../likebtn_like_button.php:1319
 msgid "HTML code to insert before the Like Button"
 msgstr "HTML-код для вставки перед кнопкой «Мне нравится»"
 
-#: ../likebtn_like_button.php:1187
+#: ../likebtn_like_button.php:1326
 msgid "Insert HTML after"
 msgstr "HTML-код после"
 
-#: ../likebtn_like_button.php:1190
+#: ../likebtn_like_button.php:1327
 msgid "HTML code to insert after the Like Button"
 msgstr "HTML-код для вставки после кнопки «Мне нравится»"
 
-#: ../likebtn_like_button.php:1198
+#: ../likebtn_like_button.php:1338
 msgid "Voting"
 msgstr "Голосование"
 
-#: ../likebtn_like_button.php:1202
+#: ../likebtn_like_button.php:1342
 msgid "Allow voting"
 msgstr "Голосование разрешено"
 
-#: ../likebtn_like_button.php:1208
+#: ../likebtn_like_button.php:1348
 msgid "Allow to cancel a vote"
 msgstr "Разрешена отмена голоса"
 
-#: ../likebtn_like_button.php:1214
+#: ../likebtn_like_button.php:1354
 msgid "Allow to like and dislike at the same time"
 msgstr "Разрешено одновременно лайкать и дислайкать "
 
-#: ../likebtn_like_button.php:1220
+#: ../likebtn_like_button.php:1360
 msgid "Voting frequency"
 msgstr "Частота голосования"
 
-#: ../likebtn_like_button.php:1223
-msgid "Once"
-msgstr "Один раз"
-
-#: ../likebtn_like_button.php:1224
-msgid "Every second"
-msgstr "Каждую секунду"
-
-#: ../likebtn_like_button.php:1225
-msgid "Every minute"
-msgstr "Каждую минуту"
-
-#: ../likebtn_like_button.php:1226
-msgid "Hourly"
-msgstr "Ежечасно"
-
-#: ../likebtn_like_button.php:1227
-msgid "Daily"
-msgstr "Ежедневно"
-
-#: ../likebtn_like_button.php:1228
-msgid "Weekly"
-msgstr "Еженедельно"
-
-#: ../likebtn_like_button.php:1229
-msgid "Monthly"
-msgstr "Ежемесячно"
-
-#: ../likebtn_like_button.php:1230
-msgid "Annually"
-msgstr "Ежегодно"
-
-#: ../likebtn_like_button.php:1232
+#: ../likebtn_like_button.php:1361
 msgid ""
 "If voting frequency set to every second/minute make sure that 'IP address "
 "vote interval' of your website is set to 1 and 60 seconds correspondingly on "
@@ -585,79 +551,111 @@ msgstr ""
 "что «Интервал приёма голосов с IP-адреса» вашего сайта установлен в 1 и 60 "
 "секунд соответственно на странице Сайты на LikeBtn.com"
 
-#: ../likebtn_like_button.php:1240
+#: ../likebtn_like_button.php:1365
+msgid "Once"
+msgstr "Один раз"
+
+#: ../likebtn_like_button.php:1366
+msgid "Every second"
+msgstr "Каждую секунду"
+
+#: ../likebtn_like_button.php:1367
+msgid "Every minute"
+msgstr "Каждую минуту"
+
+#: ../likebtn_like_button.php:1368
+msgid "Hourly"
+msgstr "Ежечасно"
+
+#: ../likebtn_like_button.php:1369
+msgid "Daily"
+msgstr "Ежедневно"
+
+#: ../likebtn_like_button.php:1370
+msgid "Weekly"
+msgstr "Еженедельно"
+
+#: ../likebtn_like_button.php:1371
+msgid "Monthly"
+msgstr "Ежемесячно"
+
+#: ../likebtn_like_button.php:1372
+msgid "Annually"
+msgstr "Ежегодно"
+
+#: ../likebtn_like_button.php:1381
 msgid "Counter"
 msgstr "Счётчик"
 
-#: ../likebtn_like_button.php:1244
+#: ../likebtn_like_button.php:1385
 msgid "Show votes counter"
 msgstr "Показывать счётчик голосов"
 
-#: ../likebtn_like_button.php:1250
+#: ../likebtn_like_button.php:1391
 msgid "Votes counter is clickable"
 msgstr "Можно голосовать, кликая на счётчике голосов"
 
-#: ../likebtn_like_button.php:1256
+#: ../likebtn_like_button.php:1397
 msgid "Counter padding"
 msgstr "Заполнитель счётчика"
 
-#: ../likebtn_like_button.php:1262
+#: ../likebtn_like_button.php:1403
 msgid "Show zero value in counter"
 msgstr "Показывать нулевое значение в счётчике"
 
-#: ../likebtn_like_button.php:1272
+#: ../likebtn_like_button.php:1413
 msgid "Popup"
 msgstr "Всплывающее окно"
 
-#: ../likebtn_like_button.php:1276
+#: ../likebtn_like_button.php:1417
 msgid "Show popup on voting"
 msgstr "Показывать всплывающее окно после голосования"
 
-#: ../likebtn_like_button.php:1282
+#: ../likebtn_like_button.php:1423
 msgid "Show popup on disliking"
 msgstr "Показывать всплывающее окно после нажатия «Не нравится»"
 
-#: ../likebtn_like_button.php:1288
+#: ../likebtn_like_button.php:1429
 msgid "Popup position"
 msgstr "Положение всплывающего окна"
 
-#: ../likebtn_like_button.php:1291
+#: ../likebtn_like_button.php:1432
 msgid "top"
 msgstr "вверху (top)"
 
-#: ../likebtn_like_button.php:1292
+#: ../likebtn_like_button.php:1433
 msgid "right"
 msgstr "справа (right)"
 
-#: ../likebtn_like_button.php:1293
+#: ../likebtn_like_button.php:1434
 msgid "bottom"
 msgstr "внизу (bottom)"
 
-#: ../likebtn_like_button.php:1294
+#: ../likebtn_like_button.php:1435
 msgid "left"
 msgstr "слева (left)"
 
-#: ../likebtn_like_button.php:1299
+#: ../likebtn_like_button.php:1440
 msgid "Popup style"
 msgstr "Стиль всплывающего окна"
 
-#: ../likebtn_like_button.php:1302
+#: ../likebtn_like_button.php:1443
 msgid "light"
 msgstr "светлый (light)"
 
-#: ../likebtn_like_button.php:1303
+#: ../likebtn_like_button.php:1444
 msgid "dark"
 msgstr "тёмный (dark)"
 
-#: ../likebtn_like_button.php:1308
+#: ../likebtn_like_button.php:1449
 msgid "Hide popup when clicking outside"
 msgstr "Скрывать всплывающее окно при клике вне его"
 
-#: ../likebtn_like_button.php:1314
+#: ../likebtn_like_button.php:1455
 msgid "Show share buttons"
 msgstr "Показывать кнопки «Поделиться»"
 
-#: ../likebtn_like_button.php:1321
+#: ../likebtn_like_button.php:1462
 msgid ""
 "AddThis <a href=\"https://www.addthis.com/settings/publisher\" target="
 "\"_blank\">Profile ID</a>"
@@ -665,7 +663,7 @@ msgstr ""
 "<a href=\"https://www.addthis.com/settings/publisher\" target=\"_blank\">ID "
 "профиля</a> AddThis"
 
-#: ../likebtn_like_button.php:1324
+#: ../likebtn_like_button.php:1463
 msgid ""
 "Enter your AddThis Profile ID to collect sharing statistics and view it on "
 "AddThis analytics page"
@@ -674,57 +672,57 @@ msgstr ""
 "посетители делятся понравившимся, и просматривать её на странице аналитики "
 "AddThis"
 
-#: ../likebtn_like_button.php:1328
+#: ../likebtn_like_button.php:1470
 msgid "AddThis share buttons"
 msgstr "Кнопки поделиться AddThis"
 
-#: ../likebtn_like_button.php:1334
+#: ../likebtn_like_button.php:1476
 msgid "Custom HTML"
 msgstr "Произвольный HTML-код"
 
-#: ../likebtn_like_button.php:1337
+#: ../likebtn_like_button.php:1477
 msgid "Custom HTML to insert into the popup"
 msgstr "Произвольный HTML-код для вставки во всплывающее окно"
 
-#: ../likebtn_like_button.php:1341
+#: ../likebtn_like_button.php:1484
 msgid "Donate buttons"
 msgstr "Кнопки «Отблагодарить рублём»"
 
-#: ../likebtn_like_button.php:1343
+#: ../likebtn_like_button.php:1486
 msgid "Configure donate buttons"
 msgstr "Настроить кнопки «Отблагодарить рублём»"
 
-#: ../likebtn_like_button.php:1347
+#: ../likebtn_like_button.php:1490
 msgid "Popup content order"
 msgstr "Порядок элементов во всплывающем окне"
 
-#: ../likebtn_like_button.php:1366
+#: ../likebtn_like_button.php:1509
 msgid "Loading"
 msgstr "Загрузка"
 
-#: ../likebtn_like_button.php:1370
+#: ../likebtn_like_button.php:1513
 msgid "Lazy load"
 msgstr "Ленивая загрузка"
 
-#: ../likebtn_like_button.php:1373
+#: ../likebtn_like_button.php:1514
 msgid "If button is outside a viewport it is loaded when user scrolls to it"
 msgstr ""
 "Если кнопка находится за пределами области просмотра, она будет загружена, "
 "когда пользователь перейдёт к ней"
 
-#: ../likebtn_like_button.php:1377
+#: ../likebtn_like_button.php:1521
 msgid "Show loader"
 msgstr "Показывать лоадер"
 
-#: ../likebtn_like_button.php:1380
+#: ../likebtn_like_button.php:1522
 msgid "Show loader while loading a button"
 msgstr "Показывать лоадер во время загрузки кнопки"
 
-#: ../likebtn_like_button.php:1384
+#: ../likebtn_like_button.php:1529
 msgid "Loader image"
 msgstr "Картинка лоадера"
 
-#: ../likebtn_like_button.php:1387
+#: ../likebtn_like_button.php:1530
 msgid ""
 "URL of the image to use as loader image (leave empty to display default "
 "image)"
@@ -732,15 +730,15 @@ msgstr ""
 "URL картинки лоадера (оставьте пустым, чтобы показывать картинку по "
 "умолчанию)"
 
-#: ../likebtn_like_button.php:1410
+#: ../likebtn_like_button.php:1556
 msgid "Events & messages"
 msgstr "События и сообщения"
 
-#: ../likebtn_like_button.php:1416
+#: ../likebtn_like_button.php:1562
 msgid "JavaScript callback function"
 msgstr "JavaScript-функция обратного вызова"
 
-#: ../likebtn_like_button.php:1421
+#: ../likebtn_like_button.php:1567
 msgid ""
 "The provided function receives the event object as its single argument. The "
 "event object has the following properties:"
@@ -748,23 +746,23 @@ msgstr ""
 "Указанная функция получает объект события как единственный аргумент. Объект "
 "события имеет следующие атрибуты:"
 
-#: ../likebtn_like_button.php:1422
+#: ../likebtn_like_button.php:1568
 msgid "indicates which event was dispatched:"
 msgstr "указывает, какое событие произошло:"
 
-#: ../likebtn_like_button.php:1428
+#: ../likebtn_like_button.php:1574
 msgid "button settings"
 msgstr "настройки кнопки"
 
-#: ../likebtn_like_button.php:1429
+#: ../likebtn_like_button.php:1575
 msgid "button DOM-element"
 msgstr "DOM-элемент кнопки"
 
-#: ../likebtn_like_button.php:1434
+#: ../likebtn_like_button.php:1580
 msgid "Show info messages"
 msgstr "Выводить информационное сообщение"
 
-#: ../likebtn_like_button.php:1437
+#: ../likebtn_like_button.php:1581
 msgid ""
 "Show information message instead of the button when it is restricted by "
 "tariff plan"
@@ -772,91 +770,99 @@ msgstr ""
 "Выводить информационное сообщение на месте кнопки, когда вывод кнопки "
 "ограничен тарифным планом."
 
-#: ../likebtn_like_button.php:1445
+#: ../likebtn_like_button.php:1592
 msgid "Texts"
 msgstr "Тексты"
 
-#: ../likebtn_like_button.php:1449
+#: ../likebtn_like_button.php:1596
 msgid "Like button text after liking"
 msgstr "Текст кнопки «Нравится» после нажатия"
 
-#: ../likebtn_like_button.php:1455
+#: ../likebtn_like_button.php:1602
 msgid "Dislike button text after disliking"
 msgstr "Текст кнопки «Не нравится» после нажатия"
 
-#: ../likebtn_like_button.php:1461
+#: ../likebtn_like_button.php:1608
 msgid "Like button tooltip"
 msgstr "Всплывающая подсказка «Мне это нравится»"
 
-#: ../likebtn_like_button.php:1467
+#: ../likebtn_like_button.php:1614
 msgid "Dislike button tooltip"
 msgstr "Всплывающая подсказка «Мне это не нравится»"
 
-#: ../likebtn_like_button.php:1473
+#: ../likebtn_like_button.php:1620
 msgid "Like button tooltip after liking"
 msgstr "Всплывающая подсказка после нажатия «Нравится»"
 
-#: ../likebtn_like_button.php:1479
+#: ../likebtn_like_button.php:1626
 msgid "Dislike button tooltip after disliking"
 msgstr "Всплывающая подсказка после нажатия «Не нравится»"
 
-#: ../likebtn_like_button.php:1485
+#: ../likebtn_like_button.php:1632
 msgid "Text before share buttons"
 msgstr "Текст перед кнопками «Поделиться»"
 
-#: ../likebtn_like_button.php:1491
+#: ../likebtn_like_button.php:1638
 msgid "Popup close button text"
 msgstr "Текст кнопки «Закрыть» во всплывающем окне"
 
-#: ../likebtn_like_button.php:1497
+#: ../likebtn_like_button.php:1644
 msgid "Popup text when sharing disabled"
 msgstr "Текст во всплывающем окне, когда функция «Поделиться» отключена"
 
-#: ../likebtn_like_button.php:1503
+#: ../likebtn_like_button.php:1650
 msgid "Text before donate buttons"
 msgstr "Текст перед кнопками «Отблагодарить рублём»"
 
-#: ../likebtn_like_button.php:1514
+#: ../likebtn_like_button.php:1658
+msgid "http://likebtn.com/en/translate-like-button-widget"
+msgstr "http://likebtn.com/ru/translate-like-button-widget"
+
+#: ../likebtn_like_button.php:1658
+msgid "Send us Translation"
+msgstr "Отправить нам перевод"
+
+#: ../likebtn_like_button.php:1667
 msgid "Reset"
 msgstr "Сбросить"
 
-#: ../likebtn_like_button.php:1541
+#: ../likebtn_like_button.php:1694
 msgid "Custom item"
 msgstr "Произвольный элемент"
 
-#: ../likebtn_like_button.php:1545
+#: ../likebtn_like_button.php:1698
 msgid "Comment"
 msgstr "Комментарий"
 
-#: ../likebtn_like_button.php:1591
+#: ../likebtn_like_button.php:1744
 msgid "All Sites"
 msgstr "Все сайты"
 
-#: ../likebtn_like_button.php:1620
+#: ../likebtn_like_button.php:1773
 msgid "Comment not approved"
 msgstr "Комментарий не одобрен"
 
-#: ../likebtn_like_button.php:1621
+#: ../likebtn_like_button.php:1774
 msgid "Comment approved"
 msgstr "Комментарий одобрен"
 
-#: ../likebtn_like_button.php:1659
+#: ../likebtn_like_button.php:1812
 msgid "Previous"
 msgstr "Назад"
 
-#: ../likebtn_like_button.php:1660
+#: ../likebtn_like_button.php:1813
 msgid "Next"
 msgstr "Далее"
 
-#: ../likebtn_like_button.php:1758
+#: ../likebtn_like_button.php:1911
 msgid "To enable statistics..."
 msgstr "Чтобы активировать статистику..."
 
-#: ../likebtn_like_button.php:1760
+#: ../likebtn_like_button.php:1913
 msgid "Enable synchronization on Synchronization tab."
 msgstr "Настройте синхронизацию на вкладке Синхронизация."
 
-#: ../likebtn_like_button.php:1761
+#: ../likebtn_like_button.php:1914
 msgid ""
 "Upgrade your website to PRO or higher plan on <a href=\"http://likebtn.com/"
 "en/#plans_pricing\" target=\"_blank\" title=\"Like Button Plans\">LikeBtn."
@@ -865,63 +871,63 @@ msgstr ""
 "Обновите тарифный план вашего сайта до PRO или выше на <a href=\"http://"
 "likebtn.com/ru/#plans_pricing\" target=\"_blank\">LikeBtn.com</a>."
 
-#: ../likebtn_like_button.php:1772 ../likebtn_like_button.php:1860
+#: ../likebtn_like_button.php:1925 ../likebtn_like_button.php:2013
 msgid "Site"
 msgstr "Сайт"
 
-#: ../likebtn_like_button.php:1781
+#: ../likebtn_like_button.php:1934
 msgid "Type"
 msgstr "Тип"
 
-#: ../likebtn_like_button.php:1788
+#: ../likebtn_like_button.php:1941
 msgid "Show first"
 msgstr "Выводить первыми"
 
-#: ../likebtn_like_button.php:1790
+#: ../likebtn_like_button.php:1943
 msgid "Most liked"
 msgstr "Наиболее понравившиеся"
 
-#: ../likebtn_like_button.php:1791
+#: ../likebtn_like_button.php:1944
 msgid "Most disliked"
 msgstr "Не понравившиеся"
 
-#: ../likebtn_like_button.php:1796
+#: ../likebtn_like_button.php:1949
 msgid "Page size"
 msgstr "Размер страницы"
 
-#: ../likebtn_like_button.php:1805
+#: ../likebtn_like_button.php:1958
 msgid "Filter"
 msgstr "Фильтр"
 
-#: ../likebtn_like_button.php:1807
+#: ../likebtn_like_button.php:1960
 msgid "ID"
 msgstr "ID"
 
-#: ../likebtn_like_button.php:1810 ../likebtn_like_button.php:1858
+#: ../likebtn_like_button.php:1963 ../likebtn_like_button.php:2011
 #: ../likebtn_like_button_most_liked_widget.class.php:65
 msgid "Title"
 msgstr "Название"
 
-#: ../likebtn_like_button.php:1822
+#: ../likebtn_like_button.php:1975
 msgid "Reset filter"
 msgstr "Сбросить фильтр"
 
-#: ../likebtn_like_button.php:1827
+#: ../likebtn_like_button.php:1980
 msgid "Show"
 msgstr "Показать"
 
-#: ../likebtn_like_button.php:1830
+#: ../likebtn_like_button.php:1983
 msgid "Total found"
 msgstr "Всего найдено"
 
-#: ../likebtn_like_button.php:1833
+#: ../likebtn_like_button.php:1986
 msgid ""
 "Likes and dislikes for the following number of items have been successfully "
 "reseted:"
 msgstr ""
 "Лайки и дислайки для следующего количества элементов были успешно обнулены:"
 
-#: ../likebtn_like_button.php:1836
+#: ../likebtn_like_button.php:1989
 msgid ""
 "The votes count can not be recovered after resetting. Are you sure you want "
 "to reset likes and dislikes for the selected item(s)?"
@@ -929,58 +935,58 @@ msgstr ""
 "После обнуления количество голосов восстановить будет невозможно. Вы "
 "уверены, что хотите обнулить лайки и дислайки для выбранных элементов?"
 
-#: ../likebtn_like_button.php:1837
+#: ../likebtn_like_button.php:1990
 msgid "Select item(s) you want to reset"
 msgstr "Выберите элементы для обнуления"
 
-#: ../likebtn_like_button.php:1838
+#: ../likebtn_like_button.php:1991
 msgid "Upgrade your website to VIP to be able to use the feature"
 msgstr ""
 "Обновите выбранный сайт до VIP, чтобы получить возможность воспользоваться "
 "данной функцией"
 
-#: ../likebtn_like_button.php:1842
+#: ../likebtn_like_button.php:1995
 msgid "Reset selected"
 msgstr "Обнулить выбранные"
 
-#: ../likebtn_like_button.php:1842
+#: ../likebtn_like_button.php:1995
 msgid "Set to zero number of likes and dislikes for selected items"
 msgstr "Сбросить количество лайков и дисклайков для выбранных элементов"
 
-#: ../likebtn_like_button.php:1856
+#: ../likebtn_like_button.php:2009
 msgid "Thumbnail"
 msgstr "Миниатюра"
 
-#: ../likebtn_like_button.php:1862
+#: ../likebtn_like_button.php:2015
 msgid "Likes"
 msgstr "Лайки"
 
-#: ../likebtn_like_button.php:1863
+#: ../likebtn_like_button.php:2016
 msgid "Dislikes"
 msgstr "Дислайки"
 
-#: ../likebtn_like_button.php:1864
+#: ../likebtn_like_button.php:2017
 msgid "Likes minus dislikes"
 msgstr "Лайки минус дислайки"
 
-#: ../likebtn_like_button.php:1910 ../likebtn_like_button.php:1917
+#: ../likebtn_like_button.php:2063 ../likebtn_like_button.php:2070
 msgid "Enter new value:"
 msgstr "Введите новое значение:"
 
-#: ../likebtn_like_button.php:1910 ../likebtn_like_button.php:1917
+#: ../likebtn_like_button.php:2063 ../likebtn_like_button.php:2070
 msgid "Upgrade your website plan to the ULTRA plan to use the feature"
 msgstr ""
 "Обновите тарифный план сайта до ULTRA, чтобы воспользоваться данной функцией"
 
-#: ../likebtn_like_button.php:1910 ../likebtn_like_button.php:1917
+#: ../likebtn_like_button.php:2063 ../likebtn_like_button.php:2070
 msgid "Error occured. Please, try again later."
 msgstr "Произошла ошибка. Пожалуйста, повторите попытку возже."
 
-#: ../likebtn_like_button.php:1910 ../likebtn_like_button.php:1917
+#: ../likebtn_like_button.php:2063 ../likebtn_like_button.php:2070
 msgid "Click to change"
 msgstr "Кликните, чтобы изменить"
 
-#: ../likebtn_like_button.php:2012
+#: ../likebtn_like_button.php:2165
 msgid ""
 "<a href=\"http://likebtn.com/en/wordpress-like-button-plugin\" target="
 "\"_blank\">WordPress LikeBtn Plugin FAQ</a>"
@@ -988,13 +994,13 @@ msgstr ""
 "<a href=\"http://likebtn.com/ru/wordpress-like-button-plugin\" target="
 "\"_blank\">Плагин LikeBtn для WordPress: Вопросы и ответы</a>"
 
-#: ../likebtn_like_button.php:2013
+#: ../likebtn_like_button.php:2166
 msgid "<a href=\"http://likebtn.com/en/faq\" target=\"_blank\">LikeBtn FAQ</a>"
 msgstr ""
 "<a href=\"http://likebtn.com/ru/faq\" target=\"_blank\">Вопросы и ответы по "
 "виджету LikeBtn.com</a>"
 
-#: ../likebtn_like_button.php:2014
+#: ../likebtn_like_button.php:2167
 msgid ""
 "<a href=\"http://forum.likebtn.com/forums/34-WordPress\" target=\"_blank"
 "\">Forum</a>"
@@ -1002,15 +1008,19 @@ msgstr ""
 "<a href=\"http://forum.likebtn.com/forums/45-WordPress\" target=\"_blank"
 "\">Форум</a>"
 
-#: ../likebtn_like_button.php:2588 ../likebtn_like_button.php:2624
-#: ../likebtn_like_button.php:2672
+#: ../likebtn_like_button.php:2819 ../likebtn_like_button.php:2855
+#: ../likebtn_like_button.php:2903
 msgid "OK"
 msgstr "OK"
 
-#: ../likebtn_like_button.php:2590 ../likebtn_like_button.php:2626
-#: ../likebtn_like_button.php:2684
+#: ../likebtn_like_button.php:2821 ../likebtn_like_button.php:2857
+#: ../likebtn_like_button.php:2915
 msgid "Error"
 msgstr "Ошибка"
+
+#: ../likebtn_like_button.php:3055
+msgid "List"
+msgstr "Список"
 
 #: ../likebtn_like_button_most_liked_widget.class.php:12
 msgid "Most liked posts and comments"
@@ -1109,6 +1119,29 @@ msgstr "Показывать дату"
 #: ../templates/most-liked-widget.php:60
 msgid "No items liked yet."
 msgstr "Нет понравившихся элементов."
+
+#~ msgid "Browser language"
+#~ msgstr "Язык браузера"
+
+#~ msgid "Post view mode"
+#~ msgstr "Режим отображения Записи"
+
+#~ msgid "Full"
+#~ msgstr "Полный"
+
+#~ msgid "Excerpt"
+#~ msgstr "Сокращённый"
+
+#~ msgid "Both"
+#~ msgstr "Оба"
+
+#~ msgid "Choose post display modes for which you want to show the Like Button"
+#~ msgstr ""
+#~ "Выберите режимы отображения  Записи, для которых вы хотите отображать "
+#~ "кнопку «Мне нравится»."
+
+#~ msgid "Post format"
+#~ msgstr "Формат Записи"
 
 #~ msgid "LikeBtn"
 #~ msgstr "LikeBtn"
@@ -1437,9 +1470,6 @@ msgstr "Нет понравившихся элементов."
 #~ "\"_blank\">identifer</a> плагина LikeBtn в WordPress имеет следующую "
 #~ "структуру:"
 
-#~ msgid "Post type"
-#~ msgstr "Тип Записи"
-
 #~ msgid "Post ID"
 #~ msgstr "ID Записи"
 
@@ -1595,12 +1625,6 @@ msgstr "Нет понравившихся элементов."
 #~ msgstr ""
 #~ "Перейдите в раздел «Excerpt» в меню «Settings» плагина и отметьте «Don't "
 #~ "remove any markup»."
-
-#~ msgid "Post"
-#~ msgstr "Запись"
-
-#~ msgid "Page"
-#~ msgstr "Страница"
 
 #~ msgid "Attachment"
 #~ msgstr "Вложение"

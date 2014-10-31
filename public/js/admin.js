@@ -315,7 +315,14 @@ function statisticsEdit(entity_name, entity_id, type, plan, text_enter, text_upg
 function likebtnGotoSubpage(subpage) {
 
     if (!jQuery("#likebtn_like_button_subpage_wrapper_"+subpage).size()) {
-        return;
+        // Show first tab
+        var subpage_id = jQuery(".likebtn_like_button_subpage:first").attr('id');
+        if (subpage_id) {
+            subpage = subpage_id.replace('likebtn_like_button_subpage_wrapper_', '');
+        } else {
+            // Could not find first tab
+            return false;
+        }
     }
 
     // Content
