@@ -13,6 +13,7 @@ Add a Like Button to posts, pages, comments, WooCommerce and custom post types! 
 == Description ==
 
 The **Like Button Voting & Rating** plugin allows you to add a cool looking fully customizable <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Like Button</a> to:
+
 *   Posts
 *   Pages
 *   Comments
