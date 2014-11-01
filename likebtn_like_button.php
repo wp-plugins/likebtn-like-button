@@ -20,16 +20,21 @@ define('LIKEBTN_LIKE_BUTTON_PLAN_VIP', 3);
 define('LIKEBTN_LIKE_BUTTON_PLAN_ULTRA', 4);
 
 // Flag added to entity excertps
-define('LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG', '_likebtn_excerpt');
+define('LIKEBTN_LIKE_BUTTON_LIST_FLAG', '_likebtn_list');
 
 // entity names
 define('LIKEBTN_LIKE_BUTTON_ENTITY_POST', 'post');
-define('LIKEBTN_LIKE_BUTTON_ENTITY_POST_EXCERPT', 'post'.LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG);
+define('LIKEBTN_LIKE_BUTTON_ENTITY_POST_LIST', 'post'.LIKEBTN_LIKE_BUTTON_LIST_FLAG);
 define('LIKEBTN_LIKE_BUTTON_ENTITY_PAGE', 'page');
 define('LIKEBTN_LIKE_BUTTON_ENTITY_COMMENT', 'comment');
 define('LIKEBTN_LIKE_BUTTON_ENTITY_CUSTOM_ITEM', 'custom_item');
 define('LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT', 'product'); // WooCommerce
-define('LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT_EXCERPT', 'product'.LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG); // WooCommerce
+define('LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT_LIST', 'product'.LIKEBTN_LIKE_BUTTON_LIST_FLAG); // WooCommerce
+define('LIKEBTN_LIKE_BUTTON_ENTITY_BP_ACTIVITY_POST', 'bp_activity_post');
+define('LIKEBTN_LIKE_BUTTON_ENTITY_BP_ACTIVITY_UPDATE', 'bp_activity_update');
+define('LIKEBTN_LIKE_BUTTON_ENTITY_BP_ACTIVITY_COMMENT', 'bp_activity_comment');
+define('LIKEBTN_LIKE_BUTTON_ENTITY_BP_MEMBER', 'bp_member');
+define('LIKEBTN_LIKE_BUTTON_ENTITY_BP_MEMBER_LIST', 'bp_member'.LIKEBTN_LIKE_BUTTON_LIST_FLAG);
 
 // position
 define('LIKEBTN_LIKE_BUTTON_POSITION_TOP', 'top');
@@ -90,9 +95,9 @@ global $likebtn_like_button_entity_titles;
 $likebtn_like_button_entity_titles = array(
     LIKEBTN_LIKE_BUTTON_ENTITY_POST => __('Post'),
     LIKEBTN_LIKE_BUTTON_ENTITY_PAGE => __('Page'),
-    LIKEBTN_LIKE_BUTTON_ENTITY_POST_EXCERPT => __('Post List'),
+    LIKEBTN_LIKE_BUTTON_ENTITY_POST_LIST => __('Post List'),
     LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT => __('WooCommerce Product'),
-    LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT_EXCERPT => __('WooCommerce Product List'),
+    LIKEBTN_LIKE_BUTTON_ENTITY_PRODUCT_LIST => __('WooCommerce Product List'),
 );
 
 // languages
@@ -643,8 +648,8 @@ function _likebtn_like_button_update_options() {
             delete_option('likebtn_like_button_settings_show_copyright_' . $entity_name);
         }
         // Process likebtn_like_button_post_view_mode_ for Excerpt entities
-        if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG)) {
-            $original_name = str_replace(LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG, '', $entity_name);
+        if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_LIST_FLAG)) {
+            $original_name = str_replace(LIKEBTN_LIKE_BUTTON_LIST_FLAG, '', $entity_name);
 
             if (get_option('likebtn_like_button_post_view_mode_' . $entity_name) && get_option('likebtn_like_button_show_' . $original_name) == '1') {
                 if (in_array(get_option('likebtn_like_button_post_view_mode_' . $entity_name), array('excerpt', 'both')) &&
@@ -2213,7 +2218,7 @@ function _likebtn_like_button_get_entities($no_excerpt = false) {
     }*/
     $likebtn_like_button_entities = array(
         LIKEBTN_LIKE_BUTTON_ENTITY_POST => _likebtn_like_button_get_entity_title(LIKEBTN_LIKE_BUTTON_ENTITY_POST),
-        LIKEBTN_LIKE_BUTTON_ENTITY_POST_EXCERPT => _likebtn_like_button_get_entity_title(LIKEBTN_LIKE_BUTTON_ENTITY_POST_EXCERPT),
+        LIKEBTN_LIKE_BUTTON_ENTITY_POST_LIST => _likebtn_like_button_get_entity_title(LIKEBTN_LIKE_BUTTON_ENTITY_POST_LIST),
         LIKEBTN_LIKE_BUTTON_ENTITY_PAGE => _likebtn_like_button_get_entity_title(LIKEBTN_LIKE_BUTTON_ENTITY_PAGE),
     );
     $post_types = get_post_types(array('public'=>true, '_builtin' => false));
@@ -2221,7 +2226,7 @@ function _likebtn_like_button_get_entities($no_excerpt = false) {
     if (!empty($post_types)) {
         foreach ($post_types as $post_type) {
             $likebtn_like_button_entities[$post_type] = _likebtn_like_button_get_entity_title($post_type);
-            $likebtn_like_button_entities[$post_type.LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG] = _likebtn_like_button_get_entity_title($post_type.LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG);
+            $likebtn_like_button_entities[$post_type.LIKEBTN_LIKE_BUTTON_LIST_FLAG] = _likebtn_like_button_get_entity_title($post_type.LIKEBTN_LIKE_BUTTON_LIST_FLAG);
         }
     }
 
@@ -2239,7 +2244,7 @@ function _likebtn_like_button_get_entities($no_excerpt = false) {
     // Remove excerpt entities
     if ($no_excerpt) {
         foreach ($likebtn_like_button_entities as $entity_name=>$entity_title) {
-            if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG)) {
+            if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_LIST_FLAG)) {
                 unset($likebtn_like_button_entities[$entity_name]);
             }
         }
@@ -2303,7 +2308,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
 
     // Cut excerpt flag from entity_name
     if ($entity_id !== 'demo') {
-        $entity_name = str_replace(LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG, '', $entity_name);
+        $entity_name = str_replace(LIKEBTN_LIKE_BUTTON_LIST_FLAG, '', $entity_name);
     }
 
     if ($values && $values['identifier']) {
@@ -2498,7 +2503,7 @@ function likebtn_like_button_get_content($content, $callback_content_position = 
     // Excerpt mode
     if (!is_single()) {
         if (!in_array($real_entity_name, $likebtn_like_button_no_excerpts)) {
-            $real_entity_name = $real_entity_name . LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG;
+            $real_entity_name = $real_entity_name . LIKEBTN_LIKE_BUTTON_LIST_FLAG;
         }
     }
 
@@ -3046,13 +3051,13 @@ function _likebtn_like_button_get_entity_title($entity_name)
 
     $title = '';
     $is_excerpt = false;
-    if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG)) {
+    if (strstr($entity_name, LIKEBTN_LIKE_BUTTON_LIST_FLAG)) {
         $is_excerpt = true;
     }
 
     if (!array_key_exists($entity_name, $likebtn_like_button_entity_titles)) {
 
-        $entity_name = str_replace(LIKEBTN_LIKE_BUTTON_EXCERPT_FLAG, '', $entity_name);
+        $entity_name = str_replace(LIKEBTN_LIKE_BUTTON_LIST_FLAG, '', $entity_name);
 
         $title = __(str_replace('_', ' ', ucfirst($entity_name)));
         if ($is_excerpt) {
