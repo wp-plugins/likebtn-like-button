@@ -2,7 +2,7 @@
 /*
   Plugin Name: Like Button Voting & Rating
   Plugin URI: http://likebtn.com
-  Description: Add a Like Button to your site! Let your visitors like and dislike posts, pages, comments and custom post types. Sort content by likes. Get instant voting statistics and insights.
+  Description: Add a Like Button to posts, pages, comments, WooCommerce and custom post types! Sort content by likes! Get instant voting statistics and insights!
   Version: 2.0
   Author: likebtn
   Author URI: http://likebtn.com
@@ -905,7 +905,8 @@ function likebtn_like_button_admin_buttons() {
     global $likebtn_like_button_styles;
     global $likebtn_like_button_default_locales;
     global $likebtn_like_button_settings;
-    global $likebtn_like_button_no_excerpts;
+    //global $likebtn_like_button_no_excerpts;
+    $display_social = true;
 
     $likebtn_like_button_entities = _likebtn_like_button_get_entities();
 
@@ -1083,19 +1084,22 @@ function likebtn_like_button_admin_buttons() {
                                                 <a href="http://wordpress.org/support/view/plugin-reviews/likebtn-like-button?rate=5#postform" target="_blank">
                                                     <?php _e('Support the plugin with 5 Stars', LIKEBTN_LIKE_BUTTON_I18N_DOMAIN); ?>
                                                 </a>
-                                                <table class="likebtn_social"><tr>
-                                                    <td>
-                                                        <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
-                                                    </td>
-                                                    <td>
-                                                        <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
-                                                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                                                    </td>
-                                                    <td style="max-width: 125px">
-                                                        <script src="https://apis.google.com/js/platform.js" async defer></script>
-                                                        <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
-                                                    </td>
-                                                </tr></table>
+                                                <?php if ($display_social): ?>
+                                                    <?php $display_social = false; ?>
+                                                    <table class="likebtn_social"><tr>
+                                                        <td>
+                                                            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
+                                                        </td>
+                                                        <td>
+                                                            <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
+                                                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                                                        </td>
+                                                        <td style="max-width: 125px">
+                                                            <script src="https://apis.google.com/js/platform.js" async defer></script>
+                                                            <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
+                                                        </td>
+                                                    </tr></table>
+                                                <?php endif ?>
                                             </div>
                                         </th>
                                     </tr>
@@ -2340,7 +2344,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
 
         // do not add option if it has default value
         if ($option_value == $likebtn_like_button_settings[$option_name]['default'] ||
-                ($option_value === '' && $likebtn_like_button_settings[$option_name]['default'] == '0')
+            $option_value === '' || is_bool($option_value)
         ) {
             // option has default value
         } else {
@@ -2360,7 +2364,7 @@ function _likebtn_like_button_get_markup($entity_name, $entity_id, $values = nul
             $entity_url = get_comment_link($entity->comment_ID);
             $entity_title = $entity->comment_content;
         }
-    } elseif ($entity_name == LIKEBTN_LIKE_BUTTON_ENTITY_POST) {
+    } else {
         $entity = get_post($entity_id);
         if ($entity) {
             $entity_url = get_permalink($entity->ID);
