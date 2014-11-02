@@ -1,9 +1,9 @@
 <?php
 
-define('LIKEBTN_LIKE_BUTTON_LAST_SUCCESSFULL_SYNC_TIME_OFFSET', 57600);
-define('LIKEBTN_LIKE_BUTTON_API_URL', 'http://api.likebtn.com/api/');
-define('LIKEBTN_LIKE_BUTTON_LOCALES_SYNC_INTERVAL', 57600);
-define('LIKEBTN_LIKE_BUTTON_STYLES_SYNC_INTERVAL', 57600);
+define('LIKEBTN_LAST_SUCCESSFULL_SYNC_TIME_OFFSET', 57600);
+define('LIKEBTN_API_URL', 'http://api.likebtn.com/api/');
+define('LIKEBTN_LOCALES_SYNC_INTERVAL', 57600);
+define('LIKEBTN_STYLES_SYNC_INTERVAL', 57600);
 
 class LikeBtnLikeButton {
 
@@ -92,7 +92,7 @@ class LikeBtnLikeButton {
 
         $updated_after = '';
         if (!$full && get_option('likebtn_like_button_last_successfull_sync_time')) {
-            $updated_after = get_option('likebtn_like_button_last_successfull_sync_time') - LIKEBTN_LIKE_BUTTON_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
+            $updated_after = get_option('likebtn_like_button_last_successfull_sync_time') - LIKEBTN_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
         }
 
         $url = "output=json&last_sync_time=" . $last_sync_time;
@@ -207,27 +207,27 @@ class LikeBtnLikeButton {
                 // check if post exists and is not revision
                 if (!empty($comment) && $comment->comment_type != 'revision') {
                     if ($likes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES);
-                            add_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES, $likes, true);
+                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
+                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                            add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
                         } else {
-                            update_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES, $likes);
+                            update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
                         }
                     }
                     if ($dislikes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES);
-                            add_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES, $dislikes, true);
+                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                            add_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
                         } else {
-                            update_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES, $dislikes);
+                            update_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
                         }
                     }
                     if ($likes_minus_dislikes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES);
-                            add_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                            add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
                         } else {
-                            update_comment_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
                         }
                     }
                     $entity_updated = true;
@@ -239,27 +239,27 @@ class LikeBtnLikeButton {
                 // check if post exists and is not revision
                 if (!empty($post) && !empty($post->post_type) && $post->post_type != 'revision') {
                     if ($likes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES);
-                            add_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES, $likes, true);
+                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
+                            delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                            add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
                         } else {
-                            update_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES, $likes);
+                            update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
                         }
                     }
                     if ($dislikes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES);
-                            add_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES, $dislikes, true);
+                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                            delete_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                            add_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
                         } else {
-                            update_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_DISLIKES, $dislikes);
+                            update_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
                         }
                     }
                     if ($likes_minus_dislikes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES);
-                            add_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                            delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                            add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
                         } else {
-                            update_post_meta($entity_id, LIKEBTN_LIKE_BUTTON_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
                         }
                     }
                     $entity_updated = true;
@@ -281,11 +281,11 @@ class LikeBtnLikeButton {
             );
 
             $update_where = array('identifier' => $item_data['identifier']);
-            $update_result = $wpdb->update($wpdb->prefix . LIKEBTN_LIKE_BUTTON_TABLE_ITEM, $item_data, $update_where);
+            $update_result = $wpdb->update($wpdb->prefix . LIKEBTN_TABLE_ITEM, $item_data, $update_where);
             if ($update_result) {
                 $entity_updated = true;
             } else {
-                $insert_result = $wpdb->insert($wpdb->prefix . LIKEBTN_LIKE_BUTTON_TABLE_ITEM, $item_data);
+                $insert_result = $wpdb->insert($wpdb->prefix . LIKEBTN_TABLE_ITEM, $item_data);
                 if ($insert_result) {
                     $entity_updated = true;
                 }
@@ -299,7 +299,7 @@ class LikeBtnLikeButton {
      * Run locales synchronization.
      */
     public function runSyncLocales() {
-        if ($this->timeToSync(LIKEBTN_LIKE_BUTTON_LOCALES_SYNC_INTERVAL, 'likebtn_like_button_last_locale_sync_time')) {
+        if ($this->timeToSync(LIKEBTN_LOCALES_SYNC_INTERVAL, 'likebtn_like_button_last_locale_sync_time')) {
             $this->syncLocales();
         }
     }
@@ -308,7 +308,7 @@ class LikeBtnLikeButton {
      * Run styles synchronization.
      */
     public function runSyncStyles() {
-        if ($this->timeToSync(LIKEBTN_LIKE_BUTTON_STYLES_SYNC_INTERVAL, 'likebtn_like_button_last_style_sync_time')) {
+        if ($this->timeToSync(LIKEBTN_STYLES_SYNC_INTERVAL, 'likebtn_like_button_last_style_sync_time')) {
             $this->syncStyles();
         }
     }
@@ -338,7 +338,7 @@ class LikeBtnLikeButton {
      * Locales sync function.
      */
     public function syncLocales() {
-        $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=locale";
+        $url = LIKEBTN_API_URL . "?action=locale";
 
         $response_string = $this->curl($url);
         $response = $this->jsonDecode($response_string);
@@ -352,7 +352,7 @@ class LikeBtnLikeButton {
      * Styles sync function.
      */
     public function syncStyles() {
-        $url = LIKEBTN_LIKE_BUTTON_API_URL . "?action=style";
+        $url = LIKEBTN_API_URL . "?action=style";
 
         $response_string = $this->curl($url);
         $response = $this->jsonDecode($response_string);
@@ -430,7 +430,7 @@ class LikeBtnLikeButton {
                 $domain_site_id .= "domain={$domain}&";
             }
 
-            self::$apiurl = LIKEBTN_LIKE_BUTTON_API_URL . "?email={$email}&api_key={$api_key}&nocache=.php&source=wordpress&" . $domain_site_id;
+            self::$apiurl = LIKEBTN_API_URL . "?email={$email}&api_key={$api_key}&nocache=.php&source=wordpress&" . $domain_site_id;
         }
         $url = self::$apiurl . "action={$action}&" . $request;
 
