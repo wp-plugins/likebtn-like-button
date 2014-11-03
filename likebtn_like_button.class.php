@@ -22,7 +22,7 @@ class LikeBtnLikeButton {
      * Running votes synchronization.
      */
     public function runSyncVotes() {
-        if (!self::$synchronized && get_option('likebtn_like_button_account_email') && get_option('likebtn_like_button_account_api_key') && get_option('likebtn_like_button_sync_inerval') && $this->timeToSyncVotes(get_option('likebtn_like_button_sync_inerval') * 60)) {
+        if (!self::$synchronized && get_option('likebtn_account_email') && get_option('likebtn_account_api_key') && get_option('likebtn_sync_inerval') && $this->timeToSyncVotes(get_option('likebtn_sync_inerval') * 60)) {
             $this->syncVotes();
         }
     }
@@ -32,15 +32,15 @@ class LikeBtnLikeButton {
      */
     public function timeToSyncVotes($sync_period) {
 
-        $last_sync_time = get_option('likebtn_like_button_last_sync_time');
+        $last_sync_time = get_option('likebtn_last_sync_time');
 
         //$now = time();
-        //update_option('likebtn_like_button_last_sync_time', $now);
+        //update_option('likebtn_last_sync_time', $now);
         //return true;
 
         $now = time();
         if (!$last_sync_time) {
-            update_option('likebtn_like_button_last_sync_time', $now);
+            update_option('likebtn_last_sync_time', $now);
             self::$synchronized = true;
             return true;
         } else {
@@ -48,7 +48,7 @@ class LikeBtnLikeButton {
             if ($last_sync_time + $sync_period > $now) {
                 return false;
             } else {
-                update_option('likebtn_like_button_last_sync_time', $now);
+                update_option('likebtn_last_sync_time', $now);
                 self::$synchronized = true;
                 return true;
             }
@@ -64,7 +64,7 @@ class LikeBtnLikeButton {
 
         $cms_version = $wp_version;
 
-        $likebtn_version = _likebtn_like_button_get_plugin_version();
+        $likebtn_version = _likebtn_get_plugin_version();
         $php_version = phpversion();
         $useragent = "WordPress $wp_version; likebtn plugin $likebtn_version; PHP $php_version";
 
@@ -88,11 +88,11 @@ class LikeBtnLikeButton {
     public function syncVotes($email = '', $api_key = '', $full = false) {
         $sync_result = true;
 
-        $last_sync_time = number_format(get_option('likebtn_like_button_last_sync_time'), 0, '', '');
+        $last_sync_time = number_format(get_option('likebtn_last_sync_time'), 0, '', '');
 
         $updated_after = '';
-        if (!$full && get_option('likebtn_like_button_last_successfull_sync_time')) {
-            $updated_after = get_option('likebtn_like_button_last_successfull_sync_time') - LIKEBTN_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
+        if (!$full && get_option('likebtn_last_successfull_sync_time')) {
+            $updated_after = get_option('likebtn_last_successfull_sync_time') - LIKEBTN_LAST_SUCCESSFULL_SYNC_TIME_OFFSET;
         }
 
         $url = "output=json&last_sync_time=" . $last_sync_time;
@@ -121,7 +121,7 @@ class LikeBtnLikeButton {
         }
 
         if ($sync_result && !$full) {
-            update_option('likebtn_like_button_last_successfull_sync_time', $last_sync_time);
+            update_option('likebtn_last_successfull_sync_time', $last_sync_time);
         }
 
         return array(
@@ -178,7 +178,7 @@ class LikeBtnLikeButton {
      * Update entity custom fields
      */
     public function updateCustomFields($identifier, $likes, $dislikes, $url = '') {
-        $likebtn_like_button_entities = _likebtn_like_button_get_entities();
+        $likebtn_entities = _likebtn_get_entities();
 
         $identifier_parts = explode('_', $identifier);
         $entity_name = '';
@@ -198,7 +198,7 @@ class LikeBtnLikeButton {
 
         $entity_updated = false;
 
-        if (array_key_exists($entity_name, $likebtn_like_button_entities) && is_numeric($entity_id)) {
+        if (array_key_exists($entity_name, $likebtn_entities) && is_numeric($entity_id)) {
             // set Custom fields
             if ($entity_name == 'comment') {
                 // entity is comment
@@ -299,7 +299,7 @@ class LikeBtnLikeButton {
      * Run locales synchronization.
      */
     public function runSyncLocales() {
-        if ($this->timeToSync(LIKEBTN_LOCALES_SYNC_INTERVAL, 'likebtn_like_button_last_locale_sync_time')) {
+        if ($this->timeToSync(LIKEBTN_LOCALES_SYNC_INTERVAL, 'likebtn_last_locale_sync_time')) {
             $this->syncLocales();
         }
     }
@@ -308,7 +308,7 @@ class LikeBtnLikeButton {
      * Run styles synchronization.
      */
     public function runSyncStyles() {
-        if ($this->timeToSync(LIKEBTN_STYLES_SYNC_INTERVAL, 'likebtn_like_button_last_style_sync_time')) {
+        if ($this->timeToSync(LIKEBTN_STYLES_SYNC_INTERVAL, 'likebtn_last_style_sync_time')) {
             $this->syncStyles();
         }
     }
@@ -344,7 +344,7 @@ class LikeBtnLikeButton {
         $response = $this->jsonDecode($response_string);
 
         if (isset($response['result']) && $response['result'] == 'success' && isset($response['response']) && count($response['response'])) {
-            update_option('likebtn_like_button_locales', $response['response']);
+            update_option('likebtn_locales', $response['response']);
         }
     }
 
@@ -358,7 +358,7 @@ class LikeBtnLikeButton {
         $response = $this->jsonDecode($response_string);
 
         if (isset($response['result']) && $response['result'] == 'success' && isset($response['response']) && count($response['response'])) {
-            update_option('likebtn_like_button_styles', $response['response']);
+            update_option('likebtn_styles', $response['response']);
         }
     }
 
@@ -402,15 +402,15 @@ class LikeBtnLikeButton {
     public function apiRequest($action, $request, $email = '', $api_key = '') {
         if (!self::$apiurl) {
             if (!$email) {
-                $email = trim(get_option('likebtn_like_button_account_email'));
+                $email = trim(get_option('likebtn_account_email'));
             }
             if (!$api_key) {
-                $api_key = trim(get_option('likebtn_like_button_account_api_key'));
+                $api_key = trim(get_option('likebtn_account_api_key'));
             }
 
             // local_domain and subdirectory are kept for backward compatibility
-            /*$subdirectory = trim(get_option('likebtn_like_button_subdirectory'));
-            $local_domain = trim(get_option('likebtn_like_button_local_domain'));
+            /*$subdirectory = trim(get_option('likebtn_subdirectory'));
+            $local_domain = trim(get_option('likebtn_local_domain'));
             if ($local_domain) {
               $domain = $local_domain;
             }
@@ -420,7 +420,7 @@ class LikeBtnLikeButton {
             }*/
             $domain_site_id = '';
 
-            $site_id = trim(get_option('likebtn_like_button_site_id'));
+            $site_id = trim(get_option('likebtn_site_id'));
             if ($site_id) {
                 $domain_site_id .= "site_id={$site_id}&";
             } else {

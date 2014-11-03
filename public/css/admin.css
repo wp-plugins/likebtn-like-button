@@ -1,5 +1,5 @@
-#likebtn_like_button h2.likebtn_logo,
-#likebtn_like_button h2.likebtn_logo a {
+#likebtn h2.likebtn_logo,
+#likebtn h2.likebtn_logo a {
     color: #C2C2C2;
     font-family: 'Droid Sans',Arial,Helvetica,sans-serif;
     font-size: 24px;
@@ -7,22 +7,22 @@
     text-decoration: none;
     text-shadow: 0 -1px rgba(0, 0, 0, 0.3), 0 -1px rgba(0, 0, 0, 0.3), 0 1px #FFFFFF;
 }
-#likebtn_like_button h2.likebtn_logo img {
+#likebtn h2.likebtn_logo img {
     vertical-align: top;
 }
 #premium_features_hint {
     float: right;
     font-size: 13px;
 }
-.likebtn_like_button_collapse_trigger small {
+.likebtn_collapse_trigger small {
     color: gray;
     margin-right: 5px;
 }
-#likebtn_like_button .pagination span,
-#likebtn_like_button .pagination a {
+#likebtn .pagination span,
+#likebtn .pagination a {
     margin: 0 3px;
 }
-#likebtn_like_button .tablenav input {
+#likebtn .tablenav input {
     float: left;
 }
 .popup_donate_trigger {
@@ -113,17 +113,17 @@
 .likebtn_button_account:hover {
     background: #8fc800;
 }
-#likebtn_like_button table.form-table th {
+#likebtn table.form-table th {
     padding-right: 24px;
     position: relative;
 }
-.likebtn_like_button_subpage {
+.likebtn_subpage {
     max-width: 885px;
 }
 .likebtn_social {
     float: right;
 }
-#likebtn_like_button .likebtn_social td {
+#likebtn .likebtn_social td {
     vertical-align: middle;
     padding: 0;
 }

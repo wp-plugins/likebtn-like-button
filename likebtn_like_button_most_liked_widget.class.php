@@ -32,9 +32,9 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     }
 
     function form($instance) {
-        global $likebtn_like_button_entities;
+        global $likebtn_entities;
 
-        $likebtn_like_button_entities = _likebtn_like_button_get_entities(true);
+        $likebtn_entities = _likebtn_get_entities(true);
 
         $time_range_list = array(
             'all' => __('All time', LIKEBTN_I18N_DOMAIN),
@@ -70,7 +70,7 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         <p>
             <label for="<?php echo $this->get_field_id('entity_name'); ?>"><?php _e('Items to show (use CTRL to select multiple entries)', LIKEBTN_I18N_DOMAIN); ?>:</label><br/>
             <select name="<?php echo $this->get_field_name('entity_name'); ?>[]" id="<?php echo $this->get_field_id('entity_name'); ?>" multiple="multiple" size="6" style="height:auto !important;">
-                <?php foreach ($likebtn_like_button_entities as $entity_name_value => $entity_title): ?>
+                <?php foreach ($likebtn_entities as $entity_name_value => $entity_title): ?>
                     <option value="<?php echo $entity_name_value; ?>" <?php echo (in_array($entity_name_value, $instance['entity_name']) ? 'selected="selected"' : ''); ?> ><?php _e($entity_title, LIKEBTN_I18N_DOMAIN); ?></option>
                 <?php endforeach ?>
             </select>
