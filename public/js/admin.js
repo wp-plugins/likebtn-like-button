@@ -312,7 +312,7 @@ function statisticsEdit(entity_name, entity_id, type, plan, text_enter, text_upg
 }
 
 // Show subpage
-function likebtnGotoSubpage(subpage) {
+/*function likebtnGotoSubpage(subpage) {
 
     if (!jQuery("#likebtn_subpage_wrapper_"+subpage).size()) {
         // Show first tab
@@ -334,17 +334,17 @@ function likebtnGotoSubpage(subpage) {
     jQuery("#likebtn_subpage_tab_wrapper .nav-tab.likebtn_tab_"+subpage).addClass('nav-tab-active');
 
     jQuery("#likebtn_subpage").val(subpage);
-}
+}*/
 
 // Detect if subpage is selected and goto it
-function likebtnDetectSubpage()
+/*function likebtnDetectSubpage()
 {
     hash = window.location.hash;
 
     if (hash && hash.substr(0, 29) == '#likebtn_subpage_') {
         likebtnGotoSubpage(hash.substr(29));
     }
-}
+}*/
 
 // Open popup window
 function likebtnPopup(url, name, height, width)

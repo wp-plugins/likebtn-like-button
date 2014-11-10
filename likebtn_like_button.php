@@ -8,6 +8,12 @@
   Author URI: http://likebtn.com
  */
 
+// Debug
+//ini_set('display_errors', 'On');
+//ini_set('error_reporting', E_ALL);
+
+// PLugin version
+define('LIKEBTN_VERSION', '2.0');
 // Current DB version
 define('LIKEBTN_DB_VERSION', 4);
 
@@ -49,6 +55,9 @@ define('LIKEBTN_POSITION_BOTH', 'both');
 define('LIKEBTN_ALIGNMENT_LEFT', 'left');
 define('LIKEBTN_ALIGNMENT_CENTER', 'center');
 define('LIKEBTN_ALIGNMENT_RIGHT', 'right');
+
+// BuddyPress xprofile object type used in syncing
+define('LIKEBTN_BP_XPROFILE_OBJECT_TYPE', 'data');
 
 /*define('LIKEBTN_POST_VIEW_MODE_FULL', 'full');
 define('LIKEBTN_POST_VIEW_MODE_EXCERPT', 'excerpt');
@@ -356,6 +365,10 @@ $likebtn_entities_config = array(
     ),
     'popup_position' => array(
         LIKEBTN_ENTITY_BP_MEMBER => array('value'=>'bottom'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('value'=>'left'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('value'=>'left'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('value'=>'left'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('value'=>'left')
     ),
     'likebtn_post_format' => array(
         LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
@@ -460,8 +473,8 @@ add_action('admin_menu', 'likebtn_admin_menu');
 
 // plugin header
 function likebtn_admin_head() {
-    $url_css = _likebtn_get_public_url() . 'css/admin.css?v=' . _likebtn_get_plugin_version();
-    $url_js = _likebtn_get_public_url() . 'js/admin.js?v=' . _likebtn_get_plugin_version();
+    $url_css = _likebtn_get_public_url() . 'css/admin.css?ver=' . LIKEBTN_VERSION;
+    $url_js = _likebtn_get_public_url() . 'js/admin.js?ver=' . LIKEBTN_VERSION;
 
     echo '<link rel="stylesheet" type="text/css" href="' . $url_css . '" />';
     echo '<link rel="stylesheet" type="text/css" href="' . _likebtn_get_public_url() . 'css/jquery/tipsy.css' . '" />';
@@ -588,14 +601,6 @@ function _likebtn_add_options()
     // For showing review link
     if (!get_option('likebtn_installation_timestamp')) {
         add_option('likebtn_installation_timestamp', time());
-    }
-
-    // Remember plugin version
-    if (function_exists('get_plugin_data')) {
-        $plugin_data = get_plugin_data(__FILE__);
-        if ($plugin_data && $plugin_data['Version']) {
-            update_option("likebtn_plugin_v", $plugin_data['Version']);
-        }
     }
 
     add_option('likebtn_db_version', LIKEBTN_DB_VERSION);
@@ -910,26 +915,37 @@ function _likebtn_add_default_options($entity_name) {
 
 register_activation_hook(__FILE__, 'likebtn_activation_hook');
 
-// registering settings
+// admin init hook: registering settings
 function likebtn_admin_init()
 {
     global $likebtn_settings_options;
+    global $likebtn_settings;
+    global $likebtn_buttons_options;
 
+    // Synchronization
     foreach ($likebtn_settings_options as $option_name=>$option_value) {
         register_setting('likebtn_settings', $option_name);
     }
 
     // Buttons
-    register_setting('likebtn_buttons', 'likebtn_subpage');
-    // Register settings
-    $likebtn_entities = _likebtn_get_entities();
+    $entity_name = _likebtn_get_subpage();
+
+    /*$likebtn_entities = _likebtn_get_entities();
     foreach ($likebtn_entities as $entity_name => $entity_title) {
         _likebtn_register_entity_settings($entity_name);
+    }*/
+    foreach ($likebtn_buttons_options as $option_name=>$option_value) {
+        register_setting('likebtn_buttons', $option_name.'_'.$entity_name);
+    }
+
+    // settings
+    foreach ($likebtn_settings as $option_name => $option_info) {
+        register_setting('likebtn_buttons', 'likebtn_settings_' . $option_name.'_'.$entity_name);
     }
 }
 
 // register entity settings
-function _likebtn_register_entity_settings($entity_name)
+/*function _likebtn_register_entity_settings($entity_name)
 {
     global $likebtn_settings;
     global $likebtn_buttons_options;
@@ -940,9 +956,9 @@ function _likebtn_register_entity_settings($entity_name)
 
     // settings
     foreach ($likebtn_settings as $option_name => $option_info) {
-        register_setting('likebtn_buttons', 'likebtn_settings_' . $option_name . '_' . $entity_name);
+        register_setting('likebtn_buttons', 'likebtn_settings_' . $option_name.'_'.$entity_name);
     }
-}
+}*/
 
 add_action('admin_init', 'likebtn_admin_init');
 
@@ -1154,14 +1170,7 @@ function likebtn_admin_buttons() {
     }
 
     // Select tab
-    $subpage = LIKEBTN_ENTITY_POST;
-
-    $post_subpage = get_option('likebtn_subpage');
-    if (!empty($_GET['settings-updated']) && $post_subpage && array_key_exists($post_subpage, $likebtn_entities)) {
-        $subpage = $post_subpage;
-    } elseif (!empty($_GET['likebtn_subpage']) && array_key_exists($_GET['likebtn_subpage'], $likebtn_entities) ) {
-        $subpage = $_GET['likebtn_subpage'];
-    }
+    $subpage = _likebtn_get_subpage();
     //$entity_title = $likebtn_entities[$entity_name];
 
     // JS and Styles
@@ -1175,9 +1184,9 @@ function likebtn_admin_buttons() {
     ?>
     <script src="//likebtn.com/<?php echo $likebtn_website_locale ?>/js/donate_generator.js" type="text/javascript"></script>
 
-    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/select2/select2.js?v=<?php echo _likebtn_get_plugin_version() ?>" />
-    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/jquery-ui/jquery-ui.js?v=<?php echo _likebtn_get_plugin_version() ?>" />
-    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>css/jquery/select2/select2.css?v=<?php echo _likebtn_get_plugin_version() ?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/select2/select2.js?ver=<?php echo LIKEBTN_VERSION ?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/jquery-ui/jquery-ui.js?ver=<?php echo LIKEBTN_VERSION ?>" />
+    <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>css/jquery/select2/select2.css?ver=<?php echo LIKEBTN_VERSION ?>" />
 
     <script type="text/javascript">
         var reset_settings = [];
@@ -1208,25 +1217,31 @@ function likebtn_admin_buttons() {
 
         jQuery(document).ready(function() {
             planChange('<?php echo get_option('likebtn_plan'); ?>');
-            <?php if (!empty($subpage)): ?>
+            <?php /* if (!empty($subpage)): ?>
                 likebtnGotoSubpage('<?php echo $subpage; ?>');
             <?php endif ?>
             likebtnDetectSubpage();
+            */ ?>
         });
     </script>
 
     <div id="poststuff" class="metabox-holder has-right-sidebar">
         <form method="post" action="options.php" onsubmit="return likebtnOnSaveButtons()">
             <?php settings_fields('likebtn_buttons'); ?>
-            <input type="hidden" value="" name="likebtn_subpage" id="likebtn_subpage"/>
+            <input type="hidden" name="likebtn_subpage" value="<?php echo $subpage; ?>" >
 
             <h3 class="nav-tab-wrapper" style="padding: 0" id="likebtn_subpage_tab_wrapper">
                 <?php foreach ($likebtn_entities as $tab_entity_name => $tab_entity_title): ?>
-                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="#likebtn_subpage_<?php echo $tab_entity_name; ?>" onclick="javascript:likebtnGotoSubpage('<?php echo $tab_entity_name; ?>');void(0);"><img src="<?php echo _likebtn_get_public_url() ?>img/check.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
+                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="<?php echo admin_url().'admin.php?page=likebtn_buttons&likebtn_subpage='.$tab_entity_name; ?>" onclick="javascript:likebtnGotoSubpage('<?php echo $tab_entity_name; ?>');void(0);"><img src="<?php echo _likebtn_get_public_url() ?>img/check.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
                 <?php endforeach ?>
             </h3>
             <?php
             foreach ($likebtn_entities as $entity_name => $entity_title):
+
+                // Display one entity per page
+                if ($subpage != $entity_name) {
+                    continue;
+                }
 
                 $excluded_sections = get_option('likebtn_exclude_sections_' . $entity_name);
                 if (!is_array($excluded_sections)) {
@@ -1291,21 +1306,19 @@ function likebtn_admin_buttons() {
                                                 <a href="http://wordpress.org/support/view/plugin-reviews/likebtn-like-button?rate=5#postform" target="_blank">
                                                     <?php _e('Support the plugin with 5 Stars', LIKEBTN_I18N_DOMAIN); ?>
                                                 </a>
-                                                <?php if ($subpage == $entity_name): ?>
-                                                    <table class="likebtn_social"><tr>
-                                                        <td>
-                                                            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
-                                                        </td>
-                                                        <td>
-                                                            <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
-                                                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                                                        </td>
-                                                        <td style="max-width: 125px">
-                                                            <script src="https://apis.google.com/js/platform.js" async defer></script>
-                                                            <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
-                                                        </td>
-                                                    </tr></table>
-                                                <?php endif ?>
+                                                <table class="likebtn_social"><tr>
+                                                    <td>
+                                                        <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
+                                                    </td>
+                                                    <td>
+                                                        <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
+                                                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                                                    </td>
+                                                    <td style="max-width: 125px">
+                                                        <script src="https://apis.google.com/js/platform.js" async defer></script>
+                                                        <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
+                                                    </td>
+                                                </tr></table>
                                             </div>
                                         </th>
                                     </tr>
@@ -2386,11 +2399,6 @@ function _likebtn_get_public_url() {
     return $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/public/';
 }
 
-// get plugin version
-function _likebtn_get_plugin_version() {
-    return get_option('likebtn_plugin_v');
-}
-
 // Get supported by current theme Post Formats
 function _likebtn_get_post_formats() {
     $post_formats = get_theme_support('post-formats');
@@ -2495,6 +2503,20 @@ function likebtn_most_liked_widget_shortcode($args) {
 
 add_shortcode('likebtn_most_liked', 'likebtn_most_liked_widget_shortcode');
 
+// get current admin subpage
+function _likebtn_get_subpage()
+{
+    $likebtn_entities = _likebtn_get_entities();
+    $subpage = LIKEBTN_ENTITY_POST;
+
+    if (!empty($_POST['likebtn_subpage']) && array_key_exists($_POST['likebtn_subpage'], $likebtn_entities) ) {
+        $subpage = $_POST['likebtn_subpage'];
+    } elseif (!empty($_GET['likebtn_subpage']) && array_key_exists($_GET['likebtn_subpage'], $likebtn_entities) ) {
+        $subpage = $_GET['likebtn_subpage'];
+    }
+    return $subpage;
+}
+
 
 ################
 ### Frontend ###
@@ -2592,7 +2614,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
     // Set engine and plugin info
     $data .= ' data-engine="WordPress" ';
     $data .= ' data-engine_v="' . $wp_version . '" ';
-    $plugin_v = _likebtn_get_plugin_version();
+    $plugin_v = LIKEBTN_VERSION;
     if ($plugin_v) {
         $data .= ' data-plugin_v="' . $plugin_v . '" ';
     }
@@ -3442,7 +3464,7 @@ add_action('bp_activity_entry_meta', 'likebtn_bp_activity_bottom');
 // BuddyPress activity comment
 add_filter('bp_get_activity_content', 'likebtn_bp_activity_comment');
 
-// Forum topic page.
+// Forum topic page
 add_filter('bp_has_topic_posts', 'likebtn_bp_activity');
 
 // Get entity name of the current BuddyPress activity
@@ -3463,3 +3485,13 @@ function _likebtn_bp_get_entity_name()
             return LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE;
     }
 }
+
+// Add style to frontend
+function likebtn_enqueue_style()
+{
+    $src = _likebtn_get_public_url() . 'css/style.css?ver=' . LIKEBTN_VERSION;
+    wp_enqueue_style('likebtn_style', $src); 
+}
+
+// Add frontend style
+add_action('wp_enqueue_scripts', 'likebtn_enqueue_style');

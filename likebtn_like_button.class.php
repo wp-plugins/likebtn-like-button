@@ -64,7 +64,7 @@ class LikeBtnLikeButton {
 
         $cms_version = $wp_version;
 
-        $likebtn_version = _likebtn_get_plugin_version();
+        $likebtn_version = LIKEBTN_VERSION;
         $php_version = phpversion();
         $useragent = "WordPress $wp_version; likebtn plugin $likebtn_version; PHP $php_version";
 
@@ -177,10 +177,25 @@ class LikeBtnLikeButton {
     /**
      * Update entity custom fields
      */
-    public function updateCustomFields($identifier, $likes, $dislikes, $url = '') {
+    public function updateCustomFields($identifier, $likes, $dislikes, $url = '') 
+    {
+        global $wpdb;
+
         $likebtn_entities = _likebtn_get_entities();
 
-        $identifier_parts = explode('_', $identifier);
+        preg_match("/^(.*)_(\d+)$/", $identifier, $identifier_parts);
+
+        $entity_name = '';
+        if (!empty($identifier_parts[1])) {
+            $entity_name = $identifier_parts[1];
+        }
+        
+        $entity_id = '';
+        if (!empty($identifier_parts[2])) {
+            $entity_id = $identifier_parts[2];
+        }
+
+        /*$identifier_parts = explode('_', $identifier);
         $entity_name = '';
         if (!empty($identifier_parts[0])) {
             $entity_name = $identifier_parts[0];
@@ -189,7 +204,7 @@ class LikeBtnLikeButton {
         $entity_id = '';
         if (!empty($identifier_parts[1])) {
             $entity_id = $identifier_parts[1];
-        }
+        }*/
 
         $likes_minus_dislikes = null;
         if ($likes !== null && $dislikes !== null) {
@@ -200,77 +215,161 @@ class LikeBtnLikeButton {
 
         if (array_key_exists($entity_name, $likebtn_entities) && is_numeric($entity_id)) {
             // set Custom fields
-            if ($entity_name == 'comment') {
-                // entity is comment
-                $comment = get_comment($entity_id);
+            switch ($entity_name) {
+                case LIKEBTN_ENTITY_COMMENT:
+                    // Comment
+                    $comment = get_comment($entity_id);
 
-                // check if post exists and is not revision
-                if (!empty($comment) && $comment->comment_type != 'revision') {
-                    if ($likes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES);
-                            add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
-                        } else {
-                            update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
+                    // check if post exists and is not revision
+                    if (!empty($comment) && $comment->comment_type != 'revision') {
+                        if ($likes !== null) {
+                            if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
+                                delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                                add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
+                            } else {
+                                update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
+                            }
                         }
-                    }
-                    if ($dislikes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
-                            add_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
-                        } else {
-                            update_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                        if ($dislikes !== null) {
+                            if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                                delete_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                                add_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
+                            } else {
+                                update_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                            }
                         }
-                    }
-                    if ($likes_minus_dislikes !== null) {
-                        if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
-                            delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
-                            add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
-                        } else {
-                            update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                        if ($likes_minus_dislikes !== null) {
+                            if (count(get_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                                delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                                add_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                            } else {
+                                update_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            }
                         }
+                        $entity_updated = true;
                     }
-                    $entity_updated = true;
-                }
-            } else {
-                // entity is post
-                $post = get_post($entity_id);
+                    break;
 
-                // check if post exists and is not revision
-                if (!empty($post) && !empty($post->post_type) && $post->post_type != 'revision') {
-                    if ($likes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES);
-                            add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
-                        } else {
-                            update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
+                case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                    // BuddyPress Activity
+                    /*$bp_activity_list = bp_activity_get(array(
+                        'show_hidden'  => true,
+                        'spam'  => 'all',
+                        //'in'           => array((int)$entity_id)
+                    ));*/
+                    $bp_activity = $wpdb->get_row("
+                        SELECT id
+                        FROM ".$wpdb->prefix."bp_activity
+                        WHERE id = {$entity_id}
+                    ");
+
+                    if (!empty($bp_activity)) {
+                        if ($likes !== null) {
+                            if (count(bp_activity_get_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
+                                bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                                bp_activity_add_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
+                            } else {
+                                bp_activity_update_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
+                            }
                         }
-                    }
-                    if ($dislikes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
-                            add_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
-                        } else {
-                            update_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                        if ($dislikes !== null) {
+                            if (count(bp_activity_get_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                                bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                                bp_activity_add_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
+                            } else {
+                                bp_activity_update_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                            }
                         }
-                    }
-                    if ($likes_minus_dislikes !== null) {
-                        if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
-                            delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
-                            add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
-                        } else {
-                            update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                        if ($likes_minus_dislikes !== null) {
+                            if (count(bp_activity_get_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                                bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                                bp_activity_add_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                            } else {
+                                bp_activity_update_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            }
                         }
+                        $entity_updated = true;
                     }
-                    $entity_updated = true;
-                }
+                    break;
+
+                case LIKEBTN_ENTITY_BP_MEMBER:
+                    // BuddyPress Member Profile
+                    $bp_xprofile = $wpdb->get_row("
+                        SELECT id
+                        FROM ".$wpdb->prefix."bp_xprofile_data
+                        WHERE user_id = {$entity_id}
+                    ");
+
+                    if (!empty($bp_xprofile)) {
+                        if ($likes !== null) {
+                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES)) > 1) {
+                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES);
+                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES, $likes, true);
+                            } else {
+                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES, $likes);
+                            }
+                        }
+                        if ($dislikes !== null) {
+                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES);
+                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
+                            } else {
+                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                            }
+                        }
+                        if ($likes_minus_dislikes !== null) {
+                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                            } else {
+                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            }
+                        }
+                        $entity_updated = true;
+                    }
+                    break;
+                
+                default:
+                    // Post
+                    $post = get_post($entity_id);
+
+                    // check if post exists and is not revision
+                    if (!empty($post) && !empty($post->post_type) && $post->post_type != 'revision') {
+                        if ($likes !== null) {
+                            if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES)) > 1) {
+                                delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                                add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes, true);
+                            } else {
+                                update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES, $likes);
+                            }
+                        }
+                        if ($dislikes !== null) {
+                            if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES)) > 1) {
+                                delete_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                                add_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
+                            } else {
+                                update_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES, $dislikes);
+                            }
+                        }
+                        if ($likes_minus_dislikes !== null) {
+                            if (count(get_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
+                                delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                                add_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
+                            } else {
+                                update_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
+                            }
+                        }
+                        $entity_updated = true;
+                    }
+                    break;
             }
         }
 
         // Custom identifier
         if (!$entity_updated) {
-            global $wpdb;
-
             $item_data = array(
                 'identifier' => $identifier,
                 'url' => $url,
