@@ -36,8 +36,9 @@ define('LIKEBTN_ENTITY_PRODUCT_LIST', 'product'.LIKEBTN_LIST_FLAG); // WooCommer
 define('LIKEBTN_ENTITY_BP_ACTIVITY_POST', 'bp_activity_post');
 define('LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE', 'bp_activity_update');
 define('LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT', 'bp_activity_comment');
+define('LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC', 'bp_activity_topic');
 define('LIKEBTN_ENTITY_BP_MEMBER', 'bp_member');
-define('LIKEBTN_ENTITY_BP_MEMBER_LIST', 'bp_member'.LIKEBTN_LIST_FLAG);
+//define('LIKEBTN_ENTITY_BP_MEMBER_LIST', 'bp_member'.LIKEBTN_LIST_FLAG);
 
 // position
 define('LIKEBTN_POSITION_TOP', 'top');
@@ -101,13 +102,13 @@ $likebtn_entity_titles = array(
     LIKEBTN_ENTITY_POST_LIST => __('Post List'),
     LIKEBTN_ENTITY_COMMENT => __('Comments'),
     LIKEBTN_ENTITY_CUSTOM_ITEM => __('Custom Items'),
-    LIKEBTN_ENTITY_PRODUCT => __('WooCommerce Products'),
-    LIKEBTN_ENTITY_PRODUCT_LIST => __('WooCommerce Product List'),
-    LIKEBTN_ENTITY_BP_ACTIVITY_POST => __('BuddyPress Activity Posts'),
-    LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => __('BuddyPress Activity Updates'),
-    LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => __('BuddyPress Activity Comments'),
-    LIKEBTN_ENTITY_BP_MEMBER => __('BuddyPress Member Profiles'),
-    //LIKEBTN_ENTITY_BP_MEMBER_LIST => __('BuddyPress Member List'),
+    LIKEBTN_ENTITY_PRODUCT => __('Products (WooCommerce)'),
+    LIKEBTN_ENTITY_PRODUCT_LIST => __('Product List (WooCommerce)'),
+    LIKEBTN_ENTITY_BP_ACTIVITY_POST => __('Activity Posts (BuddyPress)'),
+    LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => __('Activity Updates (BuddyPress)'),
+    LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => __('Activity Comments (BuddyPress)'),
+    LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => __('Activity Topics (BuddyPress)'),
+    LIKEBTN_ENTITY_BP_MEMBER => __('Member Profiles (BuddyPress)'),
 );
 
 // languages
@@ -127,7 +128,7 @@ $likebtn_post_statuses = array_reverse(get_post_statuses());
 // likebtn settings
 global $likebtn_settings;
 $likebtn_settings = array(
-    "style" => array("default" => 'white'),
+    "theme" => array("default" => 'white'),
     "lang" => array("default" => "en"),
     "show_like_label" => array("default" => '1'),
     "show_dislike_label" => array("default" => '0'),
@@ -155,7 +156,7 @@ $likebtn_settings = array(
     "voting_enabled" => array("default" => '1'),
     "voting_cancelable" => array("default" => '1'),
     "voting_both" => array("default" => '0'),
-    "revote_period" => array("default" => ''),
+    "voting_frequency" => array("default" => ''),
     "addthis_pubid" => array("default" => ''),
     "addthis_service_codes" => array("default" => ''),
     "loader_image" => array("default" => ''),
@@ -185,6 +186,15 @@ $likebtn_settings = array(
     "i18n_popup_text" => array("default" => ''),
     "i18n_popup_donate" => array("default" => '')
 );
+// removed settings
+global $likebtn_settings_deprecated;
+$likebtn_settings_deprecated = array(
+    'style' => array(),
+    'display_only' => array(),
+    'unlike_allowed' => array(),
+    'like_dislike_at_the_same_time' => array(),
+    'show_copyright' => array()
+);
 
 // plans
 global $likebtn_plans;
@@ -197,7 +207,7 @@ $likebtn_plans = array(
     LIKEBTN_PLAN_ULTRA => 'ULTRA',
 );
 
-// styles
+// themes
 global $likebtn_styles;
 $likebtn_styles = array(
     'white',
@@ -334,37 +344,61 @@ $likebtn_internal_options = array(
 // Internal settings
 global $likebtn_entities_config;
 $likebtn_entities_config = array(
-    'style' => array(
+    'theme' => array(
         LIKEBTN_ENTITY_BP_MEMBER => array('value'=>'slideshare'),
         LIKEBTN_ENTITY_PRODUCT => array('value'=>'github'),
         LIKEBTN_ENTITY_COMMENT => array('value'=>'transparent'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('value'=>'transparent'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('value'=>'transparent'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('value'=>'transparent'),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('value'=>'transparent'),
+        LIKEBTN_ENTITY_BP_MEMBER => array('value'=>'github'),
     ),
     'popup_position' => array(
         LIKEBTN_ENTITY_BP_MEMBER => array('value'=>'bottom'),
     ),
     'likebtn_post_format' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_exclude_sections' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_exclude_categories' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_allow_ids' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_exclude_ids' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT => array('hide'=>true),
+        LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_position' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
     ),
     'likebtn_alignment' => array(
-        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true)
+        LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
     ),
 );
-
 
 ###############
 ### Backend ###
@@ -383,7 +417,9 @@ function likebtn_init() {
     _likebtn_plugin_on_load();
 
     load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
-    wp_enqueue_script('jquery');
+    if (is_admin()) {
+        wp_enqueue_script('jquery');
+    }
 }
 
 add_action('init', 'likebtn_init');
@@ -487,7 +523,7 @@ HEADER;
 }
 
 // uninstall hook
-function likebtn_unistall() {
+function likebtn_uninstall() {
     global $likebtn_settings;
     global $likebtn_settings_options;
     global $likebtn_buttons_options;
@@ -514,7 +550,7 @@ function likebtn_unistall() {
     }
 }
 
-register_uninstall_hook(__FILE__, 'likebtn_unistall');
+register_uninstall_hook(__FILE__, 'likebtn_uninstall');
 
 // activation hook
 function likebtn_activation_hook()
@@ -541,7 +577,7 @@ function _likebtn_add_options()
 
     // set default options for entities
     foreach ($likebtn_entities as $entity_name => $entity_title) {
-        _likebtn_set_default_options($entity_name);
+        _likebtn_add_default_options($entity_name);
     }
 
     // set default values for options
@@ -598,7 +634,7 @@ function _likebtn_db_install() {
 // Plugin loaded
 function _likebtn_plugin_on_load()
 {
-    //likebtn_unistall();
+    //likebtn_uninstall();
     //_likebtn_add_options();
 
     _likebtn_db_update();
@@ -723,10 +759,11 @@ function likebtn_db_update_3() {
     }
 }
 
-// database update function
+// rename options
 function likebtn_db_update_4() {
     // rename options
     global $likebtn_settings;
+    global $likebtn_settings_deprecated;
     global $likebtn_settings_options;
     global $likebtn_buttons_options;
     global $likebtn_internal_options;
@@ -735,9 +772,9 @@ function likebtn_db_update_4() {
     _likebtn_add_options();
 
     // no need to rename options
-    if (!get_option('likebtn_like_button_plan')) {
-        return true;
-    }
+    //if (!get_option('likebtn_like_button_plan')) {
+    //    return true;
+    //}
 
     foreach ($likebtn_settings_options as $option_name=>$option_value) {
         $old_option_name = str_replace('likebtn_', 'likebtn_like_button_', $option_name);
@@ -754,7 +791,9 @@ function likebtn_db_update_4() {
             delete_option($old_option_name);
         }
         // settings
-        foreach ($likebtn_settings as $option_name => $option_info) {
+        $likebtn_settings_all = array_merge($likebtn_settings, $likebtn_settings_deprecated);
+
+        foreach ($likebtn_settings_all as $option_name => $option_info) {
             $option_name = 'likebtn_settings_'.$option_name.'_'.$entity_name;
             $old_option_name = str_replace('likebtn_', 'likebtn_like_button_', $option_name);
             update_option($option_name, get_option($old_option_name));
@@ -778,7 +817,7 @@ function _likebtn_update_options() {
         // Set default settings for new entity
         // User lang parameter to check if option exists
         if (!get_option('likebtn_settings_lang_' . $entity_name)) {
-            _likebtn_set_default_options($entity_name);
+            _likebtn_add_default_options($entity_name);
         }
 
         // Backward compatibility
@@ -804,6 +843,14 @@ function _likebtn_update_options() {
             update_option('likebtn_settings_white_label_' . $entity_name, '1');
             delete_option('likebtn_settings_show_copyright_' . $entity_name);
         }
+        if (get_option('likebtn_settings_style_' . $entity_name)) {
+            update_option('likebtn_settings_theme_' . $entity_name, get_option('likebtn_settings_style_' . $entity_name));
+            delete_option('likebtn_settings_style_' . $entity_name);
+        }
+        if (get_option('likebtn_settings_revote_period_' . $entity_name)) {
+            update_option('likebtn_settings_voting_frequency_' . $entity_name, get_option('likebtn_settings_revote_period_' . $entity_name));
+            delete_option('likebtn_settings_revote_period_' . $entity_name);
+        }
         // Process likebtn_post_view_mode_ for Excerpt entities
         if (_likebtn_has_list_flag($entity_name)) {
             $original_name = _likebtn_cut_list_flag($entity_name);
@@ -822,7 +869,7 @@ function _likebtn_update_options() {
 }
 
 // set default options for post type
-function _likebtn_set_default_options($entity_name) {
+function _likebtn_add_default_options($entity_name) {
     global $likebtn_settings;
     global $likebtn_buttons_options;
     global $likebtn_entities_config;
@@ -1169,13 +1216,13 @@ function likebtn_admin_buttons() {
     </script>
 
     <div id="poststuff" class="metabox-holder has-right-sidebar">
-        <form method="post" action="options.php">
+        <form method="post" action="options.php" onsubmit="return likebtnOnSaveButtons()">
             <?php settings_fields('likebtn_buttons'); ?>
             <input type="hidden" value="" name="likebtn_subpage" id="likebtn_subpage"/>
 
             <h3 class="nav-tab-wrapper" style="padding: 0" id="likebtn_subpage_tab_wrapper">
                 <?php foreach ($likebtn_entities as $tab_entity_name => $tab_entity_title): ?>
-                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="#likebtn_subpage_<?php echo $tab_entity_name; ?>" onclick="javascript:likebtnGotoSubpage('<?php echo $tab_entity_name; ?>');void(0);"><img src="<?php echo _likebtn_get_public_url() ?>img/yes.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
+                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="#likebtn_subpage_<?php echo $tab_entity_name; ?>" onclick="javascript:likebtnGotoSubpage('<?php echo $tab_entity_name; ?>');void(0);"><img src="<?php echo _likebtn_get_public_url() ?>img/check.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
                 <?php endforeach ?>
             </h3>
             <?php
@@ -1273,9 +1320,9 @@ function likebtn_admin_buttons() {
                                             <tr valign="top">
                                                 <th scope="row"><label><?php _e('Theme', LIKEBTN_I18N_DOMAIN); ?></label></th>
                                                 <td>
-                                                    <select name="likebtn_settings_style_<?php echo $entity_name; ?>">
+                                                    <select name="likebtn_settings_theme_<?php echo $entity_name; ?>">
                                                         <?php foreach ($style_options as $style): ?>
-                                                            <option value="<?php echo $style; ?>" <?php selected($style, get_option('likebtn_settings_style_' . $entity_name)); ?> ><?php echo $style; ?></option>
+                                                            <option value="<?php echo $style; ?>" <?php selected($style, get_option('likebtn_settings_theme_' . $entity_name)); ?> ><?php echo $style; ?></option>
                                                         <?php endforeach ?>
                                                     </select>
                                                 </td>
@@ -1524,15 +1571,15 @@ function likebtn_admin_buttons() {
                                                                     <i class="likebtn_help" title="<?php _e("If voting frequency set to every second/minute make sure that 'IP address vote interval' of your website is set to 1 and 60 seconds correspondingly on Websites page of LikeBtn.com", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                                 </th>
                                                                 <td>
-                                                                    <select name="likebtn_settings_revote_period_<?php echo $entity_name; ?>">
+                                                                    <select name="likebtn_settings_voting_frequency_<?php echo $entity_name; ?>">
                                                                         <option value=""><?php _e('Once', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="60" <?php selected('1', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Every second', LIKEBTN_I18N_DOMAIN); ?> *</option>
-                                                                        <option value="60" <?php selected('60', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Every minute', LIKEBTN_I18N_DOMAIN); ?> *</option>
-                                                                        <option value="3600" <?php selected('3600', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Hourly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="86400" <?php selected('86400', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Daily', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="604800" <?php selected('604800', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Weekly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="2592000" <?php selected('2592000', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Monthly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="31536000" <?php selected('31536000', get_option('likebtn_settings_revote_period_' . $entity_name)); ?> ><?php _e('Annually', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                        <option value="1" <?php selected('1', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Every second', LIKEBTN_I18N_DOMAIN); ?> *</option>
+                                                                        <option value="60" <?php selected('60', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Every minute', LIKEBTN_I18N_DOMAIN); ?> *</option>
+                                                                        <option value="3600" <?php selected('3600', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Hourly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                        <option value="86400" <?php selected('86400', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Daily', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                        <option value="604800" <?php selected('604800', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Weekly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                        <option value="2592000" <?php selected('2592000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Monthly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                        <option value="31536000" <?php selected('31536000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Annually', LIKEBTN_I18N_DOMAIN); ?></option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
@@ -2385,13 +2432,13 @@ function _likebtn_get_entities($no_list = false) {
     }
 
     // Append BuddyPress
-    /*if (_likebtn_is_bp_active()) {
+    if (_likebtn_is_bp_active()) {
         $likebtn_entities[LIKEBTN_ENTITY_BP_ACTIVITY_POST] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_ACTIVITY_POST);
         $likebtn_entities[LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE);
         $likebtn_entities[LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT);
+        $likebtn_entities[LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC);
         $likebtn_entities[LIKEBTN_ENTITY_BP_MEMBER] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_MEMBER);
-        //$likebtn_entities[LIKEBTN_ENTITY_BP_MEMBER_LIST] = _likebtn_get_entity_title(LIKEBTN_ENTITY_BP_MEMBER_LIST);
-    }*/
+    }
 
     // append Comments
     $likebtn_entities[LIKEBTN_ENTITY_COMMENT] = _likebtn_get_entity_title(LIKEBTN_ENTITY_COMMENT);
@@ -2497,7 +2544,8 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
 
         // do not add option if it has default value
         if ($option_value == $likebtn_settings[$option_name]['default'] ||
-            $option_value === '' || is_bool($option_value)
+            //$option_value === '' || is_bool($option_value)
+            ($option_value === '' && $likebtn_settings[$option_name]['default'] == '0')
         ) {
             // option has default value
         } else {
@@ -2617,6 +2665,7 @@ function _likebtn_prepare_option($option_name, $option_value)
             $option_value_prepared = 'false';
         }
     }
+
     // Replace quotes with &quot; to avoid XSS.
     //$option_value_prepared = str_replace('"', '&quot;', $option_value_prepared);
     $option_value_prepared = htmlspecialchars($option_value_prepared);
@@ -2669,7 +2718,7 @@ function likebtn_get_content($content, $callback_content_position = '') {
         return $content;
     }
 
-    $entity_id = get_the_ID();
+    $entity_id = get_the_ID();    
 
     // get the Posts/Pages IDs where we do not need to show like functionality
     $allow_ids = explode(",", get_option('likebtn_allow_ids_' . $entity_name));
@@ -3245,18 +3294,8 @@ function _likebtn_is_bp_active()
 }
 
 // add Like Button to content
-function _likebtn_get_bp_content($entity_id)
+function _likebtn_get_content_universal($real_entity_name, $entity_id, $content = '', $wrap = true, $current_position = '')
 {
-    // detemine entity type
-    $real_entity_name = LIKEBTN_ENTITY_BP_MEMBER;
-
-    // Excerpt mode
-    /*if (!is_single()) {
-        if (!in_array($real_entity_name, $likebtn_no_excerpts)) {
-            $real_entity_name = $real_entity_name . LIKEBTN_LIST_FLAG;
-        }
-    }*/
-
     // get entity name whose settings should be copied
     $use_entity_name = get_option('likebtn_use_settings_from_' . $real_entity_name);
     if ($use_entity_name) {
@@ -3283,7 +3322,22 @@ function _likebtn_get_bp_content($entity_id)
         }
     }
 
-    $html = _likebtn_get_markup($real_entity_name, $entity_id, array(), $entity_name);
+    $html = _likebtn_get_markup($real_entity_name, $entity_id, array(), $entity_name, true, $wrap);
+
+    $position = get_option('likebtn_position_' . $entity_name);
+    
+    if ($current_position && $position != LIKEBTN_POSITION_BOTH && $current_position != $position) {
+        return $content;
+    }
+    if ($content) {
+        if ($position == LIKEBTN_POSITION_TOP) {
+            $html = $html . $content;
+        } elseif ($position == LIKEBTN_POSITION_BOTTOM) {
+            $html = $content . $html;
+        } else {
+            $html = $html . $content . $html;
+        }
+    }
 
     return $html;
 }
@@ -3291,8 +3345,121 @@ function _likebtn_get_bp_content($entity_id)
 // BuddyPress member profile
 function likebtn_bp_member()
 {
-    $content = _likebtn_get_bp_content(buddypress()->displayed_user->id);
+    $content = _likebtn_get_content_universal(LIKEBTN_ENTITY_BP_MEMBER, buddypress()->displayed_user->id);
     echo $content;
 }
 // User profile page.
 add_action('bp_before_member_header_meta', 'likebtn_bp_member');
+
+// BuddyPress activity
+function _likebtn_bp_activity($wrap = true, $position = LIKEBTN_POSITION_BOTH, $content = '') {
+    $entity_id = '';
+
+    $entity_name = _likebtn_bp_get_entity_name();
+
+    if ($entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE || $entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT) {
+        $entity_id = bp_get_activity_id();
+    } else {
+        $entity_id = bp_get_activity_secondary_item_id();
+    }
+
+    /*if ($entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC) {
+                    echo 'entity_id'.$entity_id;
+        // Get bbPress topic id
+        if (function_exists("bb_get_first_post")) {
+            $post = bb_get_first_post($entity_id);
+        } else {
+            // We consider ppPress to be installed and enabled
+            return false;
+            // Get from DB
+            /*global $bb_table_prefix;
+            // Load bbPress config file
+            @include_once(?);
+
+            // Failed loading config file.
+            if (!defined("BBDB_NAME"))
+                return false;
+
+            $connection = null;
+            if (!$connection = mysql_connect(BBDB_HOST, BBDB_USER, BBDB_PASSWORD, true)){ 
+                return false;
+            }
+            if (!mysql_selectdb(BBDB_NAME, $connection)){ 
+                return false; 
+            }
+            $results = mysql_query("SELECT * FROM {$bb_table_prefix}posts WHERE topic_id={$entity_id} AND post_position=1", $connection);
+            $post = mysql_fetch_object($results);/
+        }
+
+        if (empty($post->post_id)) {
+            return false;
+        }
+
+        $entity_id = $post->post_id;
+    }*/
+
+    if (!$entity_name || !$entity_id) {
+        return false;
+    }
+
+    echo _likebtn_get_content_universal($entity_name, $entity_id, $content, $wrap, $position);
+}
+
+// BuddyPress activity comment
+function likebtn_bp_activity_comment($content) {
+    //return $content;
+    global $activities_template;
+
+    if (empty($activities_template) || empty($activities_template->activity) || empty($activities_template->activity->current_comment)) {
+        return $content;
+    }
+
+    $entity_id = $activities_template->activity->current_comment->id;
+
+    return _likebtn_get_content_universal(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, $entity_id, $content);
+}
+
+// BuddyPress activity top
+function likebtn_bp_activity_top($content)
+{
+    return _likebtn_bp_activity(true, LIKEBTN_POSITION_TOP) . $content;
+}
+// BuddyPress activity bottom
+function likebtn_bp_activity_bottom()
+{
+    return _likebtn_bp_activity(false, LIKEBTN_POSITION_BOTTOM);
+}
+
+// Activity page.
+//add_action("bp_has_activities", array(&$this, "BuddyPressBeforeActivityLoop"));
+
+// BuddyPress activity top
+add_filter('bp_get_activity_action', 'likebtn_bp_activity_top');
+
+// BuddyPress activity bottom
+add_action('bp_activity_entry_meta', 'likebtn_bp_activity_bottom');
+
+// BuddyPress activity comment
+add_filter('bp_get_activity_content', 'likebtn_bp_activity_comment');
+
+// Forum topic page.
+add_filter('bp_has_topic_posts', 'likebtn_bp_activity');
+
+// Get entity name of the current BuddyPress activity
+// Not working for comments
+function _likebtn_bp_get_entity_name()
+{
+    $activity_type = bp_get_activity_type();
+
+    switch ($activity_type) {
+        case 'bbp_topic_create':
+            return LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC;
+        case 'new_blog_post':
+            // Post
+            return LIKEBTN_ENTITY_BP_ACTIVITY_POST;
+        case 'new_member':
+            return LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE;
+        default:
+            return LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE;
+    }
+}

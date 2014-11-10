@@ -359,3 +359,9 @@ function likebtnPopup(url, name, height, width)
     likebtn_popup = window.open(url, name, 'height='+height+',width='+width+',toolbar=0,scrollbars=yes');
     likebtn_popup.focus();
 }
+
+// On Save Buttons
+function likebtnOnSaveButtons()
+{
+    // dummy
+}
