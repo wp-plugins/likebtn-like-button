@@ -1917,8 +1917,6 @@ function likebtn_admin_statistics() {
     $likebtn_entities[LIKEBTN_ENTITY_CUSTOM_ITEM] = __('Custom item');
 
     // get parameters
-    // For translation
-    __('Comment');
     $entity_name = $_GET['likebtn_entity_name'];
     if (!array_key_exists($entity_name, $likebtn_entities)) {
         $entity_name = LIKEBTN_ENTITY_POST;
@@ -1987,11 +1985,6 @@ function likebtn_admin_statistics() {
         }
     }
 
-    // Run sunchronization
-    /**require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
-    $likebtn = new LikeBtnLikeButton();
-    $likebtn->runSyncVotes();*/
-
     // add comment statuses
     $likebtn_post_statuses['0'] = __('Comment not approved', LIKEBTN_I18N_DOMAIN);
     $likebtn_post_statuses['1'] = __('Comment approved', LIKEBTN_I18N_DOMAIN);
@@ -2047,22 +2040,63 @@ function likebtn_admin_statistics() {
     // query parameters
     $query_where = '';
 
-    if (!in_array($entity_name, array(LIKEBTN_ENTITY_COMMENT, LIKEBTN_ENTITY_CUSTOM_ITEM))) {
-        $query_where .= ' AND p.post_type = %s ';
-        $query_parameters[] = $entity_name;
+    // Post type
+    switch ($entity_name) {
+        case LIKEBTN_ENTITY_COMMENT:
+        case LIKEBTN_ENTITY_CUSTOM_ITEM:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+        case LIKEBTN_ENTITY_BP_MEMBER:
+            break;
+
+        default:
+            $query_where .= ' AND p.post_type = %s ';
+            $query_parameters[] = $entity_name;
+            break;
     }
 
+    // Post ID
     if ($post_id) {
-        $query_where .= ' AND p.ID = %d ';
+        switch ($entity_name) {
+            case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+            case LIKEBTN_ENTITY_BP_MEMBER:
+                $query_where .= ' AND p.id = %d ';
+                break;
+            case LIKEBTN_ENTITY_COMMENT:
+                $query_where .= ' AND p.comment_ID = %d ';
+                break;
+            default:
+                $query_where .= ' AND p.ID = %d ';
+                break;
+        }
         $query_parameters[] = $post_id;
     }
+
     if ($post_title) {
-        if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
-            $query_where .= ' AND LOWER(p.comment_content) LIKE "%%%s%%" ';
-        } elseif ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM) {
-            $query_where .= ' AND LOWER(p.identifier) LIKE "%%%s%%" ';
-        } else {
-            $query_where .= ' AND LOWER(p.post_title) LIKE "%%%s%%" ';
+        switch ($entity_name) {
+            case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+            case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                $query_where .= ' AND (LOWER(p.content) LIKE "%%%s%%" OR LOWER(p.content) LIKE "%%%s%%")';
+                break;
+            case LIKEBTN_ENTITY_BP_MEMBER:
+                $query_where .= ' AND LOWER(p.value) LIKE "%%%s%%" ';
+                break;          
+            case LIKEBTN_ENTITY_COMMENT:
+                $query_where .= ' AND LOWER(p.comment_content) LIKE "%%%s%%" ';
+                break;
+            case LIKEBTN_ENTITY_CUSTOM_ITEM:
+                $query_where .= ' AND LOWER(p.identifier) LIKE "%%%s%%" ';
+                break;
+            default:
+                $query_where .= ' AND LOWER(p.post_title) LIKE "%%%s%%" ';
+                break;
         }
         $query_parameters[] = strtolower($post_title);
     }
@@ -2242,25 +2276,52 @@ function likebtn_admin_statistics() {
             </thead>
             <tbody>
                 <?php foreach ($statistics as $statistics_item): ?>
+                    <?php
+                        // URL
+                        if (!$blogs) {
+                            switch ($entity_name) {
+                                case LIKEBTN_ENTITY_COMMENT:
+                                    $post_url = get_comment_link($statistics_item->post_id);
+                                    break;
+                                case LIKEBTN_ENTITY_CUSTOM_ITEM:
+                                    $post_url = $statistics_item->url;
+                                    break;
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                                    $post_url = bp_activity_get_permalink($statistics_item->post_id);
+                                    break;
+                                default:
+                                    $post_url = get_permalink($statistics_item->post_id);
+                                    break;
+                            }
+                        } else {
+                            // Multisite
+                            switch ($entity_name) {
+                                case LIKEBTN_ENTITY_COMMENT:
+                                    $post_url = _likebtn_get_blog_comment_link($statistics_item->blog_id, $statistics_item->post_id);
+                                    break;
+                                case LIKEBTN_ENTITY_CUSTOM_ITEM:
+                                    $post_url = $statistics_item->url;
+                                    break;
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+                                case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                                    $post_url = bp_activity_get_permalink($statistics_item->post_id);
+                                    break;
+                                default:
+                                    $post_url = get_blog_permalink($statistics_item->blog_id, $statistics_item->post_id);
+                                    break;
+                            }
+                        }
+                    
+                    ?>
 
-                    <?php if (!$blogs): ?>
-                        <?php if ($entity_name == LIKEBTN_ENTITY_COMMENT): ?>
-                            <?php $post_url = get_comment_link($statistics_item->post_id); ?>
-                        <?php elseif ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM): ?>
-                            <?php $post_url = $statistics_item->url; ?>
-                        <?php else: ?>
-                            <?php $post_url = get_permalink($statistics_item->post_id); ?>
-                        <?php endif ?>
-                    <?php else: ?>
-                        <?php if ($entity_name == LIKEBTN_ENTITY_COMMENT): ?>
-                            <?php $post_url = _likebtn_get_blog_comment_link($statistics_item->blog_id, $statistics_item->post_id); ?>
-                        <?php elseif ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM): ?>
-                            <?php $post_url = $statistics_item->url; ?>
-                        <?php else: ?>
-                            <?php $post_url = get_blog_permalink($statistics_item->blog_id, $statistics_item->post_id); ?>
-                        <?php endif ?>
+                    <?php if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))): ?>
+                        <?php $statistics_item->post_title = strip_tags($statistics_item->post_title); ?>
                     <?php endif ?>
-
                     <?php if (mb_strlen($statistics_item->post_title) > 100): ?>
                         <?php $statistics_item->post_title = mb_substr($statistics_item->post_title, 0, 100) . '...'; ?>
                     <?php endif ?>
@@ -2350,6 +2411,62 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
              FROM {$prefix}" . LIKEBTN_TABLE_ITEM . " p
              WHERE
                 1 = 1
+                {$query_where}
+             {$query_orderby}
+             {$query_limit}";    
+    } elseif (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))) {
+        // BuddyPress activity
+        switch ($entity_name) {
+            case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+                $query_where .= " AND p.type = 'new_blog_post' ";
+                break;
+            case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                $query_where .= " AND p.type = 'bbp_topic_create' ";
+                break;
+            case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+                $query_where .= " AND p.type = 'activity_comment' ";
+                break;
+            default:
+                $query_where .= " AND p.type != 'new_blog_post' AND p.type != 'bbp_topic_create' AND p.type != 'activity_comment' ";
+                break;
+        }
+        $query = "
+             SELECT {$query_select}
+                p.id as 'post_id',
+                CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create', CONCAT(': ', p.content), '') ) as 'post_title',
+                pm_likes.meta_value as 'likes',
+                pm_dislikes.meta_value as 'dislikes',
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+             FROM {$prefix}bp_activity_meta pm_likes
+             LEFT JOIN {$prefix}bp_activity p
+                 ON (p.id = pm_likes.activity_id)
+             LEFT JOIN {$prefix}bp_activity_meta pm_dislikes
+                 ON (pm_dislikes.activity_id = pm_likes.activity_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+             LEFT JOIN {$prefix}bp_activity_meta pm_likes_minus_dislikes
+                 ON (pm_likes_minus_dislikes.activity_id = pm_likes.activity_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
+             WHERE
+                pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                {$query_where}
+             {$query_orderby}
+             {$query_limit}";
+    } elseif ($entity_name == LIKEBTN_ENTITY_BP_MEMBER) {
+        $query = "
+             SELECT {$query_select}
+                p.id as 'post_id',
+                p.value as 'post_title',
+                pm_likes.meta_value as 'likes',
+                pm_dislikes.meta_value as 'dislikes',
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+             FROM {$prefix}bp_xprofile_meta pm_likes
+             LEFT JOIN {$prefix}bp_xprofile_data p
+                 ON (p.id = pm_likes.object_id)
+             LEFT JOIN {$prefix}bp_xprofile_meta pm_dislikes
+                 ON (pm_dislikes.object_id = pm_likes.object_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+             LEFT JOIN {$prefix}bp_xprofile_meta pm_likes_minus_dislikes
+                 ON (pm_likes_minus_dislikes.object_id = pm_likes.object_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
+             WHERE
+                pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                AND pm_likes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "' 
                 {$query_where}
              {$query_orderby}
              {$query_limit}";
@@ -2522,9 +2639,8 @@ function _likebtn_get_subpage()
 ### Frontend ###
 ################
 
-function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_entity_name = '', $use_entity_settings = true, $wrap = true) {
-
-    global $likebtn_settings;
+function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_entity_name = '', $use_entity_settings = true, $wrap = true) 
+{
     global $wp_version;
 
     $prepared_settings = array();
@@ -2549,6 +2665,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         $data .= ' data-site_id="' . get_option('likebtn_site_id') . '" ';
     }
 
+    $likebtn_settings = _likebtn_get_all_settings();
     foreach ($likebtn_settings as $option_name => $option_info) {
 
         if ($values && isset($values[$option_name])) {
@@ -2586,6 +2703,18 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         if ($entity) {
             $entity_url = get_comment_link($entity->comment_ID);
             $entity_title = $entity->comment_content;
+        }
+    } else if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))) {
+        $entity_title = _likebtn_bp_get_activity_title($entity_id);
+        if (function_exists('bp_activity_get_permalink')) {
+            $entity_url = bp_activity_get_permalink($entity_id);
+        }
+    } else if ($entity_name == LIKEBTN_ENTITY_BP_MEMBER) {
+        if (function_exists('bp_core_get_username')) {
+            $entity_title = bp_core_get_username($entity_id);
+        }
+        if (function_exists('bp_core_get_user_domain')) {
+            $entity_url = bp_core_get_user_domain($entity_id);
         }
     } else {
         $entity = get_post($entity_id);
@@ -3379,11 +3508,11 @@ function _likebtn_bp_activity($wrap = true, $position = LIKEBTN_POSITION_BOTH, $
 
     $entity_name = _likebtn_bp_get_entity_name();
 
-    if ($entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE || $entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT) {
-        $entity_id = bp_get_activity_id();
-    } else {
+    //if ($entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE || $entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT) {
+    $entity_id = bp_get_activity_id();
+    /*} else {
         $entity_id = bp_get_activity_secondary_item_id();
-    }
+    }*/
 
     /*if ($entity_name == LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC) {
                     echo 'entity_id'.$entity_id;
@@ -3486,6 +3615,38 @@ function _likebtn_bp_get_entity_name()
     }
 }
 
+// Get activity title
+function _likebtn_bp_get_activity_title($id)
+{
+    $activity = null;
+    $title = '';
+
+    if (function_exists('bp_activity_get_specific')) {
+        $activity_list = bp_activity_get_specific(array(
+            'activity_ids' => $id,
+            'display_comments' => true
+        ));
+
+        if (!empty($activity_list['activities']) && !empty($activity_list['activities'][0])) {
+            $activity = $activity_list['activities'][0];
+        }
+    }
+    if ($activity) {
+        if ($activity->action) {
+            $title = $activity->action;
+        } elseif ($activity->content) {
+            $title = $activity->content;
+        } elseif ($activity->primary_link) {
+            $title = $activity->primary_link;
+        }
+        if ($activity->content && $activity->type != 'bbp_topic_create') {
+            $title = $title.': '.$activity->content;
+        }
+        $title = strip_tags($title);
+    }
+    return $title;
+}
+
 // Add style to frontend
 function likebtn_enqueue_style()
 {
@@ -3495,3 +3656,12 @@ function likebtn_enqueue_style()
 
 // Add frontend style
 add_action('wp_enqueue_scripts', 'likebtn_enqueue_style');
+
+// Current + deprecated settings
+function _likebtn_get_all_settings()
+{
+    global $likebtn_settings;
+    global $likebtn_settings_deprecated;
+
+    return array_merge($likebtn_settings, $likebtn_settings_deprecated);
+}
