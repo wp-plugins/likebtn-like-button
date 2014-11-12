@@ -128,6 +128,10 @@ class LikeBtnLikeButtonMostLiked {
 
     function widget($args, $instance = array()) {
         global $wpdb;
+        global $likebtn_nonpost_entities;
+
+        $has_posts = false;
+        $post_types_count = 0;
 
         if (is_array($args)) {
             extract($args);
@@ -177,8 +181,11 @@ class LikeBtnLikeButtonMostLiked {
 
         foreach ($instance['entity_name'] as $entity_index => $entity_name) {
             $instance['entity_name'][$entity_index] = str_replace("'", '', trim($entity_name));
+
+            if (!in_array($entity_name, $likebtn_nonpost_entities)) {
+                $has_posts = true;
+            }
         }
-        $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
 
         $query_limit = '';
         if (isset($instance['number']) && (int) $instance['number'] > 0) {
@@ -187,10 +194,10 @@ class LikeBtnLikeButtonMostLiked {
 
         // getting the most liked content
         $query = '';
-        if (in_array(LIKEBTN_ENTITY_COMMENT, $instance['entity_name']) && count($instance['entity_name']) > 1) {
-            $query .= "SELECT * FROM (";
-        }
-        if (!in_array(LIKEBTN_ENTITY_COMMENT, $instance['entity_name']) || count($instance['entity_name']) > 1) {
+
+        // Posts
+        if ($has_posts) {
+            $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
             $query .= "
                  SELECT
                     p.ID as 'post_id',
@@ -211,11 +218,14 @@ class LikeBtnLikeButtonMostLiked {
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND post_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
+            $post_types_count++;
         }
-        if (in_array(LIKEBTN_ENTITY_COMMENT, $instance['entity_name']) && count($instance['entity_name']) > 1) {
-            $query .= " UNION ";
-        }
+
+        // Comments
         if (in_array(LIKEBTN_ENTITY_COMMENT, $instance['entity_name'])) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
             $query .= "
                  SELECT
                     p.comment_ID as 'post_id',
@@ -235,16 +245,84 @@ class LikeBtnLikeButtonMostLiked {
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND comment_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
+            $post_types_count++;
         }
-        if (in_array(LIKEBTN_ENTITY_COMMENT, $instance['entity_name']) && count($instance['entity_name']) > 1) {
+
+        // BuddyPress Member
+        if (in_array(LIKEBTN_ENTITY_BP_MEMBER, $instance['entity_name'])) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
             $query .= "
-                ) main_query";
+                 SELECT
+                    p.ID as 'post_id',
+                    p.display_name as post_title,
+                    p.user_registered as 'post_date',
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    '" . LIKEBTN_ENTITY_BP_MEMBER . "' as post_type,
+                    '' as post_mime_type
+                 FROM {$wpdb->prefix}bp_xprofile_meta pm_likes
+                 LEFT JOIN {$wpdb->prefix}users p
+                    ON (p.ID = pm_likes.object_id AND pm_likes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "')
+                 LEFT JOIN {$wpdb->prefix}bp_xprofile_meta pm_dislikes
+                    ON (pm_dislikes.object_id = pm_likes.object_id AND pm_dislikes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "' AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 WHERE
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
+            $post_types_count++;
         }
+
+        // BuddyPress Activities
+        if (in_array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, $instance['entity_name']) ||
+            in_array(LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, $instance['entity_name']) ||
+            in_array(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, $instance['entity_name']) ||
+            in_array(LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC, $instance['entity_name'])
+        ) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
+            $query .= "
+                SELECT {$query_select}
+                    p.id as 'post_id',
+                    CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create' && p.type != 'new_blog_post', CONCAT(': ', p.content), '') ) as 'post_title',
+                    p.date_recorded as 'post_date',
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    IF (p.type = 'bbp_topic_create',
+                        '" . LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC . "',
+                        IF (p.type = 'new_blog_post',
+                            '" . LIKEBTN_ENTITY_BP_ACTIVITY_POST . "',
+                            '" . LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE . "'
+                        )
+                    ) as post_type,
+                    '' as post_mime_type
+                 FROM {$wpdb->prefix}bp_activity_meta pm_likes
+                 LEFT JOIN {$wpdb->prefix}bp_activity p
+                     ON (p.id = pm_likes.activity_id)
+                 LEFT JOIN {$wpdb->prefix}bp_activity_meta pm_dislikes
+                     ON (pm_dislikes.activity_id = pm_likes.activity_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 WHERE
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
+            $post_types_count++;
+        }
+
+        if ($post_types_count > 1) {
+            $query = "SELECT * FROM (".$query. ") main_query";;
+        }
+
         $query .= "
             ORDER BY
                 likes DESC
              {$query_limit}";
-
+// echo "<pre>";
+// print_r($query);
+// exit();
         $posts = $wpdb->get_results($query);
 
         $post_loop = array();
@@ -263,24 +341,11 @@ class LikeBtnLikeButtonMostLiked {
                     'excerpt' => '',
                 );
 
-                $post_title = stripslashes($db_post->post_title);
+                // Title
+                $post['title'] = _likebtn_prepare_title($db_post->post_type, $db_post->post_title);
 
-                if (function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')) {
-                    $post_title = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($post_title);
-                }
-                if ($db_post->post_type == LIKEBTN_ENTITY_COMMENT) {
-                    if (mb_strlen($post_title) > 30) {
-                        $post_title = mb_substr($post_title, 0, 30) . '...';
-                    }
-                }
-                $post['title'] = $post_title;
-
-                if ($db_post->post_type != LIKEBTN_ENTITY_COMMENT) {
-                    $permalink = get_permalink($db_post->post_id);
-                } else {
-                    $permalink = get_comment_link($db_post->post_id);
-                }
-                $post['link'] = $permalink;
+                // Link
+                $post['link'] = _likebtn_get_entity_url($db_post->post_type, $db_post->post_id);
 
                 $post['likes'] = $db_post->likes;
                 $post['dislikes'] = $db_post->dislikes;
@@ -292,8 +357,7 @@ class LikeBtnLikeButtonMostLiked {
                 if ($show_excerpt) {
                     if ($db_post->post_type == 'comment') {
                         $post['excerpt'] = get_comment_excerpt($db_post->post_id);
-                    } else {
-                        // get_the_excerpt
+                    } elseif (!in_array($db_post->post_type, $likebtn_nonpost_entities)) {
                         $get_post = get_post($db_post->post_id);
                         $post['excerpt'] = apply_filters( 'get_the_excerpt', $get_post->post_excerpt );
                     }

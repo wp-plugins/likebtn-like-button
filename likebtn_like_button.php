@@ -120,6 +120,18 @@ $likebtn_entity_titles = array(
     LIKEBTN_ENTITY_BP_MEMBER => __('Member Profiles (BuddyPress)'),
 );
 
+// entities which are not based on posts
+global $likebtn_nonpost_entities;
+$likebtn_nonpost_entities = array(
+    LIKEBTN_ENTITY_COMMENT,
+    LIKEBTN_ENTITY_CUSTOM_ITEM,
+    LIKEBTN_ENTITY_BP_ACTIVITY_POST,
+    LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE,
+    LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT,
+    LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC,
+    LIKEBTN_ENTITY_BP_MEMBER
+);
+
 // languages
 global $likebtn_page_sizes;
 $likebtn_page_sizes = array(
@@ -2279,23 +2291,7 @@ function likebtn_admin_statistics() {
                     <?php
                         // URL
                         if (!$blogs) {
-                            switch ($entity_name) {
-                                case LIKEBTN_ENTITY_COMMENT:
-                                    $post_url = get_comment_link($statistics_item->post_id);
-                                    break;
-                                case LIKEBTN_ENTITY_CUSTOM_ITEM:
-                                    $post_url = $statistics_item->url;
-                                    break;
-                                case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
-                                case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
-                                case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
-                                case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
-                                    $post_url = bp_activity_get_permalink($statistics_item->post_id);
-                                    break;
-                                default:
-                                    $post_url = get_permalink($statistics_item->post_id);
-                                    break;
-                            }
+                            $post_url = _likebtn_get_entity_url($entity_name, $statistics_item->post_id, $statistics_item->url);
                         } else {
                             // Multisite
                             switch ($entity_name) {
@@ -2319,15 +2315,8 @@ function likebtn_admin_statistics() {
                     
                     ?>
 
-                    <?php if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))): ?>
-                        <?php $statistics_item->post_title = strip_tags($statistics_item->post_title); ?>
-                    <?php endif ?>
-                    <?php if (mb_strlen($statistics_item->post_title) > 100): ?>
-                        <?php $statistics_item->post_title = mb_substr($statistics_item->post_title, 0, 100) . '...'; ?>
-                    <?php endif ?>
-                    <?php if (function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')): ?>
-                        <?php $statistics_item->post_title = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($statistics_item->post_title); ?>
-                    <?php endif ?>
+                    <?php $statistics_item->post_title = _likebtn_prepare_title($entity_name, $statistics_item->post_title); ?>
+
                     <tr id="item_<?php echo $statistics_item->post_id; ?>">
                         <td><input type="checkbox" class="item_checkbox" value="<?php echo $statistics_item->post_id; ?>" name="item[]" <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>disabled="disabled"<?php endif ?>></td>
                         <?php if ($entity_name != LIKEBTN_ENTITY_CUSTOM_ITEM): ?>
@@ -2433,7 +2422,7 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
         $query = "
              SELECT {$query_select}
                 p.id as 'post_id',
-                CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create', CONCAT(': ', p.content), '') ) as 'post_title',
+                CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create' && p.type != 'new_blog_post', CONCAT(': ', p.content), '') ) as 'post_title',
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
                 pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
@@ -3664,4 +3653,58 @@ function _likebtn_get_all_settings()
     global $likebtn_settings_deprecated;
 
     return array_merge($likebtn_settings, $likebtn_settings_deprecated);
+}
+
+// Prepare entity title
+function _likebtn_prepare_title($entity_name, $title, $max = 100)
+{
+    $title = stripslashes($title);
+
+    if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))) {
+        $title = strip_tags($title);
+    }
+    if (function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')) {
+        $title = qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($title);
+    }
+    /*if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
+        if (mb_strlen($title) > 30) {
+            $title = mb_substr($title, 0, 30) . '...';
+        }
+    } else*/
+    if (mb_strlen($title) > $max) {
+        $title = mb_substr($title, 0, $max) . '...';
+    }
+
+    return $title;
+}
+
+// Get entity URL
+function _likebtn_get_entity_url($entity_name, $entity_id, $url = '')
+{
+    if ($url) {
+        return $url;
+    }
+
+    switch ($entity_name) {
+        case LIKEBTN_ENTITY_COMMENT:
+            $url = get_comment_link($entity_id);
+            break;
+        case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+        case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+            if (function_exists('bp_activity_get_permalink')) {
+                $url = bp_activity_get_permalink($entity_id);
+            }
+            break;
+        case LIKEBTN_ENTITY_BP_MEMBER:
+            if (function_exists('bp_core_get_user_domain')) {
+                $url = bp_core_get_user_domain($entity_id);
+            }
+            break;
+        default:
+            $url = get_permalink($entity_id);
+            break;
+    }
+    return $url;
 }
