@@ -1,14 +1,14 @@
 === Like Button Voting & Rating ===
 Contributors: LikeBtn
 Donate link: http://likebtn.com
-Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
+Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share, woocommerce, buddypress, bbpress
 Requires at least: 2.8
 Tested up to: 4.0
 Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add a Like Button to posts, pages, comments, WooCommerce, BuddyPress, custom post types! Sort content by likes! Get instant statistics and insights!
+Add a Like Button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get instant stats & insights!
 
 == Description ==
 
@@ -19,6 +19,7 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   Comments
 *   WooCommerce Products
 *   BuddyPress Activities and Members
+*   bbPress Forum Posts and Users
 *   Custom Post Types
 
 = Demo =
