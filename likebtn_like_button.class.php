@@ -171,6 +171,7 @@ class LikeBtnLikeButton {
                 $entity_updated = $this->updateCustomFields($item['identifier'], $likes, $dislikes, $item['url']);
             }
         }
+
         return $entity_updated;
     }
 
@@ -181,7 +182,7 @@ class LikeBtnLikeButton {
     {
         global $wpdb;
 
-        $likebtn_entities = _likebtn_get_entities();
+        $likebtn_entities = _likebtn_get_entities(true, true);
 
         preg_match("/^(.*)_(\d+)$/", $identifier, $identifier_parts);
 
@@ -214,6 +215,7 @@ class LikeBtnLikeButton {
         $entity_updated = false;
 
         if (array_key_exists($entity_name, $likebtn_entities) && is_numeric($entity_id)) {
+
             // set Custom fields
             switch ($entity_name) {
                 case LIKEBTN_ENTITY_COMMENT:
@@ -254,6 +256,9 @@ class LikeBtnLikeButton {
                 case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
                 case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
                 case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                    if (!_likebtn_is_bp_active()) {
+                        break;
+                    }
                     // BuddyPress Activity
                     /*$bp_activity_list = bp_activity_get(array(
                         'show_hidden'  => true,
@@ -297,39 +302,19 @@ class LikeBtnLikeButton {
 
                 case LIKEBTN_ENTITY_BP_MEMBER:
                     // BuddyPress Member Profile
-                    $bp_xprofile = $wpdb->get_row("
-                        SELECT id
-                        FROM ".$wpdb->prefix."bp_xprofile_data
-                        WHERE user_id = {$entity_id}
-                    ");
+                    $entity_updated = _likebtn_save_bp_member_votes($entity_id, $likes, $dislikes, $likes_minus_dislikes);
+                    break;
 
-                    if (!empty($bp_xprofile)) {
-                        if ($likes !== null) {
-                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES)) > 1) {
-                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES);
-                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES, $likes, true);
-                            } else {
-                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES, $likes);
-                            }
-                        }
-                        if ($dislikes !== null) {
-                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES)) > 1) {
-                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES);
-                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES, $dislikes, true);
-                            } else {
-                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES, $dislikes);
-                            }
-                        }
-                        if ($likes_minus_dislikes !== null) {
-                            if (count(bp_xprofile_get_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES)) > 1) {
-                                bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
-                                bp_xprofile_add_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes, true);
-                            } else {
-                                bp_xprofile_update_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
-                            }
-                        }
-                        $entity_updated = true;
-                    }
+                case LIKEBTN_ENTITY_BBP_USER:
+                    // bbPress Member Profile
+                    $entity_updated = _likebtn_save_user_votes($entity_id, $likes, $dislikes, $likes_minus_dislikes);
+                    break;
+
+                case LIKEBTN_ENTITY_USER:
+                    // BuddyPress Member Profile
+                    $entity_updated = _likebtn_save_bp_member_votes($entity_id, $likes, $dislikes, $likes_minus_dislikes);
+                    // General user and bbPress Member Profile
+                    $entity_updated = $entity_updated || _likebtn_save_user_votes($entity_id, $likes, $dislikes, $likes_minus_dislikes);
                     break;
                 
                 default:
