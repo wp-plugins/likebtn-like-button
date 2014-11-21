@@ -54,11 +54,14 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 
 == Screenshots ==
 1. Like Buttons
-2. Like Button Themes
-3. Plugin Settings
-4. Statistics
-5. Most Liked Content Widget admin view
-6. Most Liked Content Widget frontend view
+2. Themes
+3. BuddyPress
+4. bbPress
+5. WooCommerce
+6. Settings
+7. Statistics
+8. Most Liked Content Widget admin
+9. Most Liked Content Widget frontend
 
 == Changelog ==
 
