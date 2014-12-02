@@ -36,6 +36,9 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
 
         $likebtn_entities = _likebtn_get_entities(true);
 
+        // Custom item
+        $likebtn_entities[LIKEBTN_ENTITY_CUSTOM_ITEM] = __('Custom item');
+
         $time_range_list = array(
             'all' => __('All time', LIKEBTN_I18N_DOMAIN),
             '1' => __('1 day', LIKEBTN_I18N_DOMAIN),
@@ -129,6 +132,7 @@ class LikeBtnLikeButtonMostLiked {
     function widget($args, $instance = array()) {
         global $wpdb;
         global $likebtn_nonpost_entities;
+        global $likebtn_bbp_post_types;
 
         $has_posts = false;
         $post_types_count = 0;
@@ -206,7 +210,8 @@ class LikeBtnLikeButtonMostLiked {
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
                     p.post_type,
-                    p.post_mime_type
+                    p.post_mime_type,
+                    '' as url
                  FROM {$wpdb->prefix}postmeta pm_likes
                  LEFT JOIN {$wpdb->prefix}posts p
                      ON (p.ID = pm_likes.post_id)
@@ -233,8 +238,9 @@ class LikeBtnLikeButtonMostLiked {
                     p.comment_date as 'post_date',
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
-                    'comment' as post_type,
-                    '' as post_mime_type
+                    '".LIKEBTN_ENTITY_COMMENT."' as post_type,
+                    '' as post_mime_type,
+                    '' as url
                  FROM {$wpdb->prefix}commentmeta pm_likes
                  LEFT JOIN {$wpdb->prefix}comments p
                     ON (p.comment_ID = pm_likes.comment_id)
@@ -245,6 +251,25 @@ class LikeBtnLikeButtonMostLiked {
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND comment_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
+            $post_types_count++;
+        }
+
+        // Custom items
+        if (in_array(LIKEBTN_ENTITY_CUSTOM_ITEM, $instance['entity_name'])) {
+            $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
+            $query .= "
+                 SELECT
+                    p.ID as 'post_id',
+                    p.identifier as 'post_title',
+                    '' as 'post_date',
+                    p.likes,
+                    p.dislikes,
+                    '".LIKEBTN_ENTITY_CUSTOM_ITEM."' as 'post_type',
+                    '' as 'post_mime_type',
+                    url
+                 FROM {$wpdb->prefix}".LIKEBTN_TABLE_ITEM." p
+                 WHERE
+                    1 = 1 ";
             $post_types_count++;
         }
 
@@ -261,7 +286,8 @@ class LikeBtnLikeButtonMostLiked {
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
                     '" . LIKEBTN_ENTITY_BP_MEMBER . "' as post_type,
-                    '' as post_mime_type
+                    '' as post_mime_type,
+                    '' as url
                  FROM {$wpdb->prefix}bp_xprofile_meta pm_likes
                  LEFT JOIN {$wpdb->prefix}users p
                     ON (p.ID = pm_likes.object_id AND pm_likes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "')
@@ -298,12 +324,70 @@ class LikeBtnLikeButtonMostLiked {
                             '" . LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE . "'
                         )
                     ) as post_type,
-                    '' as post_mime_type
+                    '' as post_mime_type,
+                    '' as url
                  FROM {$wpdb->prefix}bp_activity_meta pm_likes
                  LEFT JOIN {$wpdb->prefix}bp_activity p
                      ON (p.id = pm_likes.activity_id)
                  LEFT JOIN {$wpdb->prefix}bp_activity_meta pm_dislikes
                      ON (pm_dislikes.activity_id = pm_likes.activity_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 WHERE
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
+            $post_types_count++;
+        }
+
+        // bbPress Post
+        if (in_array(LIKEBTN_ENTITY_BBP_POST, $instance['entity_name'])) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
+            $query .= "
+                 SELECT
+                    p.ID as 'post_id',
+                    p.post_title,
+                    p.post_date,
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    p.post_type,
+                    p.post_mime_type,
+                    '' as url
+                 FROM {$wpdb->prefix}postmeta pm_likes
+                 LEFT JOIN {$wpdb->prefix}posts p
+                     ON (p.ID = pm_likes.post_id)
+                 LEFT JOIN {$wpdb->prefix}postmeta pm_dislikes
+                     ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 WHERE
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                    AND p.post_type in ('".implode("', '", $likebtn_bbp_post_types)."') ";
+            if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
+                $query .= " AND post_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
+            }
+            $post_types_count++;
+        }
+
+        // bbPress User
+        if (in_array(LIKEBTN_ENTITY_BBP_USER, $instance['entity_name'])) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
+            $query .= "
+                 SELECT
+                    p.ID as 'post_id',
+                    p.display_name as post_title,
+                    p.user_registered as 'post_date',
+                    CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
+                    CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    '" . LIKEBTN_ENTITY_BBP_USER . "' as post_type,
+                    '' as post_mime_type,
+                    '' as url
+                 FROM {$wpdb->prefix}usermeta pm_likes
+                 LEFT JOIN {$wpdb->prefix}users p
+                    ON (p.ID = pm_likes.user_id)
+                 LEFT JOIN {$wpdb->prefix}usermeta pm_dislikes
+                    ON (pm_dislikes.user_id = pm_likes.user_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
                  WHERE
                     pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
@@ -320,6 +404,7 @@ class LikeBtnLikeButtonMostLiked {
             ORDER BY
                 likes DESC
              {$query_limit}";
+
 // echo "<pre>";
 // print_r($query);
 // exit();
@@ -345,7 +430,7 @@ class LikeBtnLikeButtonMostLiked {
                 $post['title'] = _likebtn_prepare_title($db_post->post_type, $db_post->post_title);
 
                 // Link
-                $post['link'] = _likebtn_get_entity_url($db_post->post_type, $db_post->post_id);
+                $post['link'] = _likebtn_get_entity_url($db_post->post_type, $db_post->post_id, $db_post->url);
 
                 $post['likes'] = $db_post->likes;
                 $post['dislikes'] = $db_post->dislikes;
@@ -359,8 +444,21 @@ class LikeBtnLikeButtonMostLiked {
                         $post['excerpt'] = get_comment_excerpt($db_post->post_id);
                     } elseif (!in_array($db_post->post_type, $likebtn_nonpost_entities)) {
                         $get_post = get_post($db_post->post_id);
-                        $post['excerpt'] = apply_filters( 'get_the_excerpt', $get_post->post_excerpt );
+                        $post['excerpt'] = $get_post->post_excerpt;
+                        if (!$post['excerpt']) {
+                            $post['excerpt'] = $get_post->post_content;
+                        }
+                        if ($post['excerpt']) {
+                            $post['excerpt'] = strip_tags($post['excerpt']);
+                            //$post['excerpt'] = apply_filters('get_the_excerpt', $post['excerpt']);
+                            $post['excerpt'] = _likebtn_shorten_excerpt($post['excerpt']);
+                        }
                     }
+                }
+
+                // For bbPress replies
+                if (!$post['title']) {
+                    $post['title'] = _likebtn_shorten_title($post['excerpt'], LIKEBTN_WIDGET_TITLE_LENGTH);
                 }
 
                 $post_loop[$i] = $post;

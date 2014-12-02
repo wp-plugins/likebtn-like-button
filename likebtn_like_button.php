@@ -85,6 +85,10 @@ $likebtn_custom_fields = array(
     LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES,
 );
 
+// default widget title length
+define('LIKEBTN_WIDGET_TITLE_LENGTH', 100);
+define('LIKEBTN_WIDGET_EXCERPT_LENGTH', 200);
+
 // entities for which plugin can be enabled
 //global $likebtn_entities;
 //$likebtn_entities = _likebtn_get_entities($likebtn_entities);
@@ -142,8 +146,14 @@ $likebtn_nonpost_entities = array(
     LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE,
     LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT,
     LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC,
-    LIKEBTN_ENTITY_BP_MEMBER
+    LIKEBTN_ENTITY_BP_MEMBER,
+    LIKEBTN_ENTITY_BBP_POST,
+    LIKEBTN_ENTITY_BBP_USER
 );
+
+// bbPress post types in posts table
+global $likebtn_bbp_post_types;
+$likebtn_bbp_post_types = array(/*'forum',*/ 'topic', 'reply');
 
 // languages
 global $likebtn_page_sizes;
@@ -2273,7 +2283,7 @@ function likebtn_admin_statistics() {
                 </div>
             </div>
 
-            <input class="button-primary" type="submit" name="show" value="<?php _e('Show', LIKEBTN_I18N_DOMAIN); ?>" />
+            <input class="button-primary" type="submit" name="show" value="<?php _e('View', LIKEBTN_I18N_DOMAIN); ?>" />
         </form>
         <br/>
         <?php _e('Total found', LIKEBTN_I18N_DOMAIN); ?>: <strong><?php echo $total_found ?></strong>
@@ -2393,6 +2403,8 @@ function likebtn_admin_statistics() {
 // get SQL query for retrieving statistics
 function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query_orderby, $query_limit, $query_select = 'SQL_CALC_FOUND_ROWS')
 {
+    global $likebtn_bbp_post_types;
+
     if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
         // comment
         $query = "
@@ -2487,7 +2499,7 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
              {$query_orderby}
              {$query_limit}";
     } elseif ($entity_name == LIKEBTN_ENTITY_BBP_USER) {
-        // ppPress User Profile
+        // bbPress User Profile
         $query = "
              SELECT {$query_select}
                 p.ID as 'post_id',
@@ -2504,6 +2516,28 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                  ON (pm_likes_minus_dislikes.user_id = pm_likes.user_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
              WHERE
                 pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                {$query_where}
+             {$query_orderby}
+             {$query_limit}";
+    } elseif ($entity_name == LIKEBTN_ENTITY_BBP_POST) {
+        // bbPress Forum Post
+        $query = "
+             SELECT {$query_select}
+                p.ID as 'post_id',
+                IF(p.post_title != '', p.post_title, p.post_content) as 'post_title',
+                pm_likes.meta_value as 'likes',
+                pm_dislikes.meta_value as 'dislikes',
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+             FROM {$prefix}postmeta pm_likes
+             LEFT JOIN {$prefix}posts p
+                 ON (p.ID = pm_likes.post_id)
+             LEFT JOIN {$prefix}postmeta pm_dislikes
+                 ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+             LEFT JOIN {$prefix}postmeta pm_likes_minus_dislikes
+                 ON (pm_likes_minus_dislikes.post_id = pm_likes.post_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
+             WHERE
+                pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                AND p.post_type in ('".implode("', '", $likebtn_bbp_post_types)."') 
                 {$query_where}
              {$query_orderby}
              {$query_limit}";
@@ -3904,7 +3938,7 @@ function _likebtn_get_all_settings()
 }
 
 // Prepare entity title
-function _likebtn_prepare_title($entity_name, $title, $max = 100)
+function _likebtn_prepare_title($entity_name, $title, $max = LIKEBTN_WIDGET_TITLE_LENGTH)
 {
     $title = stripslashes($title);
 
@@ -3919,11 +3953,26 @@ function _likebtn_prepare_title($entity_name, $title, $max = 100)
             $title = mb_substr($title, 0, 30) . '...';
         }
     } else*/
+
+    return _likebtn_shorten_title($title, $max);
+}
+
+// Shorten title
+function _likebtn_shorten_title($title, $max = LIKEBTN_WIDGET_TITLE_LENGTH)
+{
     if (mb_strlen($title) > $max) {
         $title = mb_substr($title, 0, $max) . '...';
     }
-
     return $title;
+}
+
+// Shorten title
+function _likebtn_shorten_excerpt($excerpt, $max = LIKEBTN_WIDGET_EXCERPT_LENGTH)
+{
+    if (mb_strlen($excerpt) > $max) {
+        $excerpt = mb_substr($excerpt, 0, $max) . '...';
+    }
+    return $excerpt;
 }
 
 // Get entity URL
@@ -3946,6 +3995,7 @@ function _likebtn_get_entity_url($entity_name, $entity_id, $url = '')
             }
             break;
         case LIKEBTN_ENTITY_BP_MEMBER:
+        case LIKEBTN_ENTITY_BBP_USER:
             if (function_exists('bp_core_get_user_domain')) {
                 $url = bp_core_get_user_domain($entity_id);
             }
