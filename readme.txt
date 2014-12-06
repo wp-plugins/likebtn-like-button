@@ -66,6 +66,15 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 
 == Changelog ==
 
+= 2.1 =
+* bbPress support
+* BuddyPress support
+* WooCommerce support
+* Local Domain and Subdirectory parameters replaced with one Site ID
+* Display custom items in Most Liked Content widget
+* Updated admin interface
+* 7 day trial
+
 = 2.0 =
 * Added full sync feature
 * Added site_id option
