@@ -1,0 +1,129 @@
+#likebtn h2.likebtn_logo,
+#likebtn h2.likebtn_logo a {
+    color: #C2C2C2;
+    font-family: 'Droid Sans',Arial,Helvetica,sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.3), 0 -1px rgba(0, 0, 0, 0.3), 0 1px #FFFFFF;
+}
+#likebtn h2.likebtn_logo img {
+    vertical-align: top;
+}
+#premium_features_hint {
+    float: right;
+    font-size: 13px;
+}
+.likebtn_collapse_trigger small {
+    color: gray;
+    margin-right: 5px;
+}
+#likebtn .pagination span,
+#likebtn .pagination a {
+    margin: 0 3px;
+}
+#likebtn .tablenav input {
+    float: left;
+}
+.popup_donate_trigger {
+    width: 17px;
+    height: 17px;
+    vertical-align: middle;
+}
+.premium_feature {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAMCAYAAAC5tzfZAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QTg4NEU4RTc2NTM3MTFFMjg0RTQ4NEYwMjhFQzkzQjUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QTg4NEU4RTg2NTM3MTFFMjg0RTQ4NEYwMjhFQzkzQjUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpBODg0RThFNTY1MzcxMUUyODRFNDg0RjAyOEVDOTNCNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBODg0RThFNjY1MzcxMUUyODRFNDg0RjAyOEVDOTNCNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PluJZR0AAADWSURBVHjaYvz//z8DOlgqvVQBSMWD2NFPoxvR5VkYsAOQpgYoG0MTEwMZgAXqnAAg9QDolAv4FMPUMYL8BOTchzoJpGkhSAKI10PVKgJxPhAHQNUcYAFqEAAxoIIGUIwM7iOxQYZdYEQOPaj18VADYOADEG8AuQDofJDhDIzoQQ7UWACk+tFsM0T2LxOaBpDT6qHcBqgNILAe6g2sQT4fiEGSF6CRmgj1hwKy7Uxo/jGA+iEQmhrgbCBIgKYUBgaQn2B4idQSByBOQBaDiicAsQGMDxBgACQAZdLcBNXhAAAAAElFTkSuQmCC") no-repeat scroll left center rgba(0, 0, 0, 0);
+    padding: 1px 0 0 20px;
+    margin-left: 8px;
+}
+.likebtn_help {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkY1NkVBMkZCNjBFMjExRTQ4MUE1QjkxNjQxREEzNkQ0IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkY1NkVBMkZDNjBFMjExRTQ4MUE1QjkxNjQxREEzNkQ0Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RjU2RUEyRjk2MEUyMTFFNDgxQTVCOTE2NDFEQTM2RDQiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RjU2RUEyRkE2MEUyMTFFNDgxQTVCOTE2NDFEQTM2RDQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz58mSzzAAABvklEQVR42qSTvUoDQRSFN5tYqFEk4AOIgmm1MhaiglaCCBGbJIoIYpHG0sZCfABJo6j4l0oUQVsxYiM2sQwEfYRI0IiF+fE7cXbZBFJl4Oy9M3POubN3d3y1Ws1qZwT0SKVSVrVarS/4fL5eEKtUKjHMI2bt2e/3p5kLn1qzbdtKJpP/Bp4xhdEVMQR+EF0TO1ibLZfLEUQ7zKMg4whsJ6HKJMQHicmXEHcRo2CevBPE2Q+JI26zQZCNGyUQh6h0yXyX16iBIsde1yuAYXEMN+g1iEPqUxXE7+S3CLeodM9eAcE+0GnycJbFlcY1gLzG5hdQkyzwBvGQ+QwYF4ceLKrRzM/Flcb9CghGETypszKAsGmM5sCq6dELsAznFYMJ16B5SEy1fgR3RnxA2Gv5H0DIIhhRBecbg2/SDczyQJ0Xr/6/GG7W7QHHP4LUQ5pwDAKBwC+p+lLS3DEXR1xpvF/hAkKRRp3xbmFTxc88TTx2lORhccSVxmugKgsmz0FcwcjmFINUGqNit9aIOXNCcUsNfyKbj2xMk36QnyBQ3CaegoLWtCeOuA1N9IwMhAHnMoFEq8vkXoF2r/OfAAMAxYsis5FrmXYAAAAASUVORK5CYII=") no-repeat scroll left center rgba(0, 0, 0, 0);
+    float: right;
+    margin: 1px -28px 0 0;
+    padding: 0 0 0 16px;
+    cursor: help;
+    opacity: 0.66;
+    filter: alpha(opacity=66);
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=66)";
+}
+.likebtn_help:hover {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+
+.preview_container {
+    background: url("../img/preview.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #e1e1e8;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.1);
+    -moz-box-shadow:inset 0 1px 1px rgba(0,0,0,.1);
+    box-shadow:inset 0 1px 1px rgba(0,0,0,.1);
+    margin: 10px 0;
+    padding: 40px;
+}
+.nav-tab img {
+    vertical-align: bottom;
+}
+.support_link {
+    font-weight: normal;
+    font-size: 13px;
+    font-style: italic;
+    color: #666;
+    line-height: 1.5;
+}
+.likebtn_show_marker {
+    margin-right: 6px;
+}
+.likebtn_reset_wrapper {
+    text-align: right;
+}
+.likebtn_button_account {
+    border-color: #668e01;
+    background: #8fc800;
+    background: -moz-linear-gradient(top, #8fc800 0%, #438c00 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8fc800), color-stop(100%,#438c00));
+    background: -webkit-linear-gradient(top, #8fc800 0%,#438c00 100%);
+    background: -o-linear-gradient(top, #8fc800 0%,#438c00 100%);
+    background: -ms-linear-gradient(top, #8fc800 0%,#438c00 100%);
+    background: linear-gradient(top, #8fc800 0%,#438c00 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#8fc800', endColorstr='#438c00',GradientType=0);
+
+    -webkit-box-shadow:inset 0 1px 0 rgba(204,234,128,.5),0 1px 0 rgba(0,0,0,.15);
+    box-shadow:inset 0 1px 0 rgba(204,234,128,.5),0 1px 0 rgba(0,0,0,.15);
+
+    color:#fff;
+
+    display:inline-block;
+    text-decoration:none;
+    font-size:13px;
+    line-height:26px;
+    height:28px;
+    margin:0;
+    padding:0 10px 1px;
+    cursor:pointer;
+    border-width:1px;
+    border-style:solid;
+    -webkit-appearance:none;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+    white-space:nowrap;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+}
+.likebtn_button_account:hover {
+    background: #8fc800;
+}
+#likebtn table.form-table th {
+    padding-right: 24px;
+    position: relative;
+}
+.likebtn_subpage {
+    max-width: 885px;
+}
+.likebtn_social {
+    float: right;
+}
+#likebtn .likebtn_social td {
+    vertical-align: middle;
+    padding: 0;
+}
