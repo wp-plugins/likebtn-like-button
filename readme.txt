@@ -4,7 +4,7 @@ Donate link: http://likebtn.com
 Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
 Tested up to: 4.0.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,11 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 9. Most Liked Content Widget frontend
 
 == Changelog ==
+
+= 2.1.1 =
+* Updated theme selector
+* Updated popup style selector
+* Updated AddThis selector
 
 = 2.1 =
 * bbPress support
