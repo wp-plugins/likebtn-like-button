@@ -1,5 +1,8 @@
 var plans={trial:9,free:0,plus:1,pro:2,vip:3,ultra:4};
 var likebtn_popup;
+var likebtn_preview;
+var likebtn_preview_offset;
+var likebtn_preview_position = 'static';
 
 jQuery(document).ready(function(jQuery) {
     //jQuery('#review_link a:first').tipsy({gravity: 'se'});
@@ -474,6 +477,9 @@ function displayFields()
     // Popup content order
     likebtnSetMultipleSelect2Val('#settings_popup_content_order', jQuery('#settings_popup_content_order_input').val(), true);
 
+    // Display donate buttons
+    jQuery("#donate_pveview").html(likebtnDGGetPreview('#popup_donate_input'));
+
     // Must come before displayTranslationsOnLoad
     displayAddthis();
     displayTranslationsOnLoad();
@@ -528,4 +534,97 @@ function displayTranslations()
 
     // Remember lang
     likebtn_prev_lang = lang;
+}
+
+// Refresh like button preview
+function likebtnRefreshPreview(entity_name)
+{
+    var wrapper = jQuery(".likebtn_container:first .likebtn-wrapper:first");
+    var properties = [];
+    var property_name;
+    var entity_regexp;
+
+    if (!wrapper || !entity_name) {
+        return false;
+    }
+
+    // Prepare field names
+    jQuery("#settings_form :input").each(function(index, element) {
+        var field = jQuery(element);
+        var name = field.attr('name');
+        var value = field.val();
+
+        if (!name || name.indexOf('likebtn_settings_') == -1 || field.hasClass('disabled')) {
+            return;
+        }
+
+        // Format value
+        if (field.attr('type') == 'checkbox' && !field.is(':checked')) {
+            value = '0';
+        }
+        // Find selected radio
+        if (field.attr('type') == 'radio' && !field.is(':checked')) {
+            return;
+        }
+
+        property_name = name.replace(/^likebtn_settings_/, '');
+
+        // Cut entity name out
+        entity_regexp = new RegExp("_"+likebtnEscapeRegExp(entity_name)+"$");
+        property_name = property_name.replace(entity_regexp, '');
+
+        // Fetch dynamic fields
+        if (property_name == 'addthis_service_codes') {
+            value = likebtnGetMultipleSelect2Val("#settings_addthis_service_codes");
+        }
+        if (property_name == 'popup_content_order') {
+            value = likebtnGetMultipleSelect2Val('#settings_popup_content_order');
+            console.log('value'+value);
+        }
+
+        properties[property_name] = value;
+    });
+    
+    if (typeof(LikeBtn) !== "undefined") {
+        LikeBtn.apply(wrapper[0], properties, ['identifier', 'site_id']);
+    }
+}
+
+// Escape string against regular expression
+function likebtnEscapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+// Fix preview container
+function likebtnFixPreview()
+{
+    likebtn_preview = jQuery("#preview_fixer");
+    var likebtn_preview_offset = likebtn_preview.offset().top - 40;
+
+    jQuery(window).scroll(function(){
+        var scroll_top = jQuery(window).scrollTop();
+        
+        if (likebtn_preview_position == 'fixed' && scroll_top < likebtn_preview_offset) {
+            likebtn_preview
+                .addClass('likebtn_preview_static')
+                .removeClass('likebtn_preview_fixed')
+                .width('auto');
+            
+            jQuery('.likebtn_subpage:first').css({paddingTop: '0'});
+
+            likebtn_preview_position = 'static';
+
+        } else if (likebtn_preview_position == 'static' && scroll_top >= likebtn_preview_offset) {
+            likebtn_preview
+                .addClass('likebtn_preview_fixed')
+                .removeClass('likebtn_preview_static')
+                .width(jQuery("#settings_container").width());
+
+            jQuery('.likebtn_subpage:first').css({
+                paddingTop: likebtn_preview.height() + parseInt(likebtn_preview.css('marginBottom')) + 'px'
+            });
+
+            likebtn_preview_position = 'fixed';
+        }
+    });    
 }
