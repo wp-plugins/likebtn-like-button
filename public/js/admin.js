@@ -28,8 +28,10 @@ function userSettingsFromChange(el, entity_name)
 {
     if (jQuery(el).val()) {
         jQuery("#use_settings_from_container_"+entity_name).hide();
+        jQuery("#likebtn_save_preview").hide();
     } else {
         jQuery("#use_settings_from_container_"+entity_name).show();
+        jQuery("#likebtn_save_preview").show();
     }
 }
 

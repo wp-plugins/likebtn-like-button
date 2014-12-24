@@ -1638,7 +1638,7 @@ function likebtn_admin_buttons() {
                                         <div class="preview_container">
                                             <?php echo _likebtn_get_markup($entity_name, 'demo', array(), get_option('likebtn_use_settings_from_' . $entity_name)) ?>
                                         </div>
-                                        <input class="button-primary" type="submit" name="Save" value="<?php _e('Save Changes', LIKEBTN_I18N_DOMAIN); ?>" />
+                                        <input class="button-primary" type="submit" name="Save" value="<?php _e('Save Changes', LIKEBTN_I18N_DOMAIN); ?>" id="likebtn_save_preview"  <?php if (get_option('likebtn_use_settings_from_' . $entity_name)): ?>style="display: none"<?php endif ?>/>
 
                                         <span class="support_link">
                                             ♥ <?php _e('Like it?', LIKEBTN_I18N_DOMAIN); ?>
@@ -2260,7 +2260,8 @@ function likebtn_admin_buttons() {
                     </div>
                 </div>
             <?php endforeach ?>
-            <?php /*<input class="button-primary" type="submit" name="Save" value="<?php _e('Save Changes', LIKEBTN_I18N_DOMAIN); ?>" /><br/><br/>*/ ?>
+
+            <input class="button-primary" type="submit" name="Save" value="<?php _e('Save Changes', LIKEBTN_I18N_DOMAIN); ?>" <?php /*if (get_option('likebtn_show_' . $entity_name) == '1'): ?>style="display: none"<?php endif*/ ?> /><br/><br/>
         </form>
 
     </div>
