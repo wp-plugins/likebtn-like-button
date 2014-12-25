@@ -318,6 +318,29 @@ function statisticsEdit(entity_name, entity_id, type, plan, text_enter, text_upg
     return true;
 }
 
+// Go to tab
+function likebtnGotoTab(tab, content_wrapper, content_wrapper_id, wrapper_selector) {
+
+    /*if (!jQuery("#likebtn_subpage_wrapper_"+tab).size()) {
+        // Show first tab
+        var tab_id = jQuery(tab_selector+":first").attr('id');
+        if (tab_id) {
+            tab = tab_id.replace('likebtn_subpage_wrapper_', '');
+        } else {
+            // Could not find first tab
+            return false;
+        }
+    }*/
+
+    // Content
+    jQuery(content_wrapper).addClass('hidden');
+    jQuery(content_wrapper_id+tab).removeClass('hidden');
+
+    // Tab
+    jQuery(wrapper_selector+" .nav-tab").removeClass('nav-tab-active');
+    jQuery(wrapper_selector+" .nav-tab.likebtn_tab_"+tab).addClass('nav-tab-active');
+}
+
 // Show subpage
 /*function likebtnGotoSubpage(subpage) {
 

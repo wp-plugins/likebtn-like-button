@@ -1540,7 +1540,7 @@ function likebtn_admin_buttons() {
 
             <h3 class="nav-tab-wrapper" style="padding: 0" id="likebtn_subpage_tab_wrapper">
                 <?php foreach ($likebtn_entities as $tab_entity_name => $tab_entity_title): ?>
-                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="<?php echo admin_url().'admin.php?page=likebtn_buttons&likebtn_subpage='.$tab_entity_name; ?>" onclick="javascript:likebtnGotoSubpage('<?php echo $tab_entity_name; ?>');void(0);"><img src="<?php echo _likebtn_get_public_url() ?>img/check.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
+                    <a class="nav-tab likebtn_tab_<?php echo $tab_entity_name; ?> <?php echo ($subpage == $tab_entity_name ? 'nav-tab-active' : '') ?>" href="<?php echo admin_url().'admin.php?page=likebtn_buttons&likebtn_subpage='.$tab_entity_name; ?>"><img src="<?php echo _likebtn_get_public_url() ?>img/check.png" class="likebtn_ttip likebtn_show_marker <?php if (get_option('likebtn_show_' . $tab_entity_name) != '1'): ?>hidden<?php endif ?>" title="<?php _e('Like Button enabled', LIKEBTN_I18N_DOMAIN); ?>"><?php _e($tab_entity_title, LIKEBTN_I18N_DOMAIN); ?></a>
                 <?php endforeach ?>
             </h3>
             <?php
@@ -1713,7 +1713,7 @@ function likebtn_admin_buttons() {
                                                         <option value="number" <?php selected('number', get_option('likebtn_settings_counter_type_' . $entity_name)); ?> ><?php _e('Number', LIKEBTN_I18N_DOMAIN); ?></option>
                                                         <option value="percent" <?php selected('percent', get_option('likebtn_settings_counter_type_' . $entity_name)); ?> ><?php _e('Percent', LIKEBTN_I18N_DOMAIN); ?></option>
                                                         <option value="subtract_dislikes" <?php selected('subtract_dislikes', get_option('likebtn_settings_counter_type_' . $entity_name)); ?> ><?php _e('Subtract dislikes', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                        <option value="single_number" <?php selected('single_number', get_option('likebtn_settings_counter_type_' . $entity_name)); ?> ><?php _e('Next to Dislike button', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                        <option value="single_number" <?php selected('single_number', get_option('likebtn_settings_counter_type_' . $entity_name)); ?> ><?php _e('Single number outside', LIKEBTN_I18N_DOMAIN); ?></option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -1769,487 +1769,506 @@ function likebtn_admin_buttons() {
                                             <?php endif ?>
                                         </table>
 
-                                        <div class="postbox">
+                                        <?php /*<div class="postbox">
 
                                             <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Extended Settings', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                            <div class="inside hidden">
-                                                <br/>
+                                            <div class="inside">
+                                                <br/>*/ ?>
 
                                                 <?php /*<p class="description">&nbsp;&nbsp;<?php _e('You can find detailed settings description on <a href="http://likebtn.com/en/#settings" target="_blank">LikeBtn.com</a>', LIKEBTN_I18N_DOMAIN); ?></p><br/>*/ ?>
 
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('General', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table" >
-                                                            <?php /*if (!in_array($entity_name, $likebtn_no_excerpts)): ?>
-                                                                <tr valign="top">
-                                                                    <th scope="row"><label><?php _e('View mode', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                    <td>
-                                                                        <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_FULL; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_FULL, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Full', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                                        <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_EXCERPT; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_EXCERPT, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Excerpt', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                                        <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_BOTH; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_BOTH, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Both', LIKEBTN_I18N_DOMAIN); ?>
+                                        <br/>
 
-                                                                        <i class="likebtn_help" title="<?php _e('Choose post display modes for which you want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>"></i>
-                                                                    </td>
-                                                                </tr>
-                                                            <?php endif*/ ?>
+                                        <h3 class="nav-tab-wrapper" style="padding: 0" id="likebtn_extset_tabs">
+                                            <a class="nav-tab likebtn_tab_general nav-tab-active" href="javascript:likebtnGotoTab('general', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('General', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Format', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Select post formats for which you want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_post_format_<?php echo $entity_name; ?>[]" value="all" <?php if (in_array('all', get_option('likebtn_post_format_' . $entity_name))): ?>checked="checked"<?php endif ?> onClick="postFormatAllChange(this, '<?php echo $entity_name; ?>')" /> <?php _e('All', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                                    <span id="post_format_container_<?php echo $entity_name; ?>" <?php if (in_array('all', get_option('likebtn_post_format_' . $entity_name))): ?>style="display:none"<?php endif ?>>
-                                                                        <?php foreach ($post_formats as $post_format): ?>
-                                                                            <input type="checkbox" name="likebtn_post_format_<?php echo $entity_name; ?>[]" value="<?php echo $post_format; ?>" <?php if (in_array($post_format, get_option('likebtn_post_format_' . $entity_name))): ?>checked="checked"<?php endif ?> /> <?php _e(__(ucfirst($post_format), LIKEBTN_I18N_DOMAIN)); ?>&nbsp;&nbsp;&nbsp;
-                                                                        <?php endforeach ?>
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
+                                            <a class="nav-tab likebtn_tab_popup" href="javascript:likebtnGotoTab('popup', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Popup', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Exclude on selected sections', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Choose sections where you DO NOT want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="home" <?php if (in_array('home', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Home'); ?>&nbsp;&nbsp;&nbsp;
-                                                                    <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="archive" <?php if (in_array('archive', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Archive', LIKEBTN_I18N_DOMAIN); ?>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Exclude in selected categories', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Select categories where you DO NOT want to show the Like Button (use CTRL key to pick categories)', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <select name='likebtn_exclude_categories_<?php echo $entity_name; ?>[]' multiple="multiple" size="4" style="height:auto !important;">
-                                                                        <?php
-                                                                        $categories = get_categories();
+                                            <a class="nav-tab likebtn_tab_voting" href="javascript:likebtnGotoTab('voting', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Voting', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                                        foreach ($categories as $category) {
-                                                                            $selected = (in_array($category->cat_ID, $excluded_categories)) ? 'selected="selected"' : '';
-                                                                            $option = '<option value="' . $category->cat_ID . '" ' . $selected . '>';
-                                                                            $option .= $category->cat_name;
-                                                                            $option .= ' (' . $category->category_count . ')';
-                                                                            $option .= '</option>';
-                                                                            echo $option;
-                                                                        }
-                                                                        ?>
-                                                                    </select>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Allow post/page IDs', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Suppose you have a post which belongs to more than one category and you have excluded one of those categories. So the Like Button will not be available for that post. Enter comma separated post ids where you want to show the Like Button irrespective of that post category being excluded.', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="text"name="likebtn_allow_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_allow_ids_' . $entity_name)); ?>" class="likebtn_input" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Exclude post/page IDs', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Comma separated post/page IDs where you DO NOT want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_exclude_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_exclude_ids_' . $entity_name)); ?>" class="likebtn_input" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('User authorization', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('Show the Like Button when user is logged in, not logged in or show always', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('Logged in', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                                    <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="0" <?php checked('0', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('Not logged in', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                                    <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="" <?php checked('', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('For all', LIKEBTN_I18N_DOMAIN); ?>
+                                            <a class="nav-tab likebtn_tab_counter" href="javascript:likebtnGotoTab('counter', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Counter', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Insert HTML before', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('HTML code to insert before the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <textarea name="likebtn_html_before_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_before_' . $entity_name); ?></textarea>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Insert HTML after', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e('HTML code to insert after the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <textarea name="likebtn_html_after_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_after_' . $entity_name); ?></textarea>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
+                                            <a class="nav-tab likebtn_tab_loading" href="javascript:likebtnGotoTab('loading', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Loading', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Popup', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show popup on voting', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_enabled_' . $entity_name)); ?> class="plan_dependent plan_vip" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show popup on disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_popup_dislike_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_dislike_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Popup position', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <div class="image_toggle">
-                                                                        <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_top" value="top" <?php checked('top', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_top"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/top.png" alt="<?php _e('top', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('top', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+                                            <a class="nav-tab likebtn_tab_events" href="javascript:likebtnGotoTab('events', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Events', LIKEBTN_I18N_DOMAIN); ?></a>
 
-                                                                        <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_right" value="right" <?php checked('right', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_right"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/right.png" alt="<?php _e('right', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('right', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+                                            <a class="nav-tab likebtn_tab_texts" href="javascript:likebtnGotoTab('texts', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Texts', LIKEBTN_I18N_DOMAIN); ?></a>
+                                        </h3>
 
-                                                                        <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_bottom" value="bottom" <?php checked('bottom', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_bottom"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/bottom.png" alt="<?php _e('bottom', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('bottom', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+                                        <div class="postbox likebtn_tab_extset" id="likebtn_extset_tab_general">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('General', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table" >
+                                                    <?php /*if (!in_array($entity_name, $likebtn_no_excerpts)): ?>
+                                                        <tr valign="top">
+                                                            <th scope="row"><label><?php _e('View mode', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                            <td>
+                                                                <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_FULL; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_FULL, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Full', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                                <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_EXCERPT; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_EXCERPT, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Excerpt', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                                <input type="radio" name="likebtn_post_view_mode_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POST_VIEW_MODE_BOTH; ?>" <?php checked(LIKEBTN_POST_VIEW_MODE_BOTH, get_option('likebtn_post_view_mode_' . $entity_name)) ?> /> <?php _e('Both', LIKEBTN_I18N_DOMAIN); ?>
 
-                                                                        <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_left" value="left" <?php checked('left', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_left"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/left.png" alt="<?php _e('left', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('left', LIKEBTN_I18N_DOMAIN); ?>" /></label>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Popup style', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <div class="image_toggle">
-                                                                        <input type="radio" name="likebtn_settings_popup_style_<?php echo $entity_name; ?>" id="likebtn_settings_popup_style_<?php echo $entity_name; ?>_light" value="light" <?php checked('light', get_option('likebtn_settings_popup_style_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_style_<?php echo $entity_name; ?>_light"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_style/light.png" alt="<?php _e('light', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('light', LIKEBTN_I18N_DOMAIN); ?>" /></label>                                                                        
-                                                                        <input type="radio" name="likebtn_settings_popup_style_<?php echo $entity_name; ?>" id="likebtn_settings_popup_style_<?php echo $entity_name; ?>_dark" value="dark" <?php checked('dark', get_option('likebtn_settings_popup_style_' . $entity_name)); ?>>
-                                                                        <label for="likebtn_settings_popup_style_<?php echo $entity_name; ?>_dark"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_style/dark.png" alt="<?php _e('dark', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('dark', LIKEBTN_I18N_DOMAIN); ?>" /></label>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Hide popup when clicking outside', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_popup_hide_on_outside_click_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_hide_on_outside_click_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_share_enabled_' . $entity_name)); ?> class="plan_dependent plan_plus" />
-                                                                    <?php /*<span class="description"><?php _e('Use popup_enabled option to enable/disable popup.', LIKEBTN_I18N_DOMAIN); ?></span>*/ ?>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('AddThis <a href="https://www.addthis.com/settings/publisher" target="_blank">Profile ID</a>', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
-                                                                    <i class="likebtn_help" title="<?php _e("Enter your AddThis Profile ID to collect sharing statistics and view it on AddThis analytics page", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_addthis_pubid_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_addthis_pubid_' . $entity_name); ?>" class="plan_dependent plan_pro likebtn_input likebtn_placeholder" placeholder="ra-511b51aa3d843ec4" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row">
-                                                                    <label><?php _e('AddThis share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
-                                                                </th>
-                                                                <td>
-                                                                    <select id="settings_addthis_service_codes" class="likebtn_at16 likebtn_input plan_dependent plan_pro" multiple="multiple" >
-                                                                        <?php foreach($likebtn_addthis_service_codes as $addthis_service_code): ?>
-                                                                            <option value="<?php echo $addthis_service_code ?>"><?php echo $addthis_service_code ?></option>
-                                                                        <?php endforeach ?>
-                                                                    </select>
+                                                                <i class="likebtn_help" title="<?php _e('Choose post display modes for which you want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>"></i>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endif*/ ?>
 
-                                                                    <input type="hidden" name="likebtn_settings_addthis_service_codes_<?php echo $entity_name; ?>" value="<?php echo $value_addthis_service_codes; ?>" class="likebtn_input" id="settings_addthis_service_codes_input"/>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Format', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Select post formats for which you want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_post_format_<?php echo $entity_name; ?>[]" value="all" <?php if (in_array('all', get_option('likebtn_post_format_' . $entity_name))): ?>checked="checked"<?php endif ?> onClick="postFormatAllChange(this, '<?php echo $entity_name; ?>')" /> <?php _e('All', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                            <span id="post_format_container_<?php echo $entity_name; ?>" <?php if (in_array('all', get_option('likebtn_post_format_' . $entity_name))): ?>style="display:none"<?php endif ?>>
+                                                                <?php foreach ($post_formats as $post_format): ?>
+                                                                    <input type="checkbox" name="likebtn_post_format_<?php echo $entity_name; ?>[]" value="<?php echo $post_format; ?>" <?php if (in_array($post_format, get_option('likebtn_post_format_' . $entity_name))): ?>checked="checked"<?php endif ?> /> <?php _e(__(ucfirst($post_format), LIKEBTN_I18N_DOMAIN)); ?>&nbsp;&nbsp;&nbsp;
+                                                                <?php endforeach ?>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
 
-                                                                    <p class="description"><?php _e('<a href="http://www.addthis.com" target="_blank">AddThis</a> is the content sharing and social insights platform helping users to share your content and drive viral traffic.', LIKEBTN_I18N_DOMAIN); ?>
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Donate buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
-                                                                <td>
-                                                                    <div id="donate_wrapper">
-                                                                        <div id="donate_pveview" class="plan_dependent plan_vip likebtn_input"></div>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Exclude on selected sections', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Choose sections where you DO NOT want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="home" <?php if (in_array('home', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Home'); ?>&nbsp;&nbsp;&nbsp;
+                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="archive" <?php if (in_array('archive', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Archive', LIKEBTN_I18N_DOMAIN); ?>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Exclude in selected categories', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Select categories where you DO NOT want to show the Like Button (use CTRL key to pick categories)', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <select name='likebtn_exclude_categories_<?php echo $entity_name; ?>[]' multiple="multiple" size="4" style="height:auto !important;">
+                                                                <?php
+                                                                $categories = get_categories();
 
-                                                                        <a href="javascript:likebtnDG('popup_donate_input', false, {width: '80%'}, {preview_container: '#donate_pveview'});void(0);" class="popup_donate_trigger"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_donate.png" alt="<?php _e('Configure donate buttons', LIKEBTN_I18N_DOMAIN); ?>"></a>
-                                                                    </div>
+                                                                foreach ($categories as $category) {
+                                                                    $selected = (in_array($category->cat_ID, $excluded_categories)) ? 'selected="selected"' : '';
+                                                                    $option = '<option value="' . $category->cat_ID . '" ' . $selected . '>';
+                                                                    $option .= $category->cat_name;
+                                                                    $option .= ' (' . $category->category_count . ')';
+                                                                    $option .= '</option>';
+                                                                    echo $option;
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Allow post/page IDs', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Suppose you have a post which belongs to more than one category and you have excluded one of those categories. So the Like Button will not be available for that post. Enter comma separated post ids where you want to show the Like Button irrespective of that post category being excluded.', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="text"name="likebtn_allow_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_allow_ids_' . $entity_name)); ?>" class="likebtn_input" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Exclude post/page IDs', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Comma separated post/page IDs where you DO NOT want to show the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_exclude_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_exclude_ids_' . $entity_name)); ?>" class="likebtn_input" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('User authorization', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('Show the Like Button when user is logged in, not logged in or show always', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('Logged in', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                            <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="0" <?php checked('0', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('Not logged in', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                            <input type="radio" name="likebtn_user_logged_in_<?php echo $entity_name; ?>" value="" <?php checked('', get_option('likebtn_user_logged_in_' . $entity_name)) ?> /> <?php _e('For all', LIKEBTN_I18N_DOMAIN); ?>
 
-                                                                    <input type="hidden" name="likebtn_settings_popup_donate_<?php echo $entity_name; ?>" value="<?php echo htmlspecialchars(get_option('likebtn_settings_popup_donate_' . $entity_name)); ?>" id="popup_donate_input" class="likebtn_input"/>
-
-                                                                    <p class="description">
-                                                                        <?php _e('Collect donations using', LIKEBTN_I18N_DOMAIN); ?> <a href="https://www.paypal.com" target="_blank">PayPal</a>, <a href="https://bitcoin.org" target="_blank">Bitcoin</a>, <a href="https://wallet.google.com" target="_blank">Google Wallet</a>, <a href="https://money.yandex.ru" target="_blank">Yandex.Money</a>, <a href="http://www.webmoney.ru" target="_blank">Webmoney</a>, <a href="https://qiwi.ru" target="_blank">Qiwi</a>, <a href="http://smscoin.com" target="_blank">SmsCoin</a>, <a href="https://zaypay.com" target="_blank"><?php _e('Zaypay Mobile Payments', LIKEBTN_I18N_DOMAIN); ?></a>.
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Custom HTML', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PRO / VIP / ULTRA"></i></label>
-                                                                    <i class="likebtn_help" title="<?php _e("Custom HTML to insert into the popup", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <textarea name="likebtn_settings_popup_html_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_settings_popup_html_' . $entity_name); ?></textarea>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Popup content order', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <select id="settings_popup_content_order" multiple="multiple" class="likebtn_input">
-                                                                        <option value="popup_donate" ><?php _e('Donate buttons', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="popup_share" ><?php _e('Share buttons', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="popup_html" ><?php _e('Custom HTML', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                    </select>
-
-                                                                    <input type="hidden" id="settings_popup_content_order_input" name="likebtn_settings_popup_content_order_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_popup_content_order_' . $entity_name); ?>" />
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Voting', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Allow voting', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_voting_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_enabled_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Allow to cancel a vote', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_voting_cancelable_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_cancelable_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Allow to like and dislike at the same time', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_voting_both_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_both_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Voting frequency', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e("If voting frequency set to every second/minute make sure that 'IP address vote interval' of your website is set to 1 and 60 seconds correspondingly on Websites page of LikeBtn.com", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <select name="likebtn_settings_voting_frequency_<?php echo $entity_name; ?>">
-                                                                        <option value=""><?php _e('Once', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="1" <?php selected('1', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Unlimited', LIKEBTN_I18N_DOMAIN); ?> *</option>
-                                                                        <option value="60" <?php selected('60', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Every minute', LIKEBTN_I18N_DOMAIN); ?> *</option>
-                                                                        <option value="3600" <?php selected('3600', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Hourly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="86400" <?php selected('86400', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Daily', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="604800" <?php selected('604800', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Weekly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="2592000" <?php selected('2592000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Monthly', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                        <option value="31536000" <?php selected('31536000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Annually', LIKEBTN_I18N_DOMAIN); ?></option>
-                                                                    </select>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Counter', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                         <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show votes counter', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_counter_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_show_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Votes counter is clickable', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_counter_clickable_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_clickable_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Counter padding', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_counter_padding_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_counter_padding_' . $entity_name); ?>" class="likebtn_input" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show zero value in counter', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_counter_zero_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_zero_show_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <?php /*<div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Sharing', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-
-                                                        </table>
-                                                    </div>
-                                                </div>*/ ?>
-
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Loading', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Lazy load', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e("If button is outside a viewport it is loaded when user scrolls to it", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_lazy_load_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_lazy_load_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show loader', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e("Show loader while loading a button", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_loader_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_loader_show_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Loader image', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e("URL of the image to use as loader image (leave empty to display default image)", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_loader_image_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_loader_image_' . $entity_name); ?>" class="likebtn_input" />
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <?php /*<div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Domains', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Use domain of the parent window', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_domain_from_parent_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_domain_from_parent_' . $entity_name)); ?> />
-                                                                    <span class="description">domain_from_parent</span>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>*/ ?>
-
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Events', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row">
-                                                                    <label>
-                                                                        <?php _e('JavaScript callback function', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                </th>
-                                                                <td class="description">
-                                                                    <input type="text" name="likebtn_settings_event_handler_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_settings_event_handler_' . $entity_name)); ?>" class="likebtn_input" />
-                                                                    <p class="description">
-                                                                        <?php _e('The provided function receives the event object as its single argument. The event object has the following properties:', LIKEBTN_I18N_DOMAIN); ?><br/>
-                                                                        <code>type</code> – <?php _e('indicates which event was dispatched:', LIKEBTN_I18N_DOMAIN); ?><br/>
-                                                                        ● "likebtn.loaded"<br/>
-                                                                        ● "likebtn.like"<br/>
-                                                                        ● "likebtn.unlike"<br/>
-                                                                        ● "likebtn.dislike"<br/>
-                                                                        ● "likebtn.undislike"<br/>
-                                                                        <code>settings</code> – <?php _e('button settings', LIKEBTN_I18N_DOMAIN); ?><br/>
-                                                                        <code>wrapper</code> – <?php _e('button DOM-element', LIKEBTN_I18N_DOMAIN); ?>
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                            <?php /*<tr valign="top">
-                                                                <th scope="row"><label><?php _e('Show info messages', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                                    <i class="likebtn_help" title="<?php _e("Show information message instead of the button when it is restricted by tariff plan", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
-                                                                </th>
-                                                                <td>
-                                                                    <input type="checkbox" name="likebtn_settings_info_message_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_info_message_' . $entity_name)); ?> />
-                                                                </td>
-                                                            </tr>*/ ?>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <div class="postbox">
-                                                    <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Texts', LIKEBTN_I18N_DOMAIN); ?></h3>
-                                                    <div class="inside hidden">
-                                                        <table class="form-table">
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Like button text after liking', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_after_like_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_after_like_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Like', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Dislike button text after disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_after_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_after_dislike_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Dislike', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Like button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_like_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_like_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('I like this', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Dislike button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_dislike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_dislike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('I dislike this', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Like button tooltip after liking', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_unlike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_unlike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Unlike', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Dislike button tooltip after disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_undislike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_undislike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Undislike', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Text before share buttons', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_share_text_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_share_text_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Would you like to share?', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Popup close button text', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_popup_close_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_close_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Close', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Popup text when sharing disabled', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_popup_text_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_text_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Glad you liked it!', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row"><label><?php _e('Text before donate buttons', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                                <td>
-                                                                    <input type="text" name="likebtn_settings_i18n_popup_donate_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_donate_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Show gratitude in the form of a donation', LIKEBTN_I18N_DOMAIN); ?>"/>
-                                                                </td>
-                                                            </tr>
-                                                            </tr>
-                                                            <tr valign="top">
-                                                                <th scope="row" colspan="2">
-                                                                    <a href="javascript:likebtnPopup('<?php _e('http://likebtn.com/en/translate-like-button-widget', LIKEBTN_I18N_DOMAIN); ?>?likebtn_short_version=1');void(0);"><?php _e('Send us Translation', LIKEBTN_I18N_DOMAIN); ?></a>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Insert HTML before', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('HTML code to insert before the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <textarea name="likebtn_html_before_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_before_' . $entity_name); ?></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Insert HTML after', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e('HTML code to insert after the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <textarea name="likebtn_html_after_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_after_' . $entity_name); ?></textarea>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_popup">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Popup', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show popup on voting', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_enabled_' . $entity_name)); ?> class="plan_dependent plan_vip" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show popup on disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_popup_dislike_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_dislike_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Popup position', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <div class="image_toggle">
+                                                                <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_top" value="top" <?php checked('top', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_top"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/top.png" alt="<?php _e('top', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('top', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+
+                                                                <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_right" value="right" <?php checked('right', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_right"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/right.png" alt="<?php _e('right', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('right', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+
+                                                                <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_bottom" value="bottom" <?php checked('bottom', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_bottom"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/bottom.png" alt="<?php _e('bottom', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('bottom', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+
+                                                                <input type="radio" name="likebtn_settings_popup_position_<?php echo $entity_name; ?>" id="likebtn_settings_popup_position_<?php echo $entity_name; ?>_left" value="left" <?php checked('left', get_option('likebtn_settings_popup_position_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_position_<?php echo $entity_name; ?>_left"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_position/left.png" alt="<?php _e('left', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('left', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Popup style', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <div class="image_toggle">
+                                                                <input type="radio" name="likebtn_settings_popup_style_<?php echo $entity_name; ?>" id="likebtn_settings_popup_style_<?php echo $entity_name; ?>_light" value="light" <?php checked('light', get_option('likebtn_settings_popup_style_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_style_<?php echo $entity_name; ?>_light"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_style/light.png" alt="<?php _e('light', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('light', LIKEBTN_I18N_DOMAIN); ?>" /></label>                                                                        
+                                                                <input type="radio" name="likebtn_settings_popup_style_<?php echo $entity_name; ?>" id="likebtn_settings_popup_style_<?php echo $entity_name; ?>_dark" value="dark" <?php checked('dark', get_option('likebtn_settings_popup_style_' . $entity_name)); ?>>
+                                                                <label for="likebtn_settings_popup_style_<?php echo $entity_name; ?>_dark"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_style/dark.png" alt="<?php _e('dark', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('dark', LIKEBTN_I18N_DOMAIN); ?>" /></label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Hide popup when clicking outside', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_popup_hide_on_outside_click_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_hide_on_outside_click_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_share_enabled_' . $entity_name)); ?> class="plan_dependent plan_plus" />
+                                                            <?php /*<span class="description"><?php _e('Use popup_enabled option to enable/disable popup.', LIKEBTN_I18N_DOMAIN); ?></span>*/ ?>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('AddThis <a href="https://www.addthis.com/settings/publisher" target="_blank">Profile ID</a>', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
+                                                            <i class="likebtn_help" title="<?php _e("Enter your AddThis Profile ID to collect sharing statistics and view it on AddThis analytics page", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_addthis_pubid_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_addthis_pubid_' . $entity_name); ?>" class="plan_dependent plan_pro likebtn_input likebtn_placeholder" placeholder="ra-511b51aa3d843ec4" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row">
+                                                            <label><?php _e('AddThis share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
+                                                        </th>
+                                                        <td>
+                                                            <select id="settings_addthis_service_codes" class="likebtn_at16 likebtn_input plan_dependent plan_pro" multiple="multiple" >
+                                                                <?php foreach($likebtn_addthis_service_codes as $addthis_service_code): ?>
+                                                                    <option value="<?php echo $addthis_service_code ?>"><?php echo $addthis_service_code ?></option>
+                                                                <?php endforeach ?>
+                                                            </select>
+
+                                                            <input type="hidden" name="likebtn_settings_addthis_service_codes_<?php echo $entity_name; ?>" value="<?php echo $value_addthis_service_codes; ?>" class="likebtn_input" id="settings_addthis_service_codes_input"/>
+
+                                                            <p class="description"><?php _e('<a href="http://www.addthis.com" target="_blank">AddThis</a> is the content sharing and social insights platform helping users to share your content and drive viral traffic.', LIKEBTN_I18N_DOMAIN); ?>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Donate buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
+                                                        <td>
+                                                            <div id="donate_wrapper">
+                                                                <div id="donate_pveview" class="plan_dependent plan_vip likebtn_input"></div>
+
+                                                                <a href="javascript:likebtnDG('popup_donate_input', false, {width: '80%'}, {preview_container: '#donate_pveview'});void(0);" class="popup_donate_trigger"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_donate.png" alt="<?php _e('Configure donate buttons', LIKEBTN_I18N_DOMAIN); ?>"></a>
+                                                            </div>
+
+                                                            <input type="hidden" name="likebtn_settings_popup_donate_<?php echo $entity_name; ?>" value="<?php echo htmlspecialchars(get_option('likebtn_settings_popup_donate_' . $entity_name)); ?>" id="popup_donate_input" class="likebtn_input"/>
+
+                                                            <p class="description">
+                                                                <?php _e('Collect donations using', LIKEBTN_I18N_DOMAIN); ?> <a href="https://www.paypal.com" target="_blank">PayPal</a>, <a href="https://bitcoin.org" target="_blank">Bitcoin</a>, <a href="https://wallet.google.com" target="_blank">Google Wallet</a>, <a href="https://money.yandex.ru" target="_blank">Yandex.Money</a>, <a href="http://www.webmoney.ru" target="_blank">Webmoney</a>, <a href="https://qiwi.ru" target="_blank">Qiwi</a>, <a href="http://smscoin.com" target="_blank">SmsCoin</a>, <a href="https://zaypay.com" target="_blank"><?php _e('Zaypay Mobile Payments', LIKEBTN_I18N_DOMAIN); ?></a>.
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Custom HTML', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PRO / VIP / ULTRA"></i></label>
+                                                            <i class="likebtn_help" title="<?php _e("Custom HTML to insert into the popup", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <textarea name="likebtn_settings_popup_html_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_settings_popup_html_' . $entity_name); ?></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Popup content order', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <select id="settings_popup_content_order" multiple="multiple" class="likebtn_input">
+                                                                <option value="popup_donate" ><?php _e('Donate buttons', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="popup_share" ><?php _e('Share buttons', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="popup_html" ><?php _e('Custom HTML', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                            </select>
+
+                                                            <input type="hidden" id="settings_popup_content_order_input" name="likebtn_settings_popup_content_order_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_popup_content_order_' . $entity_name); ?>" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_voting">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Voting', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Allow voting', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_voting_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_enabled_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Allow to cancel a vote', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_voting_cancelable_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_cancelable_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Allow to like and dislike at the same time', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_voting_both_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_voting_both_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Voting frequency', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("If voting frequency set to every second/minute make sure that 'IP address vote interval' of your website is set to 1 and 60 seconds correspondingly on Websites page of LikeBtn.com", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <select name="likebtn_settings_voting_frequency_<?php echo $entity_name; ?>">
+                                                                <option value=""><?php _e('Once', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="1" <?php selected('1', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Unlimited', LIKEBTN_I18N_DOMAIN); ?> *</option>
+                                                                <option value="60" <?php selected('60', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Every minute', LIKEBTN_I18N_DOMAIN); ?> *</option>
+                                                                <option value="3600" <?php selected('3600', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Hourly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="86400" <?php selected('86400', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Daily', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="604800" <?php selected('604800', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Weekly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="2592000" <?php selected('2592000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Monthly', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                                <option value="31536000" <?php selected('31536000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Annually', LIKEBTN_I18N_DOMAIN); ?></option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_counter">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Counter', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                 <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show votes counter', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_counter_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_show_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Votes counter is clickable', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_counter_clickable_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_clickable_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Counter padding', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_counter_padding_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_counter_padding_' . $entity_name); ?>" class="likebtn_input" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show zero value in counter', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_counter_zero_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_counter_zero_show_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <?php /*<div class="postbox">
+                                            <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Sharing', LIKEBTN_I18N_DOMAIN); ?></h3>
+                                            <div class="inside hidden">
+                                                <table class="form-table">
+
+                                                </table>
+                                            </div>
+                                        </div>*/ ?>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_loading">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Loading', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Lazy load', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("If button is outside a viewport it is loaded when user scrolls to it", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_lazy_load_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_lazy_load_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show loader', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("Show loader while loading a button", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_loader_show_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_loader_show_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Loader image', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("URL of the image to use as loader image (leave empty to display default image)", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_loader_image_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_loader_image_' . $entity_name); ?>" class="likebtn_input" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <?php /*<div class="postbox">
+                                            <h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Domains', LIKEBTN_I18N_DOMAIN); ?></h3>
+                                            <div class="inside hidden">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Use domain of the parent window', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_domain_from_parent_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_domain_from_parent_' . $entity_name)); ?> />
+                                                            <span class="description">domain_from_parent</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>*/ ?>
+
+                                        <div class="postbox likebtn_tab_extset hidden"  id="likebtn_extset_tab_events">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Events', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row">
+                                                            <label>
+                                                                <?php _e('JavaScript callback function', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                        </th>
+                                                        <td class="description">
+                                                            <input type="text" name="likebtn_settings_event_handler_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_settings_event_handler_' . $entity_name)); ?>" class="likebtn_input" />
+                                                            <p class="description">
+                                                                <?php _e('The provided function receives the event object as its single argument. The event object has the following properties:', LIKEBTN_I18N_DOMAIN); ?><br/>
+                                                                <code>type</code> – <?php _e('indicates which event was dispatched:', LIKEBTN_I18N_DOMAIN); ?><br/>
+                                                                ● "likebtn.loaded"<br/>
+                                                                ● "likebtn.like"<br/>
+                                                                ● "likebtn.unlike"<br/>
+                                                                ● "likebtn.dislike"<br/>
+                                                                ● "likebtn.undislike"<br/>
+                                                                <code>settings</code> – <?php _e('button settings', LIKEBTN_I18N_DOMAIN); ?><br/>
+                                                                <code>wrapper</code> – <?php _e('button DOM-element', LIKEBTN_I18N_DOMAIN); ?>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <?php /*<tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show info messages', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("Show information message instead of the button when it is restricted by tariff plan", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_info_message_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_info_message_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>*/ ?>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_texts">
+                                            <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Texts', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Like button text after liking', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_after_like_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_after_like_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Like', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Dislike button text after disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_after_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_after_dislike_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Dislike', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Like button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_like_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_like_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('I like this', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Dislike button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_dislike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_dislike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('I dislike this', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Like button tooltip after liking', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_unlike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_unlike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Unlike', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Dislike button tooltip after disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_undislike_tooltip_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_undislike_tooltip_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Undislike', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Text before share buttons', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_share_text_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_share_text_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Would you like to share?', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Popup close button text', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_popup_close_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_close_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Close', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Popup text when sharing disabled', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_popup_text_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_text_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Glad you liked it!', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Text before donate buttons', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="text" name="likebtn_settings_i18n_popup_donate_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_popup_donate_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Show gratitude in the form of a donation', LIKEBTN_I18N_DOMAIN); ?>"/>
+                                                        </td>
+                                                    </tr>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row" colspan="2">
+                                                            <a href="javascript:likebtnPopup('<?php _e('http://likebtn.com/en/translate-like-button-widget', LIKEBTN_I18N_DOMAIN); ?>?likebtn_short_version=1');void(0);"><?php _e('Send us Translation', LIKEBTN_I18N_DOMAIN); ?></a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                            <?php /*
+                                            </div>
+                                        </div>*/ ?>
                                         <div class="likebtn_reset_wrapper">
                                             <input class="button-secondary" type="button" name="Reset" value="<?php _e('Reset', LIKEBTN_I18N_DOMAIN); ?>" onclick="return resetSettings('<?php echo $entity_name; ?>', reset_settings)" />
                                         </div>

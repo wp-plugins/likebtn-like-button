@@ -75,7 +75,8 @@
     font-style: italic;
     color: #666;
     line-height: 1.5;
-    float: right;
+    /*float: right;*/
+    margin-left: 10px;
 }
 .likebtn_show_marker {
     margin-right: 6px;
