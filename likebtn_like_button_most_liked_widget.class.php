@@ -183,6 +183,10 @@ class LikeBtnLikeButtonMostLiked {
             $show_dislikes = '1';
         }*/
 
+        if (empty($instance['entity_name'])) {
+            $instance['entity_name'] = array(LIKEBTN_ENTITY_POST);
+        }
+
         foreach ($instance['entity_name'] as $entity_index => $entity_name) {
             $instance['entity_name'][$entity_index] = str_replace("'", '', trim($entity_name));
 
