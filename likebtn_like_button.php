@@ -222,6 +222,7 @@ $likebtn_settings = array(
     "popup_position" => array("default" => 'top'),
     "popup_style" => array("default" => 'light'),
     "popup_hide_on_outside_click" => array("default" => '1'),
+    "popup_on_load" => array("default" => '0'),
     "event_handler" => array("default" => ''),
     "info_message" => array("default" => '1'),
     "i18n_like" => array("default" => ''),
@@ -1917,6 +1918,12 @@ function likebtn_admin_buttons() {
                                                         <th scope="row"><label><?php _e('Show popup on disliking', LIKEBTN_I18N_DOMAIN); ?></label></th>
                                                         <td>
                                                             <input type="checkbox" name="likebtn_settings_popup_dislike_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_dislike_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Show popup on button load', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_popup_on_load_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_on_load_' . $entity_name)); ?> />
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
