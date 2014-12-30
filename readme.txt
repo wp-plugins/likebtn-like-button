@@ -1,5 +1,5 @@
 === Like Button Voting & Rating ===
-Contributors: LikeBtn
+Contributors: LikeBtn, LikeBtn Support
 Donate link: http://likebtn.com
 Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
