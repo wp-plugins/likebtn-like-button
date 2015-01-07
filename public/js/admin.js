@@ -5,10 +5,18 @@ var likebtn_preview_offset;
 var likebtn_preview_position = 'static';
 
 jQuery(document).ready(function(jQuery) {
-    //jQuery('#review_link a:first').tipsy({gravity: 'se'});
-    jQuery('#likebtn .likebtn_ttip').tipsy({gravity: 's'});
+    /*jQuery('#likebtn .likebtn_ttip').tipsy({gravity: 's'});
     jQuery('#likebtn .premium_feature').tipsy({gravity: 's'});
-    jQuery('#likebtn .likebtn_help').tipsy({gravity: 's'});
+    jQuery('#likebtn .likebtn_help').tipsy({gravity: 's'});*/
+
+    jQuery('#likebtn .likebtn_help, #likebtn .premium_feature, #likebtn .likebtn_ttip, #likebtn .likebtn_help_simple').each(function(index, el) {
+        var gravity = jQuery(el).attr('data-likebtn_ttip_gr');
+        if (gravity) {
+            jQuery(el).tipsy({gravity: gravity});
+        } else {
+            jQuery(el).tipsy({gravity: 's'});
+        }
+    });
 });
 
 // Show/hide entity options
@@ -85,7 +93,8 @@ function testSync(loader_src)
         data: {
             action: 'likebtn_test_sync',
             likebtn_account_email: jQuery(":input[name='likebtn_account_email']:first").val(),
-            likebtn_account_api_key: jQuery(":input[name='likebtn_account_api_key']:first").val()
+            likebtn_account_api_key: jQuery(":input[name='likebtn_account_api_key']:first").val(),
+            likebtn_site_id: jQuery(":input[name='likebtn_site_id']:first").val()
         },
         success: function(response) {
             var result_text = '';
@@ -106,6 +115,44 @@ function testSync(loader_src)
         },
         error: function(response) {
             jQuery(".likebtn_test_sync_container:first").html('Error occured. Disable WP HTTP Compression plugin if you have it enabled.').css('color', 'red');
+        }
+    });
+}
+
+// check account data
+function checkAccount(loader_src)
+{
+    jQuery(".likebtn_check_account_container:first").html('<img src="' + loader_src + '" />');
+
+    jQuery.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: ajaxurl,
+        data: {
+            action: 'likebtn_check_account',
+            likebtn_account_email: jQuery(":input[name='likebtn_account_email']:first").val(),
+            likebtn_account_api_key: jQuery(":input[name='likebtn_account_api_key']:first").val(),
+            likebtn_site_id: jQuery(":input[name='likebtn_site_id']:first").val()
+        },
+        success: function(response) {
+            var result_text = '';
+            if (typeof(response.result_text) != "undefined") {
+                result_text = response.result_text;
+            }
+            jQuery(".likebtn_check_account_container:first").text(result_text);
+            if (typeof(response.result) == "undefined" || response.result != "success") {
+                jQuery(".likebtn_check_account_container:first").css('color', 'red');
+                if (typeof(response.message) != "undefined") {
+                    var text = jQuery(".likebtn_check_account_container:first").html() + ': ' + response.message;
+                    jQuery(".likebtn_check_account_container:first").html(text);
+                }
+            } else {
+                jQuery(".likebtn_check_account_container:first").css('color', 'green');
+            }
+
+        },
+        error: function(response) {
+            jQuery(".likebtn_check_account_container:first").html('Error occured. Disable WP HTTP Compression plugin if you have it enabled.').css('color', 'red');
         }
     });
 }
@@ -186,15 +233,27 @@ function planChange(plan_id)
         }
 
         if (available) {
-            jQuery(this).removeAttr('readonly').removeClass('disabled');
+            jQuery(this).removeClass('likebtn_disabled').find(':input').removeAttr('readonly').removeClass('disabled');
             /*if (this.tagName.toUpperCase() === 'SELECT') {
                 jQuery(this).removeAttr('onchange');
             }*/
         } else {
-            jQuery(this).attr('readonly', 'readonly').addClass('disabled');
-            /*if (this.tagName.toUpperCase() === 'SELECT') {
-                jQuery(this).attr('onchange', "this.defaultIndex=this.selectedIndex;");
-            }*/
+            jQuery(this).addClass('likebtn_disabled').find(':input').each(function(index, el) {
+                jQuery(el).attr('readonly', 'readonly').addClass('disabled').attr('onclick', 'return false');
+                /*if (this.tagName.toUpperCase() === 'SELECT') {
+                    jQuery(this).attr('onchange', "this.defaultIndex=this.selectedIndex;");
+                }*/
+                // Disable AddThis select2
+                if (el.id && el.id == 'settings_addthis_service_codes') {
+                    jQuery(el)
+                        .attr("disabled", "disabled")
+                        .addClass('disabled')
+                        .select2Sortable('destroy');
+                }
+                if (el.id && el.id == 'popup_donate_input') {
+                    jQuery("#popup_donate_trigger").attr('href', 'javascript:void(0);');
+                }
+            });
         }
     });
 }
@@ -380,10 +439,13 @@ function likebtnGotoTab(tab, content_wrapper, content_wrapper_id, wrapper_select
 function likebtnPopup(url, name, height, width)
 {
     if (typeof(width) === "undefined" || !width) {
-        width = 800;
+        width = 1000;
     }
     if (typeof(height) === "undefined" || !height) {
         height = 620;
+    }
+    if (width > jQuery(window).width()) {
+        width = jQuery(window).width();
     }
 
     likebtn_popup = window.open(url, name, 'height='+height+',width='+width+',toolbar=0,scrollbars=yes');
@@ -652,4 +714,46 @@ function likebtnFixPreview()
             likebtn_preview_position = 'fixed';
         }
     });    
+}
+
+// Refresh plan
+function refreshPlan(msg_error, msg_success)
+{
+    jQuery('#likebtn_refresh_trgr').hide();
+    jQuery('#likebtn_refresh_ldr').show();
+    jQuery("#likebtn_refresh_msg_wr").hide();
+    jQuery("#likebtn_refresh_error").hide();
+    jQuery("#likebtn_refresh_success").hide();
+
+    jQuery.ajax({
+        type: 'POST',
+        dataType: "json",
+        url: ajaxurl,
+        data: {
+            action: 'likebtn_refresh_plan'
+        },
+        success: function(response) {
+            if (typeof(response.reload) != "undefined" && response.reload) {
+                location.reload(false);
+            } else if (typeof(response.html) != "undefined" && response.html) {
+                jQuery("#likebtn_plan_wr").html(response.html);
+                jQuery("#likebtn_refresh_success").html(msg_success).show();
+                jQuery("#likebtn_refresh_msg_wr").show();
+            } else if (typeof(response.message) != "undefined" && response.message) {
+                jQuery("#likebtn_refresh_error").html(response.message).show();
+                jQuery("#likebtn_refresh_msg_wr").show();
+            } else {
+                jQuery("#likebtn_refresh_error").html(msg_error).show();
+                jQuery("#likebtn_refresh_msg_wr").show();
+            }
+            jQuery('#likebtn_refresh_trgr').show();
+            jQuery('#likebtn_refresh_ldr').hide();
+        },
+        error: function(response) {
+            jQuery("#likebtn_refresh_error").html(msg_error).show();
+            jQuery("#likebtn_refresh_msg_wr").show();
+            jQuery('#likebtn_refresh_trgr').show();
+            jQuery('#likebtn_refresh_ldr').hide();
+        }
+    });
 }

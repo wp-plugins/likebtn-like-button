@@ -21,12 +21,13 @@ define('LIKEBTN_DB_VERSION', 5);
 define('LIKEBTN_I18N_DOMAIN', 'likebtn-like-button');
 
 // LikeBtn plans
-define('LIKEBTN_PLAN_TRIAL', 9);
 define('LIKEBTN_PLAN_FREE', 0);
 define('LIKEBTN_PLAN_PLUS', 1);
 define('LIKEBTN_PLAN_PRO', 2);
 define('LIKEBTN_PLAN_VIP', 3);
 define('LIKEBTN_PLAN_ULTRA', 4);
+define('LIKEBTN_PLAN_TRIAL', 9);
+//update_option('likebtn_plan', LIKEBTN_PLAN_FREE);
 
 // Flag added to entity excertps
 define('LIKEBTN_LIST_FLAG', '_likebtn_list');
@@ -361,7 +362,6 @@ $likebtn_website_locales = array(
 // Form options
 global $likebtn_settings_options;
 $likebtn_settings_options = array(
-    'likebtn_plan' => LIKEBTN_PLAN_TRIAL,
     'likebtn_account_email' => '',
     'likebtn_account_api_key' => '',
     'likebtn_sync_inerval' => '',
@@ -386,10 +386,20 @@ $likebtn_buttons_options = array(
 // Internal settings
 global $likebtn_internal_options;
 $likebtn_internal_options = array(
+    'likebtn_plan' => LIKEBTN_PLAN_TRIAL,
+    'likebtn_plan_expires_in' => 0,
+    'likebtn_plan_expires_on' => '',
     'likebtn_last_sync_time' => 0,
     'likebtn_last_successfull_sync_time' => 0,
+    'likebtn_last_locale_sync_time' => 0,
+    'likebtn_last_style_sync_time' => 0,
+    'likebtn_last_plan_sync_time' => 0,
+    'likebtn_last_plan_successfull_sync_time' => 0,
+    'likebtn_last_sync_result' => false,
+    'likebtn_last_sync_message' => '',
     'likebtn_plugin_v' => '',
     'likebtn_installation_timestamp' => '',
+    'likebtn_notice_plan' => 0, // 1 = upgrade, -1 = downgrade
 //    'likebtn_db_version' => 0,
 );
 
@@ -778,6 +788,53 @@ $likebtn_addthis_service_codes = array(
     'preferred_8'
 );
 
+// Features
+global $likebtn_features;
+$likebtn_features = array(
+    LIKEBTN_PLAN_FREE => array(
+        'max_buttons' => 1,
+        'statistics' => false,
+        'synchronization' => false,
+        'most_liked_widget' => false,
+        'sorting' => false
+    ),
+    LIKEBTN_PLAN_PLUS => array(
+        'max_buttons' => 10,
+        'statistics' => false,
+        'synchronization' => false,
+        'most_liked_widget' => false,
+        'sorting' => false
+    ),
+    LIKEBTN_PLAN_PRO => array(
+        'max_buttons' => 25,
+        'statistics' => true,
+        'synchronization' => true,
+        'most_liked_widget' => true,
+        'sorting' => true
+    ),
+    LIKEBTN_PLAN_VIP => array(
+        'max_buttons' => 0,
+        'statistics' => true,
+        'synchronization' => true,
+        'most_liked_widget' => true,
+        'sorting' => true
+    ),
+    LIKEBTN_PLAN_ULTRA => array(
+        'max_buttons' => 0,
+        'statistics' => true,
+        'synchronization' => true,
+        'most_liked_widget' => true,
+        'sorting' => true
+    ),
+    LIKEBTN_PLAN_TRIAL => array(
+        'max_buttons' => 0,
+        'statistics' => true,
+        'synchronization' => true,
+        'most_liked_widget' => true,
+        'sorting' => true
+    )
+);
+
 ###############
 ### Backend ###
 ###############
@@ -882,23 +939,319 @@ HEADER;
     //}
 
     $header .= '
-        <h2 class="nav-tab-wrapper">
-            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_buttons' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_buttons">' . __('Buttons', LIKEBTN_I18N_DOMAIN) . '</a>
-            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_settings' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_settings">' . __('Synchronization', LIKEBTN_I18N_DOMAIN) . '</a>
-            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_statistics' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_statistics">' . __('Statistics', LIKEBTN_I18N_DOMAIN) . ' <i class="premium_feature" title="PRO / VIP / ULTRA">&nbsp;</i></a>
-            <a class="nav-tab ' . ($_GET['page'] == 'likebtn_help' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_help">' . __('Help') . '</a>';
+        <div id="poststuff">
+            <div id="post-body" class="metabox-holder columns-2">
+                
+                <div id="postbox-container-1" class="postbox-container">
+                    <div class="meta-box-sortables ui-sortable">
+                        <div class="postbox">
+                            <h3 class="hndle ui-sortable-handle"><span>' . __('Plan & Features', LIKEBTN_I18N_DOMAIN) . '</span></h3>
+                            ' . _likebtn_sidebar_plan() . '
+                        </div>
+                        <div class="postbox">
+                            <h3 class="hndle ui-sortable-handle"><span>' . __('Synchronization', LIKEBTN_I18N_DOMAIN) . '</span></h3>
+                            <div class="inside likebtn_sidebar_inside">
+                                ' . _likebtn_sidebar_synchronization() . '
+                            </div>
+                        </div>
+                        <div class="postbox">
+                            <h3 class="hndle ui-sortable-handle"><span>' . __('Follow', LIKEBTN_I18N_DOMAIN) . '</span></h3>
+                            <div class="inside">
+                                ' . _likebtn_sidebar_social() . '
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="postbox-container-2" class="postbox-container">
+                    <h2 class="nav-tab-wrapper">
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_buttons' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_buttons">' . __('Buttons', LIKEBTN_I18N_DOMAIN) . '</a>
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_settings' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_settings">' . __('Synchronization', LIKEBTN_I18N_DOMAIN) . '</a>
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_statistics' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_statistics">' . __('Statistics', LIKEBTN_I18N_DOMAIN) . ' <i class="premium_feature" title="PRO / VIP / ULTRA">&nbsp;</i></a>
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_help' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_help">' . __('Help') . '</a>';
 
-    $header .= '
-        <div id="premium_features_hint">
-            <i class="premium_feature"></i>' . __('Premium / Trial features', LIKEBTN_I18N_DOMAIN) .
-        '</div>
+                $header .= '
+                    <div id="premium_features_hint">
+                        <i class="premium_feature"></i>' . __('Premium / Trial features', LIKEBTN_I18N_DOMAIN) .
+                    '</div>
     ';
 
     $header .= '</h2>';
 
-
     echo $header;
 }
+
+// admin side panel and footer
+function _likebtn_admin_footer()
+{
+    ?>
+                    </div>
+                </div>
+                <br class="clear"/>
+            </div>
+
+        </div>
+    <?php
+}
+
+// sidebar plan
+function _likebtn_sidebar_plan()
+{
+    $plan_synced = false;
+
+    if (get_option('likebtn_last_plan_successfull_sync_time')) {
+        $plan_synced = true;
+    }
+
+    $likebtn_plan = get_option('likebtn_plan');
+    
+    $html = '
+    <div class="inside likebtn_sidebar_inside">
+        <div class="likebtn_sidebar_section">
+            <div id="likebtn_plan_wr">
+                '._likebtn_plan_html().'
+            </div>'
+    ;
+
+    $html .= '
+            <div id="likebtn_refresh_msg_wr" style="display:none">
+                <div class="likebtn_sidebar_div_simple"></div>
+                <small class="likebtn_error" id="likebtn_refresh_error" style="display:none"></small>
+            </div>
+        </div>';
+
+    if ($plan_synced) {
+        $features = _likebtn_get_features();
+
+        $likebtn_alert = '';
+        if ((!_likebtn_is_stat_enabled() || get_option('likebtn_last_sync_message')) && $features['statistics']) {
+            $likebtn_alert = ' <i class="likebtn_ttip likebtn_alert" data-likebtn_ttip_gr="e" title="'.__('Configure Synchronization in order to use this feature', LIKEBTN_I18N_DOMAIN).'"></i>';
+        }
+
+        $html .= '
+        <div class="likebtn_sidebar_div"></div>
+        <div class="likebtn_sidebar_section">
+            '.__('Max buttons per page', LIKEBTN_I18N_DOMAIN).': <strong><nobr>'.($features['max_buttons'] ? $features['max_buttons'] : __('Unlimited', LIKEBTN_I18N_DOMAIN)).'</strong></nobr>
+        </div>
+        <div class="likebtn_sidebar_div"></div>
+        <div class="likebtn_sidebar_section">
+            <ul class="likebtn_features">
+                <li class="'.($features['statistics'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Statistics', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
+                <li class="'.($features['synchronization'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Synchronization', LIKEBTN_I18N_DOMAIN).'</span></li>
+                <li class="'.($features['most_liked_widget'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Most liked content widget', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
+                <li class="'.($features['sorting'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Sorting content by likes', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
+            </ul>
+        </div>
+        ';
+        $html .= '';
+    }
+
+    $html .= '
+    </div>
+    ';
+
+    if ($plan_synced) {
+        if ($likebtn_plan == LIKEBTN_PLAN_FREE || $likebtn_plan == LIKEBTN_PLAN_TRIAL) {
+            $html .= '
+    <div class="likebtn_upgrade_container">
+        <input class="button-secondary likebtn_button_upgrade" type="button" value="'.__('Upgrade', LIKEBTN_I18N_DOMAIN).'" onclick="likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'?likebtn_short_version=1#plans_pricing\')" />
+    </div>
+    ';
+        }
+    }
+
+    return $html;
+}
+
+// sidebar syncing
+function _likebtn_sidebar_synchronization()
+{
+    $enabled = false;
+    $sync_result_html = '';
+
+    if (_likebtn_is_stat_enabled()) {
+        $enabled = true;
+        $status = __('Enabled', LIKEBTN_I18N_DOMAIN);
+        $status_class = 'likebtn_success';
+
+        $last_sync = get_option('likebtn_last_sync_time');
+        if ($last_sync) {
+            $last_sync = ceil((time()-$last_sync) / 60);
+            $last_sync_html = $last_sync.' '.__('min(s) ago', LIKEBTN_I18N_DOMAIN);
+
+            if (get_option('likebtn_last_sync_result') == 'error') {
+                if (get_option('likebtn_last_sync_message')) {
+                    $sync_result_html = get_option('likebtn_last_sync_message');
+                }
+            }
+        } else {
+            $last_sync_html = __('Never', LIKEBTN_I18N_DOMAIN);
+        }
+    } else {
+        $status = __('Disabled', LIKEBTN_I18N_DOMAIN);
+        $status_class = 'likebtn_error';
+    }
+
+    $html = '
+        <div class="likebtn_sidebar_section">
+            '.__('Status', LIKEBTN_I18N_DOMAIN).': <strong class="'.$status_class.'">'.$status.'</strong>
+    ';
+    if (!$enabled) {
+        $html .= ' <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>';
+    }
+    
+    if ($enabled) {
+        $html .= '
+            <div class="likebtn_sidebar_div_simple"></div>
+                '.__('Last sync', LIKEBTN_I18N_DOMAIN).': <strong>'.$last_sync_html.'</strong>
+        ';
+        if ($sync_result_html) {
+            $html .= '
+                <div class="likebtn_sidebar_div_simple"></div>
+                '.__('Error', LIKEBTN_I18N_DOMAIN).': <strong class="likebtn_error">'.$sync_result_html.'</strong>
+            ';
+        }
+    }
+    $html .= '</div>';
+
+    return $html;
+}
+
+// sidebar social
+function _likebtn_sidebar_social()
+{
+    $html =<<<HTML
+<div class="likebtn_social">
+    <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
+</div>
+<div class="likebtn_social">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
+</div>
+<div class="likebtn_social">
+    <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+HTML;
+
+    return $html;
+}
+
+// Get plan html
+function _likebtn_plan_html() {
+    global $likebtn_plans;
+    $plan_synced = false;
+    $expires_html = '';
+    $expires_on = '';
+
+    if (get_option('likebtn_last_plan_successfull_sync_time')) {
+        $plan_synced = true;
+    }
+
+    $likebtn_plan = get_option('likebtn_plan');
+
+    if (isset($likebtn_plans[$likebtn_plan]) && $plan_synced) {
+        $plan_html = '
+            <a href="javascript: likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'?likebtn_short_version=1#plans_pricing\'); void(0)" class="likebtn_ttip" title="'.__('Plans & Pricing', LIKEBTN_I18N_DOMAIN).'"><strong>'.$likebtn_plans[$likebtn_plan].'</strong></a> 
+            <img src="'._likebtn_get_public_url().'img/refresh.gif" class="likebtn_refresh likebtn_ttip" onclick="refreshPlan(\''.__('Error occured. Disable WP HTTP Compression plugin if you have it enabled.', LIKEBTN_I18N_DOMAIN).'\', \''.__('Plan data refreshed', LIKEBTN_I18N_DOMAIN).'\')" title="'.__('Refresh data', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_trgr"/>
+            <img src="'._likebtn_get_public_url().'img/refresh_loader.gif" class="likebtn_refresh likebtn_refresh_loader likebtn_ttip" style="display:none" title="'.__('Please wait...', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_ldr"/> 
+            <small class="likebtn_success" id="likebtn_refresh_success" style="display:none"></small>
+        ';
+        if ($likebtn_plan != LIKEBTN_PLAN_FREE) {
+            if ((int)get_option('likebtn_last_plan_successfull_sync_time') >= time() - 86000) {
+                $expires_in_option = (int)get_option('likebtn_plan_expires_in');
+                if ($expires_in_option) {
+                    $expires_in = ceil($expires_in_option / 86400);
+                }
+                if ($expires_in) {
+                    $expires_on = get_option('likebtn_plan_expires_on');
+                    if ($expires_on) {
+                        $expires_on = date_i18n(get_option('date_format'), strtotime($expires_on));
+                    }
+                    $expires_html .= '
+                        <div class="likebtn_sidebar_div_simple"></div>
+                        '.__('Expires in', LIKEBTN_I18N_DOMAIN).': <strong class="likebtn_ttip" title="'.$expires_on.'">'.$expires_in.' '.__('day(s)', LIKEBTN_I18N_DOMAIN).'</strong>';
+                }
+            } else {
+                $expires_html .= '
+                    <div class="likebtn_sidebar_div_simple"></div>
+                    '.__('Expires in', LIKEBTN_I18N_DOMAIN).': 
+                    <strong class="likebtn_error">'.__('Unknown', LIKEBTN_I18N_DOMAIN).'</strong>
+                    <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Synchronization tab', LIKEBTN_I18N_DOMAIN).'"></i> 
+                    <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>
+                ';
+            }
+        }
+    } else {
+        $plan_html = '
+            <strong class="likebtn_error">'.
+                __('Unknown', LIKEBTN_I18N_DOMAIN).'
+            </strong>
+            <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Synchronization tab', LIKEBTN_I18N_DOMAIN).'"></i> 
+            <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>
+        ';
+    }
+
+    $html = __('Plan', LIKEBTN_I18N_DOMAIN).': '.$plan_html.
+        $expires_html;
+
+    return $html;
+}
+
+// Check if statistics has been enabled on Statistics tab
+function _likebtn_is_stat_enabled() {
+    if (get_option('likebtn_sync_inerval') && get_option('likebtn_account_email') && 
+        get_option('likebtn_account_api_key') && get_option('likebtn_site_id') &&
+        get_option('likebtn_plan') >= LIKEBTN_PLAN_PRO
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Get features availability
+function _likebtn_get_features() {
+    global $likebtn_features;
+    $plan = get_option('likebtn_plan');
+
+    if (isset($likebtn_features[$plan])) {
+        return $likebtn_features[$plan];
+    } else {
+        $likebtn_features[LIKEBTN_PLAN_TRIAL];
+    }
+}
+
+// http://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+function _likebtn_notice($msg, $class = 'updated')
+{
+    ?>
+    <div class="<?php echo $class; ?> likebtn_notice">
+        <p><?php echo $msg; ?></p>
+    </div>
+    <?php
+}
+
+// Display notice on plan downgrade
+function likebtn_plan_notice() {
+    global $likebtn_plans;
+
+    if (get_option('likebtn_notice_plan')) {
+        $msg = __("Your LikeBtn plan has been switched to:", LIKEBTN_I18N_DOMAIN).' '.$likebtn_plans[get_option('likebtn_plan')];
+        $class = '';
+        
+        if (get_option('likebtn_notice_plan') == 1) {
+            // Upgrade
+            $class = 'updated';
+        } else {
+            // Downgrade
+            $class = 'error';
+        }
+        _likebtn_notice($msg, $class);
+        update_option('likebtn_notice_plan', false);
+    }
+}
+
+add_action('admin_notices', 'likebtn_plan_notice');
 
 // uninstall hook
 function likebtn_uninstall() {
@@ -1165,6 +1518,11 @@ function likebtn_admin_init()
     foreach ($likebtn_settings as $option_name => $option_info) {
         register_setting('likebtn_buttons', 'likebtn_settings_' . $option_name.'_'.$entity_name);
     }
+
+    // run sunchronization
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+    $likebtn->runSyncPlan();
 }
 
 // register entity settings
@@ -1188,7 +1546,7 @@ add_action('admin_init', 'likebtn_admin_init');
 // admin content
 function likebtn_admin_settings() {
 
-    global $likebtn_plans;
+    //global $likebtn_plans;
     global $likebtn_sync_intervals;
 
     // reset sync interval
@@ -1198,15 +1556,15 @@ function likebtn_admin_settings() {
 
     likebtn_admin_header();
     ?>
-    <script type="text/javascript">
+    <?php /*<script type="text/javascript">
         jQuery(document).ready(function() {
             planChange(jQuery(":input[name='likebtn_plan']").val());
         });
-    </script>
-    <div id="poststuff" class="metabox-holder has-right-sidebar likebtn_subpage">
+    </script>*/ ?>
+    <div class="likebtn_subpage">
         <form method="post" action="options.php">
             <?php settings_fields('likebtn_settings'); ?>
-
+            <?php /*
             <table class="form-table">
                 <tr valign="top">
                     <th scope="row"><label><?php _e('Current plan', LIKEBTN_I18N_DOMAIN); ?></label></th>
@@ -1228,12 +1586,12 @@ function likebtn_admin_settings() {
                     </td>
                 </tr>
             </table>
-
+            */ ?>
             <p class="description">
                 <?php _e('Enable synchronization of likes from LikeBtn.com system into your database to get the opportunity to use the following features:', LIKEBTN_I18N_DOMAIN); ?><br/>
                 ● <?php _e('View statistics on Statistics tab.', LIKEBTN_I18N_DOMAIN); ?><br/>
-                ● <?php _e('Sort content by votes.', LIKEBTN_I18N_DOMAIN); ?><br/>
-                ● <?php _e('Use Most Liked Content widget and shortcode.', LIKEBTN_I18N_DOMAIN); ?><br/>
+                ● <?php _e('Sort content by likes.', LIKEBTN_I18N_DOMAIN); ?><br/>
+                ● <?php _e('Use most liked content widget and shortcode.', LIKEBTN_I18N_DOMAIN); ?><br/>
             </p>
             <br/>
 
@@ -1247,7 +1605,7 @@ function likebtn_admin_settings() {
                             <li><?php _e('Add your website to your account on <a href="http://likebtn.com/en/customer.php/websites" target="_blank">Websites</a> page.', LIKEBTN_I18N_DOMAIN) ?></li>
                         </ol>
                     </p>
-                    <input class="likebtn_button_account" type="button" value="<?php _e('Get Account Data', LIKEBTN_I18N_DOMAIN); ?>" onclick="likebtnPopup('<?php _e('http://likebtn.com/en/customer.php/register/', LIKEBTN_I18N_DOMAIN) ?>?likebtn_short_version=1')" />
+                    <input class="button-primary likebtn_button_green" type="button" value="<?php _e('Get Account Data', LIKEBTN_I18N_DOMAIN); ?>" onclick="likebtnPopup('<?php _e('http://likebtn.com/en/customer.php/register/', LIKEBTN_I18N_DOMAIN) ?>?likebtn_short_version=1')" />
                     <table class="form-table">
                         <tr valign="top">
                             <th scope="row"><label><?php _e('E-mail', LIKEBTN_I18N_DOMAIN); ?></label></th>
@@ -1275,9 +1633,25 @@ function likebtn_admin_settings() {
                                 </p>
                             </td>
                         </tr>
+                        <tr valign="top">
+                            <th scope="row">&nbsp;</th>
+                            <td>
+                                <input class="button-primary" type="button" value="<?php _e('Check Account Data', LIKEBTN_I18N_DOMAIN); ?>" onclick="checkAccount('<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_check_account_container"><img src="<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
+
+            <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
+                <strong class="likebtn_error">
+                    <?php echo strtr(
+                        __('Website tariff plan does not allow to synchronize likes into your database – <a href="%url_upgrade%">upgrade</a> your website to PRO or higher plan.', LIKEBTN_I18N_DOMAIN), 
+                        array('%url_upgrade%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."?likebtn_short_version=1#plans_pricing');void(0)")); 
+                    ?>
+                </strong>
+                <br/><br/>
+            <?php endif ?>
 
             <div class="postbox ">
                 <div class="inside">
@@ -1296,7 +1670,9 @@ function likebtn_admin_settings() {
                                 <br/><br/>
                                 <input class="button-primary" type="button" value="<?php _e('Test sync', LIKEBTN_I18N_DOMAIN); ?>" onclick="testSync('<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif')" /> &nbsp;<strong class="likebtn_test_sync_container"><img src="<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
                                 <br/><br/>
-                                <input class="button-secondary likebtn_ttip" type="button" value="<?php _e('Run full sync manually', LIKEBTN_I18N_DOMAIN); ?>" onclick="manualSync('<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif')" title="<?php _e("ATTENTION: Use this feature carefully since full synchronization may affect your website performance. If you don't experience any problems with likes synchronization better to avoid using this feature.", LIKEBTN_I18N_DOMAIN) ?>" /> &nbsp;<strong class="likebtn_manual_sync_container"><img src="<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                                <div class="liketbtn_mansync_wr">
+                                    <input class="button-secondary likebtn_ttip" type="button" value="<?php _e('Run Full Sync Manually', LIKEBTN_I18N_DOMAIN); ?>" onclick="manualSync('<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif')" title="<?php _e("ATTENTION: Use this feature carefully since full synchronization may affect your website performance. If you don't experience any problems with likes synchronization better to avoid using this feature.", LIKEBTN_I18N_DOMAIN) ?>" /> &nbsp;<strong class="likebtn_manual_sync_container"><img src="<?php echo _likebtn_get_public_url() ?>img/ajax_loader.gif" class="hidden"/></strong>
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -1343,8 +1719,9 @@ function likebtn_admin_settings() {
         </form>
 
     </div>
-    </div>
     <?php
+
+    _likebtn_admin_footer();
 }
 
 // admin buttons
@@ -1534,7 +1911,7 @@ function likebtn_admin_buttons() {
         });
     </script>
 
-    <div id="poststuff" class="metabox-holder has-right-sidebar">
+    <div>
         <form method="post" action="options.php" onsubmit="return likebtnOnSaveButtons()" id="settings_form">
             <?php settings_fields('likebtn_buttons'); ?>
             <input type="hidden" name="likebtn_subpage" value="<?php echo $subpage; ?>" >
@@ -1582,7 +1959,7 @@ function likebtn_admin_buttons() {
 
                 <div id="likebtn_subpage_wrapper_<?php echo $entity_name; ?>" class="likebtn_subpage <?php if ($subpage !== $entity_name): ?>hidden<?php endif ?>" >
                     <?php /*<h3><?php _e($entity_title, LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
-                    <div class="inside">
+                    <div class="inside entity_tab_container">
 
                         <table class="form-table">
                             <tr valign="top">
@@ -1621,19 +1998,6 @@ function likebtn_admin_buttons() {
 
                                     <h3>
                                         <?php _e('Preview', LIKEBTN_I18N_DOMAIN); ?>
-                                        <table class="likebtn_social"><tr>
-                                            <td>
-                                                <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FLikeBtn.LikeButton&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21&amp;appId=192115980991078" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:110px;" allowTransparency="true"></iframe>
-                                            </td>
-                                            <td>
-                                                <a href="https://twitter.com/likebtn" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false" data-width="144px"></a>
-                                                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                                            </td>
-                                            <td style="max-width: 125px">
-                                                <script src="https://apis.google.com/js/platform.js" async defer></script>
-                                                <div class="g-follow" data-href="https://plus.google.com/+Likebtn" data-rel="publisher"></div>
-                                            </td>
-                                        </tr></table>
                                     </h3>
                                     <div class="inside">
                                         <div class="preview_container">
@@ -1736,12 +2100,12 @@ function likebtn_admin_buttons() {
                                                     <input type="text" name="likebtn_settings_i18n_dislike_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_i18n_dislike_' . $entity_name); ?>" class="likebtn_input likebtn_placeholder" placeholder="<?php _e('Dislike', LIKEBTN_I18N_DOMAIN); ?>" />
                                                 </td>
                                             </tr>
-                                            <tr valign="top">
+                                            <tr valign="top" class="plan_dependent plan_vip">
                                                 <th scope="row"><label><?php _e('White-label', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label>
                                                     <i class="likebtn_help" title="<?php _e('No LikeBtn branding link', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                 </th>
                                                 <td>
-                                                    <input type="checkbox" name="likebtn_settings_white_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_white_label_' . $entity_name)); ?> class="plan_dependent plan_vip" />
+                                                    <input type="checkbox" name="likebtn_settings_white_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_white_label_' . $entity_name)); ?> />
                                                 </td>
                                             </tr>
                                             <?php if (empty($likebtn_entities_config['likebtn_position'][$entity_name]['hide'])): ?>
@@ -1908,10 +2272,10 @@ function likebtn_admin_buttons() {
                                             <?php /*<h3 style="cursor:pointer" onclick="toggleCollapsable(this)" class="likebtn_collapse_trigger"><small>►</small> <?php _e('Popup', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
                                             <div class="inside">
                                                 <table class="form-table">
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_vip">
                                                         <th scope="row"><label><?php _e('Show popup on voting', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
                                                         <td>
-                                                            <input type="checkbox" name="likebtn_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_enabled_' . $entity_name)); ?> class="plan_dependent plan_vip" />
+                                                            <input type="checkbox" name="likebtn_settings_popup_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_enabled_' . $entity_name)); ?> />
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
@@ -1961,27 +2325,27 @@ function likebtn_admin_buttons() {
                                                             <input type="checkbox" name="likebtn_settings_popup_hide_on_outside_click_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_popup_hide_on_outside_click_' . $entity_name)); ?> />
                                                         </td>
                                                     </tr>
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_plus">
                                                         <th scope="row"><label><?php _e('Show share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label></th>
                                                         <td>
-                                                            <input type="checkbox" name="likebtn_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_share_enabled_' . $entity_name)); ?> class="plan_dependent plan_plus" />
+                                                            <input type="checkbox" name="likebtn_settings_share_enabled_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_share_enabled_' . $entity_name)); ?> />
                                                             <?php /*<span class="description"><?php _e('Use popup_enabled option to enable/disable popup.', LIKEBTN_I18N_DOMAIN); ?></span>*/ ?>
                                                         </td>
                                                     </tr>
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_pro">
                                                         <th scope="row"><label><?php _e('AddThis <a href="https://www.addthis.com/settings/publisher" target="_blank">Profile ID</a>', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
                                                             <i class="likebtn_help" title="<?php _e("Enter your AddThis Profile ID to collect sharing statistics and view it on AddThis analytics page", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                         </th>
                                                         <td>
-                                                            <input type="text" name="likebtn_settings_addthis_pubid_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_addthis_pubid_' . $entity_name); ?>" class="plan_dependent plan_pro likebtn_input likebtn_placeholder" placeholder="ra-511b51aa3d843ec4" />
+                                                            <input type="text" name="likebtn_settings_addthis_pubid_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_addthis_pubid_' . $entity_name); ?>" class=" likebtn_input likebtn_placeholder" placeholder="ra-511b51aa3d843ec4" />
                                                         </td>
                                                     </tr>
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_pro">
                                                         <th scope="row">
                                                             <label><?php _e('AddThis share buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PLUS / PRO / VIP / ULTRA"></i></label>
                                                         </th>
                                                         <td>
-                                                            <select id="settings_addthis_service_codes" class="likebtn_at16 likebtn_input plan_dependent plan_pro" multiple="multiple" >
+                                                            <select id="settings_addthis_service_codes" class="likebtn_at16 likebtn_input" multiple="multiple" >
                                                                 <?php foreach($likebtn_addthis_service_codes as $addthis_service_code): ?>
                                                                     <option value="<?php echo $addthis_service_code ?>"><?php echo $addthis_service_code ?></option>
                                                                 <?php endforeach ?>
@@ -1993,13 +2357,13 @@ function likebtn_admin_buttons() {
                                                             </p>
                                                         </td>
                                                     </tr>
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_vip">
                                                         <th scope="row"><label><?php _e('Donate buttons', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="VIP / ULTRA"></i></label></th>
                                                         <td>
                                                             <div id="donate_wrapper">
-                                                                <div id="donate_pveview" class="plan_dependent plan_vip likebtn_input"></div>
+                                                                <div id="donate_pveview" class="likebtn_input"></div>
 
-                                                                <a href="javascript:likebtnDG('popup_donate_input', false, {width: '80%'}, {preview_container: '#donate_pveview'});void(0);" class="popup_donate_trigger"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_donate.png" alt="<?php _e('Configure donate buttons', LIKEBTN_I18N_DOMAIN); ?>"></a>
+                                                                <a href="javascript:likebtnDG('popup_donate_input', false, {width: '80%'}, {preview_container: '#donate_pveview'});void(0);" id="popup_donate_trigger"><img src="<?php echo _likebtn_get_public_url() ?>img/popup_donate.png" alt="<?php _e('Configure donate buttons', LIKEBTN_I18N_DOMAIN); ?>"></a>
                                                             </div>
 
                                                             <input type="hidden" name="likebtn_settings_popup_donate_<?php echo $entity_name; ?>" value="<?php echo htmlspecialchars(get_option('likebtn_settings_popup_donate_' . $entity_name)); ?>" id="popup_donate_input" class="likebtn_input"/>
@@ -2009,7 +2373,7 @@ function likebtn_admin_buttons() {
                                                             </p>
                                                         </td>
                                                     </tr>
-                                                    <tr valign="top">
+                                                    <tr valign="top" class="plan_dependent plan_pro">
                                                         <th scope="row"><label><?php _e('Custom HTML', LIKEBTN_I18N_DOMAIN); ?> <i class="premium_feature" title="PRO / VIP / ULTRA"></i></label>
                                                             <i class="likebtn_help" title="<?php _e("Custom HTML to insert into the popup", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                         </th>
@@ -2291,8 +2655,9 @@ function likebtn_admin_buttons() {
         </form>
 
     </div>
-    </div>
     <?php
+
+    _likebtn_admin_footer();
 }
 
 // admin vote statistics
@@ -2561,7 +2926,7 @@ function likebtn_admin_statistics() {
 
     likebtn_admin_header();
     ?>
-    <div id="poststuff" class="metabox-holder has-right-sidebar">
+    <div>
 
         <a href="javascript:toggleToUpgrade();void(0);"><?php _e('To enable statistics...', LIKEBTN_I18N_DOMAIN) ?></a>
         <ol id="likebtn_to_upgrade" class="hidden">
@@ -2745,8 +3110,9 @@ function likebtn_admin_statistics() {
 
     </div>
 
-    </div>
     <?php
+
+    _likebtn_admin_footer();
 }
 
 // get SQL query for retrieving statistics
@@ -2920,7 +3286,7 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
 function likebtn_admin_help() {
     likebtn_admin_header();
     ?>
-    <div id="poststuff" class="metabox-holder has-right-sidebar">
+    <div>
         <ul>
             <li><?php echo __('<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank">WordPress LikeBtn Plugin FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
             <li><?php echo __('<a href="http://likebtn.com/en/faq" target="_blank">LikeBtn FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
@@ -2928,6 +3294,7 @@ function likebtn_admin_help() {
         </ul>
     </div>
     <?php
+    _likebtn_admin_footer();
 }
 
 // get URL of the public folder
@@ -3686,17 +4053,22 @@ function likebtn_manual_sync_callback() {
 
     $likebtn_account_email = '';
     if (isset($_POST['likebtn_account_email'])) {
-        $likebtn_account_email = $_POST['likebtn_account_email'];
+        $likebtn_account_email = trim($_POST['likebtn_account_email']);
     }
 
     $likebtn_account_api_key = '';
     if (isset($_POST['likebtn_account_api_key'])) {
-        $likebtn_account_api_key = $_POST['likebtn_account_api_key'];
+        $likebtn_account_api_key = trim($_POST['likebtn_account_api_key']);
+    }
+
+    $likebtn_site_id = '';
+    if (isset($_POST['likebtn_site_id'])) {
+        $likebtn_site_id = trim($_POST['likebtn_site_id']);
     }
 
     require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
     $likebtn = new LikeBtnLikeButton();
-    $sync_response = $likebtn->syncVotes($likebtn_account_email, $likebtn_account_api_key, true);
+    $sync_response = $likebtn->syncVotes($likebtn_account_email, $likebtn_account_api_key, $likebtn_site_id, true);
 
     if ($sync_response['result'] == 'success') {
         $result_text = __('OK', LIKEBTN_I18N_DOMAIN);
@@ -3725,18 +4097,23 @@ add_action('wp_ajax_likebtn_manual_sync', 'likebtn_manual_sync_callback');
 function likebtn_test_sync_callback() {
 
     $likebtn_account_email = '';
-
     if (isset($_POST['likebtn_account_email'])) {
-        $likebtn_account_email = $_POST['likebtn_account_email'];
+        $likebtn_account_email = trim($_POST['likebtn_account_email']);
     }
+    
     $likebtn_account_api_key = '';
     if (isset($_POST['likebtn_account_api_key'])) {
-        $likebtn_account_api_key = $_POST['likebtn_account_api_key'];
+        $likebtn_account_api_key = trim($_POST['likebtn_account_api_key']);
+    }
+
+    $likebtn_site_id = '';
+    if (isset($_POST['likebtn_site_id'])) {
+        $likebtn_site_id = trim($_POST['likebtn_site_id']);
     }
 
     require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
     $likebtn = new LikeBtnLikeButton();
-    $test_response = $likebtn->testSync($likebtn_account_email, $likebtn_account_api_key);
+    $test_response = $likebtn->testSync($likebtn_account_email, $likebtn_account_api_key, $likebtn_site_id);
 
     if ($test_response['result'] == 'success') {
         $result_text = __('OK', LIKEBTN_I18N_DOMAIN);
@@ -3756,6 +4133,47 @@ function likebtn_test_sync_callback() {
 }
 
 add_action('wp_ajax_likebtn_test_sync', 'likebtn_test_sync_callback');
+
+// test synchronization callback
+function likebtn_check_account_callback() {
+
+    $likebtn_account_email = '';
+    if (isset($_POST['likebtn_account_email'])) {
+        $likebtn_account_email = $_POST['likebtn_account_email'];
+    }
+
+    $likebtn_account_api_key = '';
+    if (isset($_POST['likebtn_account_api_key'])) {
+        $likebtn_account_api_key = $_POST['likebtn_account_api_key'];
+    }
+
+    $likebtn_site_id = '';
+    if (isset($_POST['likebtn_site_id'])) {
+        $likebtn_site_id = trim($_POST['likebtn_site_id']);
+    }
+
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+    $test_response = $likebtn->checkAccount($likebtn_account_email, $likebtn_account_api_key, $likebtn_site_id);
+
+    if ($test_response['result'] == 'success') {
+        $result_text = __('OK', LIKEBTN_I18N_DOMAIN);
+    } else {
+        $result_text = __('Error', LIKEBTN_I18N_DOMAIN);
+    }
+
+    $response = array(
+        'result' => $test_response['result'],
+        'result_text' => $result_text,
+        'message' => $test_response['message'],
+    );
+
+    define( 'DOING_AJAX', true );
+    ob_clean();
+    wp_send_json($response);
+}
+
+add_action('wp_ajax_likebtn_check_account', 'likebtn_check_account_callback');
 
 // edit item callback
 function likebtn_edit_item_callback() {
@@ -3815,6 +4233,37 @@ function likebtn_edit_item_callback() {
 }
 
 add_action('wp_ajax_likebtn_edit_item', 'likebtn_edit_item_callback');
+
+// test synchronization callback
+function likebtn_refresh_plan_callback() {
+    $html = '';
+    $message = '';
+
+    // run sunchronization
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+    $refresh_response = $likebtn->syncPlan();
+
+    if (empty($refresh_response['message'])) {
+        $html = _likebtn_plan_html();
+    }
+
+    if (!empty($refresh_response['message'])) {
+        $message = $refresh_response['message'];
+    }
+
+    $response = array(
+        'html' => $html,
+        'message' => $message,
+        'reload' => (int)get_option('likebtn_notice_plan'),
+    );
+
+    define('DOING_AJAX', true);
+    ob_clean();
+    wp_send_json($response);
+}
+
+add_action('wp_ajax_likebtn_refresh_plan', 'likebtn_refresh_plan_callback');
 
 // reset items likes/dislikes
 function likebtn_reset($entity_name, $items)
