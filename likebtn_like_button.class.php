@@ -559,7 +559,7 @@ class LikeBtnLikeButton {
      * @param type $identifier
      * @return string
      */
-    public function apiRequest($action, $request, $email = '', $api_key = '', $site_id = '') {
+    public function apiRequest($action, $request = '', $email = '', $api_key = '', $site_id = '') {
         $apiurl = '';
         //if (!self::$apiurl) {
         if (!$email) {
