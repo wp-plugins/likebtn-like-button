@@ -4,7 +4,7 @@ Donate link: http://likebtn.com
 Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
 Tested up to: 4.1
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,14 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 9. Most Liked Content Widget frontend
 
 == Changelog ==
+
+= 2.1.2 =
+* Added donate buttons preview
+* Added dynamic preview
+* Added Sidebar
+* Added popup_on_load option
+* Added Polish translation
+* Added Check account data button
 
 = 2.1.1 =
 * Updated theme selector
