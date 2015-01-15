@@ -44,8 +44,11 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 == Installation ==
 
 1. Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Configure the plugin in LikeBtn admin panel.
+1. Activate the Like Button plugin through the WordPress 'Plugins' menu
+1. Register on LikeBtn.com
+1. Add your website to your account on LikeBtn.com
+1. Enter your LikeBtn.com account data on the plugin Synchronization tab
+1. Configure the plugin in the Like Button admin panel
 
 == Frequently Asked Questions ==
 
