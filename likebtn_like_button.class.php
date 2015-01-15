@@ -182,6 +182,10 @@ class LikeBtnLikeButton {
      * Decode JSON.
      */
     public function jsonDecode($jsong_string) {
+        if (!is_string($jsong_string)) {
+            return array();
+        }
+
         return json_decode($jsong_string, true);
     }
 
@@ -565,6 +569,8 @@ class LikeBtnLikeButton {
         if (!$email) {
             $email = trim(get_option('likebtn_account_email'));
         }
+        $email = urlencode($email);
+        
         if (!$api_key) {
             $api_key = trim(get_option('likebtn_account_api_key'));
         }

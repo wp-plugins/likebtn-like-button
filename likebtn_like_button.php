@@ -1053,7 +1053,7 @@ function _likebtn_sidebar_plan()
         if ($likebtn_plan == LIKEBTN_PLAN_FREE || $likebtn_plan == LIKEBTN_PLAN_TRIAL) {
             $html .= '
     <div class="likebtn_upgrade_container">
-        <input class="button-secondary likebtn_button_upgrade" type="button" value="'.__('Upgrade', LIKEBTN_I18N_DOMAIN).'" onclick="likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'?likebtn_short_version=1#plans_pricing\')" />
+        <input class="button-secondary likebtn_button_upgrade" type="button" value="'.__('Upgrade', LIKEBTN_I18N_DOMAIN).'" onclick="likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'#plans_pricing\')" />
     </div>
     ';
         }
@@ -1151,7 +1151,7 @@ function _likebtn_plan_html() {
 
     if (isset($likebtn_plans[$likebtn_plan]) && $plan_synced) {
         $plan_html = '
-            <a href="javascript: likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'?likebtn_short_version=1#plans_pricing\'); void(0)" class="likebtn_ttip" title="'.__('Plans & Pricing', LIKEBTN_I18N_DOMAIN).'"><strong>'.$likebtn_plans[$likebtn_plan].'</strong></a> 
+            <a href="javascript: likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'#plans_pricing\'); void(0)" class="likebtn_ttip" title="'.__('Plans & Pricing', LIKEBTN_I18N_DOMAIN).'"><strong>'.$likebtn_plans[$likebtn_plan].'</strong></a> 
             <img src="'._likebtn_get_public_url().'img/refresh.gif" class="likebtn_refresh likebtn_ttip" onclick="refreshPlan(\''.__('Error occured. Disable WP HTTP Compression plugin if you have it enabled.', LIKEBTN_I18N_DOMAIN).'\', \''.__('Plan data refreshed', LIKEBTN_I18N_DOMAIN).'\')" title="'.__('Refresh data', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_trgr"/>
             <img src="'._likebtn_get_public_url().'img/refresh_loader.gif" class="likebtn_refresh likebtn_refresh_loader likebtn_ttip" style="display:none" title="'.__('Please wait...', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_ldr"/> 
             <small class="likebtn_success" id="likebtn_refresh_success" style="display:none"></small>
@@ -1230,6 +1230,20 @@ function _likebtn_notice($msg, $class = 'updated')
     </div>
     <?php
 }
+
+// Display notice on plan downgrade
+function likebtn_account_notice() {
+
+    if (!get_option('likebtn_last_plan_successfull_sync_time')) {
+        $msg = strtr(
+            __('Please enter your LikeBtn.com account data on <a href="%url_sync%">Synchronization</a> tab for the proper functioning of the Like Button plugin.', LIKEBTN_I18N_DOMAIN), 
+            array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
+        );
+        _likebtn_notice($msg, 'update-nag');
+    }
+}
+
+add_action('admin_notices', 'likebtn_account_notice');
 
 // Display notice on plan downgrade
 function likebtn_plan_notice() {
@@ -1601,30 +1615,40 @@ function likebtn_admin_settings() {
                     <p>
                         <?php _e('To get your account data:', LIKEBTN_I18N_DOMAIN); ?>
                         <ol>
-                            <li><?php _e('Register on <a href="http://likebtn.com/en/customer.php/register/" target="_blank">LikeBtn.com</a>', LIKEBTN_I18N_DOMAIN) ?></li>
-                            <li><?php _e('Add your website to your account on <a href="http://likebtn.com/en/customer.php/websites" target="_blank">Websites</a> page.', LIKEBTN_I18N_DOMAIN) ?></li>
+                            <li>
+                                <?php echo strtr(
+                                    __('Register on <a href="%url_register%">LikeBtn.com</a>', LIKEBTN_I18N_DOMAIN), 
+                                    array('%url_register%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/customer.php/register/', LIKEBTN_I18N_DOMAIN)."');void(0)")); 
+                                ?>
+                            </li>
+                            <li>
+                                <?php echo strtr(
+                                    __('Add your website to your account on <a href="%url_websites%">Websites</a> page.', LIKEBTN_I18N_DOMAIN), 
+                                    array('%url_websites%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/customer.php/websites', LIKEBTN_I18N_DOMAIN)."');void(0)")); 
+                                ?>
+                            </li>
                         </ol>
                     </p>
-                    <input class="button-primary likebtn_button_green" type="button" value="<?php _e('Get Account Data', LIKEBTN_I18N_DOMAIN); ?>" onclick="likebtnPopup('<?php _e('http://likebtn.com/en/customer.php/register/', LIKEBTN_I18N_DOMAIN) ?>?likebtn_short_version=1')" />
+                    <input class="button-primary likebtn_button_green" type="button" value="<?php _e('Get Account Data', LIKEBTN_I18N_DOMAIN); ?>" onclick="likebtnGetAccountData('<?php _e('http://likebtn.com/en/customer.php/register/', LIKEBTN_I18N_DOMAIN) ?>')" />
                     <table class="form-table">
                         <tr valign="top">
                             <th scope="row"><label><?php _e('E-mail', LIKEBTN_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_account_email" value="<?php echo get_option('likebtn_account_email') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input"/><br/>
+                                <input type="text" name="likebtn_account_email" value="<?php echo get_option('likebtn_account_email') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input" id="likebtn_account_email_input"/><br/>
                                 <p class="description"><?php _e('Your LikeBtn.com account email. Can be found on <a href="http://likebtn.com/en/customer.php/profile/edit" target="_blank">Profile</a> page', LIKEBTN_I18N_DOMAIN) ?></p>
                             </td>
                         </tr>
                         <tr valign="top">
                             <th scope="row"><label><?php _e('API key', LIKEBTN_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_account_api_key" value="<?php echo get_option('likebtn_account_api_key') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input"/><br/>
+                                <input type="text" name="likebtn_account_api_key" value="<?php echo get_option('likebtn_account_api_key') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input" id="likebtn_account_api_key_input"/><br/>
                                 <p class="description"><?php _e('Your website API key on LikeBtn.com. Can be obtained on <a href="http://likebtn.com/en/customer.php/websites" target="_blank">Websites</a> page', LIKEBTN_I18N_DOMAIN) ?></p>
                             </td>
                         </tr>
                         <tr valign="top">
                             <th scope="row"><label><?php _e('Site ID', LIKEBTN_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_site_id" value="<?php echo get_option('likebtn_site_id') ?>" class="likebtn_input"/><br/>
+                                <input type="text" name="likebtn_site_id" value="<?php echo get_option('likebtn_site_id') ?>" class="likebtn_input" id="likebtn_site_id_input"/><br/>
                                 <?php /*<span class="description"><?php _e('Enter Site ID in following cases:', LIKEBTN_I18N_DOMAIN) ?><br/>
                                 ● <?php _e('Your site is local – located on a local server and is available from your local network only and NOT available from the Internet.', LIKEBTN_I18N_DOMAIN) ?><br/>
                                 ● <?php _e('Your site is path-based – one of sites located in different subdirectories of one domain and you want to have statistics separate from other sites.', LIKEBTN_I18N_DOMAIN) ?><br/><br/>*/ ?>
@@ -1647,7 +1671,7 @@ function likebtn_admin_settings() {
                 <strong class="likebtn_error">
                     <?php echo strtr(
                         __('Website tariff plan does not allow to synchronize likes into your database – <a href="%url_upgrade%">upgrade</a> your website to PRO or higher plan.', LIKEBTN_I18N_DOMAIN), 
-                        array('%url_upgrade%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."?likebtn_short_version=1#plans_pricing');void(0)")); 
+                        array('%url_upgrade%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."#plans_pricing');void(0)")); 
                     ?>
                 </strong>
                 <br/><br/>
@@ -1661,7 +1685,7 @@ function likebtn_admin_settings() {
                                 <i class="likebtn_help" title="<?php _e('Time interval in minutes in which fetching of vote results from LikeBtn.com into your database is being launched. When synchronization is enabled you can view Statistics, number of likes and dislikes for each post as Custom Field, sort posts by vote results, use Like Button widgets. The less the interval the heavier your database load.', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                             </th>
                             <td>
-                                <select name="likebtn_sync_inerval" <?php disabled((!get_option('likebtn_account_email') || !get_option('likebtn_account_api_key'))); ?> >
+                                <select name="likebtn_sync_inerval" <?php disabled((!get_option('likebtn_account_email') || !get_option('likebtn_account_api_key'))); ?> id="likebtn_sync_inerval_input">
                                     <option value="" <?php selected('', get_option('likebtn_sync_inerval')); ?> ><?php _e('Do not fetch votes from LikeBtn.com into my database', LIKEBTN_I18N_DOMAIN) ?></option>
                                     <?php foreach ($likebtn_sync_intervals as $sync_interval): ?>
                                         <option value="<?php echo $sync_interval; ?>" <?php selected($sync_interval, get_option('likebtn_sync_inerval')); ?> ><?php echo $sync_interval; ?> <?php _e('min', LIKEBTN_I18N_DOMAIN); ?></option>
@@ -2197,7 +2221,9 @@ function likebtn_admin_buttons() {
                                                         </th>
                                                         <td>
                                                             <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="home" <?php if (in_array('home', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Home'); ?>&nbsp;&nbsp;&nbsp;
-                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="archive" <?php if (in_array('archive', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Archive', LIKEBTN_I18N_DOMAIN); ?>
+                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="archive" <?php if (in_array('archive', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Archive', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="search" <?php if (in_array('search', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Search', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                            <input type="checkbox" name="likebtn_exclude_sections_<?php echo $entity_name; ?>[]" value="category" <?php if (in_array('category', $excluded_sections)): ?>checked="checked"<?php endif ?> /> <?php _e('Category', LIKEBTN_I18N_DOMAIN); ?>
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
@@ -2631,7 +2657,7 @@ function likebtn_admin_buttons() {
                                                     </tr>
                                                     <tr valign="top">
                                                         <th scope="row" colspan="2">
-                                                            <a href="javascript:likebtnPopup('<?php _e('http://likebtn.com/en/translate-like-button-widget', LIKEBTN_I18N_DOMAIN); ?>?likebtn_short_version=1');void(0);"><?php _e('Send us Translation', LIKEBTN_I18N_DOMAIN); ?></a>
+                                                            <a href="javascript:likebtnPopup('<?php _e('http://likebtn.com/en/translate-like-button-widget', LIKEBTN_I18N_DOMAIN); ?>');void(0);"><?php _e('Send us Translation', LIKEBTN_I18N_DOMAIN); ?></a>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -2747,6 +2773,8 @@ function likebtn_admin_statistics() {
 
     $sort_by = $_GET['likebtn_sort_by'];
     if (!$sort_by) {
+        $sort_by = 'likes';
+    } elseif ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM && $sort_by == 'post_id') {
         $sort_by = 'likes';
     }
 
@@ -2872,11 +2900,22 @@ function likebtn_admin_statistics() {
 
     // order by
     switch ($sort_by) {
-        case 'likes':
-            $query_orderby = 'ORDER BY likes DESC';
-            break;
         case 'dislikes':
             $query_orderby = 'ORDER BY dislikes DESC';
+            break;
+        case 'likes_minus_dislikes':
+            $query_orderby = 'ORDER BY likes_minus_dislikes DESC';
+            break;
+        case 'post_id':
+            $query_orderby = 'ORDER BY post_id ASC';
+            break;
+        case 'post_title':
+            $query_orderby = 'ORDER BY post_title ASC';
+            break;
+        case 'likes':
+        default:
+            $query_orderby = 'ORDER BY likes DESC';
+            $sort_by = 'likes';
             break;
         /*case 'last_updated':
             $query_orderby = 'ORDER BY pm_likes.meta_id DESC';
@@ -2928,16 +2967,44 @@ function likebtn_admin_statistics() {
     ?>
     <div>
 
-        <a href="javascript:toggleToUpgrade();void(0);"><?php _e('To enable statistics...', LIKEBTN_I18N_DOMAIN) ?></a>
-        <ol id="likebtn_to_upgrade" class="hidden">
-            <li><?php _e('Enable synchronization on Synchronization tab.', LIKEBTN_I18N_DOMAIN); ?></li>
-            <li><?php _e('Upgrade your website to PRO or higher plan on <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">LikeBtn.com</a>.', LIKEBTN_I18N_DOMAIN); ?></li>
-            <?php /*<li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-            <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-            <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>*/ ?>
-            <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_I18N_DOMAIN); ?></li> */ ?>
-        </ol>
-        <br/><br/>
+        <?php if (!_likebtn_is_stat_enabled() || get_option('likebtn_last_sync_message')): ?>
+            <span class="likebtn_error">
+                <?php 
+                    echo strtr(
+                        __('Statistics not available, enable synchronization in order to view statistics:', LIKEBTN_I18N_DOMAIN), 
+                        array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
+                    );
+                ?>
+            </span>
+            <?php /*_e('To enable statistics:', LIKEBTN_I18N_DOMAIN)*/ ?>
+            <ol>
+                <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
+                    <li>
+                        <?php echo strtr(
+                            __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
+                            array('%url_upgrade%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."#plans_pricing')")
+                        ); ?>
+                    </li>
+                <?php endif ?>
+                <li>
+                    <?php echo strtr(
+                        __('Enable synchronization on <a href="%url_sync%">Synchronization</a> tab.', LIKEBTN_I18N_DOMAIN), 
+                        array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
+                    ); ?>
+                </li>
+                <?php /*<li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
+                <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
+                <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>*/ ?>
+                <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_I18N_DOMAIN); ?></li> */ ?>
+            </ol>
+        <?php else: ?>
+            <p class="description">
+                ● <?php _e('Keep in mind that items appear in Statistics after receiving at least one vote.', LIKEBTN_I18N_DOMAIN); ?><br/>
+                ● <?php _e('Select <u>Custom item</u> content type to view votes of like buttons added using shortcode or HTML code.', LIKEBTN_I18N_DOMAIN); ?><br/>
+                ● <?php _e('To edit item votes click on a number of likes/dislikes in the statistics table.', LIKEBTN_I18N_DOMAIN); ?>
+            </p>
+        <?php endif ?>
+        <br/>
         <form action="" method="get" id="statistics_form">
             <input type="hidden" name="page" value="likebtn_statistics" />
 
@@ -2951,22 +3018,25 @@ function likebtn_admin_statistics() {
                 &nbsp;&nbsp;
             <?php endif ?>
 
-            <label><?php _e('Type'); ?>:</label>
+            <label><?php _e('Content type', LIKEBTN_I18N_DOMAIN); ?>:</label>
             <select name="likebtn_entity_name" >
                 <?php foreach ($likebtn_entities as $entity_name_value => $entity_title): ?>
                     <option value="<?php echo $entity_name_value; ?>" <?php selected($entity_name, $entity_name_value); ?> ><?php _e($entity_title, LIKEBTN_I18N_DOMAIN); ?></option>
                 <?php endforeach ?>
             </select>
             &nbsp;&nbsp;
-            <label><?php _e('Show first', LIKEBTN_I18N_DOMAIN); ?>:</label>
+            <label><?php _e('Order by', LIKEBTN_I18N_DOMAIN); ?>:</label>
             <select name="likebtn_sort_by" >
-                <option value="likes" <?php selected('likes', $sort_by); ?> ><?php _e('Most liked', LIKEBTN_I18N_DOMAIN); ?></option>
-                <option value="dislikes" <?php selected('dislikes', $sort_by); ?> ><?php _e('Most disliked', LIKEBTN_I18N_DOMAIN); ?></option>
+                <option value="likes" <?php selected('likes', $sort_by); ?> ><?php _e('Likes', LIKEBTN_I18N_DOMAIN); ?></option>
+                <option value="dislikes" <?php selected('dislikes', $sort_by); ?> ><?php _e('Dislikes', LIKEBTN_I18N_DOMAIN); ?></option>
+                <option value="likes_minus_dislikes" <?php selected('likes_minus_dislikes', $sort_by); ?> ><?php _e('Likes minus dislikes', LIKEBTN_I18N_DOMAIN); ?></option>
+                <option value="post_id" <?php selected('post_id', $sort_by); ?> ><?php _e('ID', LIKEBTN_I18N_DOMAIN); ?></option>
+                <option value="post_title" <?php selected('post_title', $sort_by); ?> ><?php _e('Title', LIKEBTN_I18N_DOMAIN); ?></option>
                 <?php /* <option value="last_updated" <?php selected('last_updated', $sort_by); ?> ><?php _e('Last updated', LIKEBTN_I18N_DOMAIN); ?></option> */ ?>
             </select>
 
             &nbsp;&nbsp;
-            <label><?php _e('Page size', LIKEBTN_I18N_DOMAIN); ?>:</label>
+            <label><?php _e('Per page', LIKEBTN_I18N_DOMAIN); ?>:</label>
             <select name="likebtn_page_size" >
                 <?php foreach ($likebtn_page_sizes as $page_size_value): ?>
                     <option value="<?php echo $page_size_value; ?>" <?php selected($page_size, $page_size_value); ?> ><?php echo $page_size_value ?></option>
@@ -2975,13 +3045,13 @@ function likebtn_admin_statistics() {
             </select>
             <br/><br/>
             <div class="postbox statistics_filter_container">
-                <h3><?php _e('Filter', LIKEBTN_I18N_DOMAIN); ?></h3>
+                <?php /*<h3><?php _e('Filter', LIKEBTN_I18N_DOMAIN); ?></h3>*/ ?>
                 <div class="inside">
                     <label><?php _e('ID', LIKEBTN_I18N_DOMAIN); ?>:</label>
-                    <input type="text" name="likebtn_post_id" value="<?php echo htmlspecialchars($post_id) ?>" size="8" />
+                    <input type="text" name="likebtn_post_id" value="<?php echo htmlspecialchars($post_id) ?>" size="5" />
                     &nbsp;&nbsp;
                     <label><?php _e('Title'); ?>:</label>
-                    <input type="text" name="likebtn_post_title" value="<?php echo htmlspecialchars($post_title) ?>" size="60"/>
+                    <input type="text" name="likebtn_post_title" value="<?php echo htmlspecialchars($post_title) ?>" size="25"/>
                     &nbsp;&nbsp;
                     <label><?php _e('Status', LIKEBTN_I18N_DOMAIN); ?>:</label>
                     <select name="likebtn_post_status" >
@@ -2997,7 +3067,7 @@ function likebtn_admin_statistics() {
                 </div>
             </div>
 
-            <input class="button-primary" type="submit" name="show" value="<?php _e('View', LIKEBTN_I18N_DOMAIN); ?>" />
+            <input class="button-primary" type="submit" name="show" value="<?php _e('View', LIKEBTN_I18N_DOMAIN); ?>" /> 
         </form>
         <br/>
         <?php _e('Total found', LIKEBTN_I18N_DOMAIN); ?>: <strong><?php echo $total_found ?></strong>
@@ -3012,7 +3082,7 @@ function likebtn_admin_statistics() {
         })" method="post" action="">
         <?php if (count($statistics) && $p->total_pages > 0): ?>
             <div class="tablenav">
-                <input type="submit" class="button-secondary" onclick="" name="reset_selected" value="<?php _e('Reset selected', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('Set to zero number of likes and dislikes for selected items', LIKEBTN_I18N_DOMAIN); ?>">
+                <input type="submit" class="button-secondary likebtn_ttip" onclick="" name="reset_selected" value="<?php _e('Reset selected', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('Set to zero number of likes and dislikes for selected items', LIKEBTN_I18N_DOMAIN); ?>">
                 <div class="tablenav-pages">
                     <?php echo $p->show(); ?>
                 </div>
@@ -3023,18 +3093,18 @@ function likebtn_admin_statistics() {
                 <tr>
                     <th><input type="checkbox" onclick="statisticsItemsCheckbox(this)" value="all" style="margin:0"></th>
                     <?php if ($entity_name != LIKEBTN_ENTITY_CUSTOM_ITEM): ?>
-                        <th>ID</th>
+                        <th>ID<?php if ($sort_by == 'post_id'): ?>&nbsp;↓<?php endif ?></th>
                     <?php endif ?>
                     <?php if ($entity_name == LIKEBTN_ENTITY_POST): ?>
                         <th><?php _e('Thumbnail') ?></th>
                     <?php endif ?>
-                    <th width="100%"><?php _e('Title') ?></th>
+                    <th width="100%"><?php _e('Title', LIKEBTN_I18N_DOMAIN) ?><?php if ($sort_by == 'post_title'): ?>&nbsp;↓<?php endif ?></th>
                     <?php if ($blogs && $statistics_blog_id == 'all'): ?>
                         <th><?php _e('Site') ?></th>
                     <?php endif ?>
-                    <th><?php _e('Likes', LIKEBTN_I18N_DOMAIN) ?></th>
-                    <th><?php _e('Dislikes', LIKEBTN_I18N_DOMAIN) ?></th>
-                    <th><?php _e('Likes minus dislikes', LIKEBTN_I18N_DOMAIN) ?></th>
+                    <th><?php _e('Likes', LIKEBTN_I18N_DOMAIN) ?><?php if ($sort_by == 'likes'): ?>&nbsp;↓<?php endif ?></th>
+                    <th><?php _e('Dislikes', LIKEBTN_I18N_DOMAIN) ?><?php if ($sort_by == 'dislikes'): ?>&nbsp;↓<?php endif ?></th>
+                    <th><?php _e('Likes minus dislikes', LIKEBTN_I18N_DOMAIN) ?><?php if ($sort_by == 'likes_minus_dislikes'): ?>&nbsp;↓<?php endif ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -3084,14 +3154,14 @@ function likebtn_admin_statistics() {
                             <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>
                                 <?php echo $statistics_item->likes; ?>
                             <?php else: ?>
-                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'like', '<?php echo get_option('likebtn_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_I18N_DOMAIN) ?>" class="item_like"><?php echo $statistics_item->likes; ?></a>
+                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'like', '<?php echo get_option('likebtn_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_I18N_DOMAIN) ?>" class="item_like likebtn_ttip"><?php echo $statistics_item->likes; ?></a>
                             <?php endif ?>
                         </td>
                         <td>
                             <?php if ($blogs && $statistics_item->blog_id != $blog_id): ?>
                                 <?php echo $statistics_item->dislikes; ?>
                             <?php else: ?>
-                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'dislike', '<?php echo get_option('likebtn_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_I18N_DOMAIN) ?>" class="item_dislike"><?php echo $statistics_item->dislikes; ?></a>
+                                <a href="javascript:statisticsEdit('<?php echo $entity_name ?>', '<?php echo $statistics_item->post_id; ?>', 'dislike', '<?php echo get_option('likebtn_plan'); ?>', '<?php _e('Enter new value:', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Upgrade your website plan to the ULTRA plan to use the feature', LIKEBTN_I18N_DOMAIN) ?>', '<?php _e('Error occured. Please, try again later.', LIKEBTN_I18N_DOMAIN) ?>');void(0);" title="<?php _e('Click to change', LIKEBTN_I18N_DOMAIN) ?>" class="item_dislike likebtn_ttip"><?php echo $statistics_item->dislikes; ?></a>
                             <?php endif ?>
                         </td>
                         <td><?php echo $statistics_item->likes_minus_dislikes; ?></td>
@@ -3779,7 +3849,11 @@ function likebtn_get_content($content, $callback_content_position = '') {
     }
 
     // checking if section is excluded
-    if ((in_array('home', $exclude_sections) && is_home()) || (in_array('archive', $exclude_sections) && is_archive())) {
+    if ((in_array('home', $exclude_sections) && is_home()) || 
+        (in_array('archive', $exclude_sections) && is_archive() && !is_category()) || 
+        (in_array('search', $exclude_sections) && is_search()) || 
+        (in_array('category', $exclude_sections) && is_category())
+    ) {
         return $content;
     }
 
