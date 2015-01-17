@@ -3791,7 +3791,8 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
     $public_url = _likebtn_get_public_url();
 
     $markup = <<<MARKUP
-<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}></span><script type="text/javascript" src="//w.likebtn.com/js/w/widget.js#async=1" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
+<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}></span><script>(function(d, e, s) {a = d.createElement(e);m = d.getElementsByTagName(e)[0];a.async = 1;a.src = s;m.parentNode.insertBefore(a, m)})(document, 'script', '//w.likebtn.com/js/w/widget.js');
+if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
 MARKUP;
 
     // HTML before
