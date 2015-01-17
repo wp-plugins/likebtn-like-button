@@ -36,6 +36,7 @@ define('LIKEBTN_LIST_FLAG', '_likebtn_list');
 define('LIKEBTN_ENTITY_POST', 'post');
 define('LIKEBTN_ENTITY_POST_LIST', 'post'.LIKEBTN_LIST_FLAG);
 define('LIKEBTN_ENTITY_PAGE', 'page');
+define('LIKEBTN_ENTITY_PAGE_LIST', 'page'.LIKEBTN_LIST_FLAG);
 define('LIKEBTN_ENTITY_COMMENT', 'comment');
 define('LIKEBTN_ENTITY_CUSTOM_ITEM', 'custom_item');
 define('LIKEBTN_ENTITY_USER', 'user'); // invisible type, used for bbPress
@@ -111,7 +112,6 @@ $post_formats = array(
 // post types without excerpts
 global $likebtn_no_excerpts;
 $likebtn_no_excerpts = array(
-    LIKEBTN_ENTITY_PAGE,
     LIKEBTN_ENTITY_COMMENT
 );
 
@@ -119,8 +119,9 @@ $likebtn_no_excerpts = array(
 global $likebtn_entity_titles;
 $likebtn_entity_titles = array(
     LIKEBTN_ENTITY_POST => __('Posts'),
-    LIKEBTN_ENTITY_PAGE => __('Pages'),
     LIKEBTN_ENTITY_POST_LIST => __('Post List'),
+    LIKEBTN_ENTITY_PAGE => __('Pages'),
+    LIKEBTN_ENTITY_PAGE_LIST => __('Page List'),
     LIKEBTN_ENTITY_COMMENT => __('Comments'),
     LIKEBTN_ENTITY_USER => __('User'),
     LIKEBTN_ENTITY_CUSTOM_ITEM => __('Custom Items'),
@@ -215,6 +216,8 @@ $likebtn_settings = array(
     "loader_show" => array("default" => '0'),
     "loader_image" => array("default" => ''),
     "tooltip_enabled" => array("default" => '1'),
+    "tooltip_like_show_always" => array("default" => '0'),
+    "tooltip_dislike_show_always" => array("default" => '0'),
     "white_label" => array("default" => '0'),
     "popup_html" => array("default" => ''),
     "popup_donate" => array("default" => ''),
@@ -339,6 +342,58 @@ $likebtn_default_locales = array(
     'es' => array('name'    => 'Español',
           'en_name' => 'Spanish',
           'iso'     => 'es'
+    ),
+    'ar' => array('name'    => 'العربية',
+          'en_name' => 'Arabic',
+          'iso'     => 'ar'
+    ),
+    'pt' => array('name'    => 'Português',
+          'en_name' => 'Portuguese',
+          'iso'     => 'pt'
+    ),
+    'pt_BR' => array('name'    => 'Português do Brasil',
+          'en_name' => 'Portuguese (Brazil)',
+          'iso'     => 'pt'
+    ),
+    'vi' => array('name'    => 'Tiếng Việt',
+          'en_name' => 'Vietnamese',
+          'iso'     => 'vi'
+    ),
+    'tr' => array('name'    => 'Türkçe',
+          'en_name' => 'Turkish',
+          'iso'     => 'tr'
+    ),
+    'zh_CN' => array('name'    => '简体中文',
+          'en_name' => 'Chinese',
+          'iso'     => 'zh'
+    ),
+    'cs' => array('name'    => 'Čeština',
+          'en_name' => 'Czech',
+          'iso'     => 'cs'
+    ),
+    'ne' => array('name'    => 'नेपाली',
+          'en_name' => 'Nepali',
+          'iso'     => 'ne'
+    ),
+    'fr' => array('name'     => 'Français',
+          'en_name'  => 'French',
+          'iso'      => 'fr'
+    ),
+    'it' => array('name'     => 'Italiano',
+          'en_name'  => 'Italian',
+          'iso'      => 'it'
+    ),
+    'he' => array('name'     => 'עברית',
+          'en_name'  => 'Hebrew',
+          'iso'      => 'he'
+    ),
+    'th' => array('name'     => 'ไทย',
+          'en_name'       => 'Thai',
+          'iso'      => 'th'
+    ),
+    'pl' => array('name'     => 'Polski',
+          'en_name'  => 'Polish',
+          'iso'      => 'pl'
     ),
 );
 
@@ -2179,6 +2234,8 @@ function likebtn_admin_buttons() {
 
                                             <a class="nav-tab likebtn_tab_loading" href="javascript:likebtnGotoTab('loading', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Loading', LIKEBTN_I18N_DOMAIN); ?></a>
 
+                                            <a class="nav-tab likebtn_tab_tooltips" href="javascript:likebtnGotoTab('tooltips', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Tooltips', LIKEBTN_I18N_DOMAIN); ?></a>
+
                                             <a class="nav-tab likebtn_tab_events" href="javascript:likebtnGotoTab('events', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Events', LIKEBTN_I18N_DOMAIN); ?></a>
 
                                             <a class="nav-tab likebtn_tab_texts" href="javascript:likebtnGotoTab('texts', '.likebtn_tab_extset', '#likebtn_extset_tab_', '#likebtn_extset_tabs');void(0);"><?php _e('Texts', LIKEBTN_I18N_DOMAIN); ?></a>
@@ -2533,6 +2590,25 @@ function likebtn_admin_buttons() {
                                                         </th>
                                                         <td>
                                                             <input type="text" name="likebtn_settings_loader_image_<?php echo $entity_name; ?>" value="<?php echo get_option('likebtn_settings_loader_image_' . $entity_name); ?>" class="likebtn_input" />
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="postbox likebtn_tab_extset hidden" id="likebtn_extset_tab_tooltips">
+                                            <div class="inside">
+                                                <table class="form-table">
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Always show Like button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_tooltip_like_show_always_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_tooltip_like_show_always_' . $entity_name)); ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Always show Dislike button tooltip', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_settings_tooltip_dislike_show_always_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_tooltip_dislike_show_always_' . $entity_name)); ?> />
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -3403,6 +3479,7 @@ function _likebtn_get_entities($no_list = false, $include_invisible = false) {
         LIKEBTN_ENTITY_POST => _likebtn_get_entity_title(LIKEBTN_ENTITY_POST),
         LIKEBTN_ENTITY_POST_LIST => _likebtn_get_entity_title(LIKEBTN_ENTITY_POST_LIST),
         LIKEBTN_ENTITY_PAGE => _likebtn_get_entity_title(LIKEBTN_ENTITY_PAGE),
+        LIKEBTN_ENTITY_PAGE_LIST => _likebtn_get_entity_title(LIKEBTN_ENTITY_PAGE_LIST)
     );
     $post_types = get_post_types(array('public'=>true, '_builtin' => false));
 
@@ -3714,7 +3791,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
     $public_url = _likebtn_get_public_url();
 
     $markup = <<<MARKUP
-<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}></span><script type="text/javascript" src="//w.likebtn.com/js/w/widget.js" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
+<!-- LikeBtn.com BEGIN --><span class="likebtn-wrapper" {$data}></span><script type="text/javascript" src="//w.likebtn.com/js/w/widget.js#async=1" async="async"></script><script type="text/javascript">if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script><!-- LikeBtn.com END -->
 MARKUP;
 
     // HTML before
