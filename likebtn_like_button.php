@@ -455,6 +455,7 @@ $likebtn_internal_options = array(
     'likebtn_plugin_v' => '',
     'likebtn_installation_timestamp' => '',
     'likebtn_notice_plan' => 0, // 1 = upgrade, -1 = downgrade
+    'likebtn_account_data_hash' => ''
 //    'likebtn_db_version' => 0,
 );
 
@@ -1619,8 +1620,22 @@ function likebtn_admin_settings() {
     global $likebtn_sync_intervals;
 
     // reset sync interval
-    if (!get_option('likebtn_account_email') || !get_option('likebtn_account_api_key')) {
+    if (!get_option('likebtn_account_email') || !get_option('likebtn_account_api_key') || !get_option('likebtn_site_id')) {
         update_option('likebtn_sync_inerval', '');
+    }
+
+    // If account data has changed, refresh the plan
+    $account_data_hash = md5(get_option('likebtn_account_email').get_option('likebtn_account_api_key').get_option('likebtn_site_id'));
+    if (!get_option('likebtn_account_data_hash') || $account_data_hash != get_option('likebtn_account_data_hash')) {
+        update_option('likebtn_account_data_hash', $account_data_hash);
+
+        // run plan sunchronization
+        require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+        $likebtn = new LikeBtnLikeButton();
+        $likebtn->syncPlan();
+
+        // run synchronization
+        $likebtn->syncVotes();
     }
 
     likebtn_admin_header();
