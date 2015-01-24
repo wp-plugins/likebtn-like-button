@@ -3306,7 +3306,7 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
         // custom item
         $query = "
              SELECT {$query_select}
-                p.ID as 'post_id',
+                p.identifier as 'post_id',
                 p.identifier as 'post_title',
                 p.likes,
                 p.dislikes,
@@ -4471,7 +4471,12 @@ function likebtn_reset($entity_name, $items)
 // get entity identifier
 function likebtn_get_identifier($entity_name, $entity_id)
 {
-    $identifier = $entity_name . '_' . $entity_id;
+    if ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM) {
+        $identifier = $entity_id;
+    } else {
+        $identifier = $entity_name . '_' . $entity_id;    
+    }
+    
     return $identifier;
 }
 
