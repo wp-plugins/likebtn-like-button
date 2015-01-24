@@ -233,17 +233,6 @@ class LikeBtnLikeButton {
             $entity_id = $identifier_parts[2];
         }
 
-        /*$identifier_parts = explode('_', $identifier);
-        $entity_name = '';
-        if (!empty($identifier_parts[0])) {
-            $entity_name = $identifier_parts[0];
-        }
-
-        $entity_id = '';
-        if (!empty($identifier_parts[1])) {
-            $entity_id = $identifier_parts[1];
-        }*/
-
         $likes_minus_dislikes = null;
         if ($likes !== null && $dislikes !== null) {
             $likes_minus_dislikes = $likes - $dislikes;
@@ -390,16 +379,44 @@ class LikeBtnLikeButton {
             }
         }
 
+        // Check custom item
+        $item_db = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT likes, dislikes
+                FROM ".$wpdb->prefix.LIKEBTN_TABLE_ITEM."
+                WHERE identifier = %s",
+                $identifier
+            )
+        );
+
         // Custom identifier
-        if (!$entity_updated) {
+        if ($item_db || !$entity_updated) {
+
+            if ($likes === null || $dislikes === null) {
+                if ($item_db) {
+                    if ($likes === null) {
+                        $likes = $item_db->likes;
+                    }
+                    if ($dislikes === null) {
+                        $dislikes = $item_db->dislikes;
+                    }
+                }
+            }
+            if ($likes !== null && $dislikes !== null) {
+                $likes_minus_dislikes = $likes - $dislikes;
+            }
+
             $item_data = array(
                 'identifier' => $identifier,
-                'url' => $url,
+                //'url' => $url,
                 'likes' => $likes,
                 'dislikes' => $dislikes,
                 'likes_minus_dislikes' => $likes_minus_dislikes,
                 'identifier_hash' => md5($identifier)
             );
+            if ($url) {
+                $item_data['url'] = $url;
+            }
 
             $update_where = array('identifier' => $item_data['identifier']);
             $update_result = $wpdb->update($wpdb->prefix . LIKEBTN_TABLE_ITEM, $item_data, $update_where);
