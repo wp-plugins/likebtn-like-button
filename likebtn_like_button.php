@@ -3739,7 +3739,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         // do not add option if it has default value
         if ((isset($likebtn_settings[$option_name]['default']) && $option_value == $likebtn_settings[$option_name]['default']) ||
             //$option_value === '' || is_bool($option_value)
-            ($option_value === '' && $likebtn_settings[$option_name]['default'] == '0')
+            ($option_value === '' && (isset($likebtn_settings[$option_name]['default']) && $likebtn_settings[$option_name]['default'] == '0'))
         ) {
             // option has default value
         } else {
