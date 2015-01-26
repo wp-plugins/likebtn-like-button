@@ -3737,7 +3737,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         $prepared_settings[$option_name] = $option_value_prepared;
 
         // do not add option if it has default value
-        if ($option_value == $likebtn_settings[$option_name]['default'] ||
+        if ((isset($likebtn_settings[$option_name]['default']) && $option_value == $likebtn_settings[$option_name]['default']) ||
             //$option_value === '' || is_bool($option_value)
             ($option_value === '' && $likebtn_settings[$option_name]['default'] == '0')
         ) {
@@ -3905,9 +3905,17 @@ function likebtn_get_content($content, $callback_content_position = '') {
     $real_entity_name = get_post_type();
 
     // Excerpt mode
-    if (!is_single()) {
-        if (!in_array($real_entity_name, $likebtn_no_excerpts)) {
+    if ($real_entity_name == LIKEBTN_ENTITY_PAGE) {
+        // page
+        if (!is_page()) {
             $real_entity_name = $real_entity_name . LIKEBTN_LIST_FLAG;
+        }
+    } else {
+        // everything else
+        if (!is_single()) {
+            if (!in_array($real_entity_name, $likebtn_no_excerpts)) {
+                $real_entity_name = $real_entity_name . LIKEBTN_LIST_FLAG;
+            }
         }
     }
 

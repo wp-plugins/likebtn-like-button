@@ -38,11 +38,13 @@ endif ?>
                         )</nobr></span>
                     <?php endif ?>
                 </div>
-                <?php echo $post['thumbnail_html'] ?>
-                <?php if ($show_thumbnail && $post['type'] == LIKEBTN_ENTITY_POST): ?>
-                    <?php echo get_the_post_thumbnail($post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail')); ?>
-                <?php elseif( 'image/' == substr( $post['post_mime_type'], 0, 6 ) ): ?>
-                    <?php echo wp_get_attachment_image( $post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail') ); ?>
+                
+                <?php if ($show_thumbnail): ?>
+                    <?php if( 'image/' == substr( $post['post_mime_type'], 0, 6 ) ): ?>
+                        <?php echo wp_get_attachment_image( $post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail') ); ?>
+                    <?php else: ?>
+                        <?php echo get_the_post_thumbnail($post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail')); ?>
+                    <?php endif ?>
                 <?php endif ?>
             </a>
             <?php if ($show_excerpt): ?>

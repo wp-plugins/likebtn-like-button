@@ -7,6 +7,19 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     // Default number of items to show
     const NUMBER_OF_ITEMS = 5;
 
+    public static $instance_default = array(
+        'title' => '',
+        'entity_name' => array(LIKEBTN_ENTITY_POST),
+        'number' => self::NUMBER_OF_ITEMS,
+        'time_range' => 'all',
+        'show_likes' => '',
+        'show_dislikes' => '',
+        'show_dislikes' => '',
+        'show_thumbnail' => '1',
+        'show_excerpt' => '',
+        'show_date' => ''
+    );
+
     function LikeBtnLikeButtonMostLikedWidget() {
         load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
         $widget_ops = array('description' => __('Most liked posts and comments', LIKEBTN_I18N_DOMAIN));
@@ -19,20 +32,18 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         echo $LikeBtnLikeButtonMostLiked->widget($args, $instance);
     }
 
-    function update($new_instance, $old_instance) {
+    /*function update($new_instance, $old_instance) {
         if ($new_instance['title'] == '') {
             $new_instance['title'] = __('Most Liked Content', LIKEBTN_I18N_DOMAIN);
         }
 
-//        if ((int) $new_instance['number'] < 1) {
-//            $new_instance['number'] = 5;
-//        }
-
         return $new_instance;
-    }
+    }*/
 
     function form($instance) {
         global $likebtn_entities;
+
+        $instance = LikeBtnLikeButtonMostLikedWidget::prepareInstance($instance);
 
         $likebtn_entities = _likebtn_get_entities(true);
 
@@ -53,18 +64,36 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
             '6m' => __('6 months', LIKEBTN_I18N_DOMAIN),
             '1y' => __('1 year', LIKEBTN_I18N_DOMAIN)
         );
-
-        if ($instance['title'] == '') {
+        
+        // Normalize instance
+        if (!isset($instance['title'])) {
             $instance['title'] = __('Most Liked Content', LIKEBTN_I18N_DOMAIN);
         }
-
-        if ((int)$instance['number'] < 1) {
-            $instance['number'] = self::NUMBER_OF_ITEMS;
-        }
-
-        if (!$instance['entity_name'] || !is_array($instance['entity_name'])) {
+        if (empty($instance['entity_name']) || !is_array($instance['entity_name'])) {
             $instance['entity_name'] = array(LIKEBTN_ENTITY_POST);
         }
+        if (empty($instance['number']) || (int)$instance['number'] < 1) {
+            $instance['number'] = self::NUMBER_OF_ITEMS;
+        }
+        if (empty($instance['time_range'])) {
+            $instance['time_range'] = 'all';
+        }
+        /*if (empty($instance['show_likes'])) {
+            $instance['show_likes'] = '';
+        }
+        if (empty($instance['show_dislikes'])) {
+            $instance['show_dislikes'] = '';
+        }
+        if (empty($instance['show_thumbnail'])) {
+            $instance['show_thumbnail'] = '1';
+        }
+        if (empty($instance['show_excerpt'])) {
+            $instance['show_excerpt'] = '';
+        }
+        if (empty($instance['show_date'])) {
+            $instance['show_date'] = '';
+        }*/
+
         ?>
         <p>
             <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title', LIKEBTN_I18N_DOMAIN); ?>:</label>
@@ -114,6 +143,22 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         <?php
     }
 
+    // Set default values
+    public static function prepareInstance($instance)
+    {
+        foreach (self::$instance_default as $field => $default_value) {
+            if (!isset($instance[$field])) {
+                $instance[$field] = '';
+            }
+        }
+        return $instance;
+    }
+
+    /*public static function getField($instance, $field)
+    {
+        return isset($instance[$field]) ? $instance[$field] : '';
+    }*/
+
 }
 
 class LikeBtnLikeButtonMostLiked {
@@ -140,6 +185,9 @@ class LikeBtnLikeButtonMostLiked {
         if (is_array($args)) {
             extract($args);
         }
+
+        $instance = LikeBtnLikeButtonMostLikedWidget::prepareInstance($instance);
+
         if (is_array($instance)) {
             extract($instance);
         }
