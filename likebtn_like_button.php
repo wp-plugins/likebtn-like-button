@@ -4721,7 +4721,7 @@ function _likebtn_bp_activity($wrap = true, $position = LIKEBTN_POSITION_BOTH, $
 
 // BuddyPress activity comment
 function likebtn_bp_activity_comment($content) {
-    //return $content;
+
     global $activities_template;
 
     if (empty($activities_template) || empty($activities_template->activity) || empty($activities_template->activity->current_comment)) {
@@ -4731,6 +4731,31 @@ function likebtn_bp_activity_comment($content) {
     $entity_id = $activities_template->activity->current_comment->id;
 
     return _likebtn_get_content_universal(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, $entity_id, $content);
+}
+
+// BuddyPress activity comment ajax - Read more
+// bp_dtheme_get_single_activity_content()
+function likebtn_bp_activity_comment_ajax($content) {
+
+    global $activities_template;
+
+    if (!empty($_POST['action']) && $_POST['action'] == 'get_single_activity_content' && !empty($_POST['activity_id'])) {
+        // Ajax - read more
+        // http://oik-plugins.eu/buddypress-a2z/oik_api/bp_activity_get_specific/
+        $activity_array = bp_activity_get_specific( array(
+            'activity_ids'     => $_POST['activity_id'],
+            'display_comments' => 'stream'
+        ) );
+        $activity = ! empty( $activity_array['activities'][0] ) ? $activity_array['activities'][0] : false;
+        
+        if (!empty($activity) && !empty($activity->type) && $activity->type == 'activity_comment') {
+            $entity_id = $_POST['activity_id'];
+
+            return _likebtn_get_content_universal(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, $entity_id, $content);
+        }
+    }
+
+    return $content;
 }
 
 // BuddyPress activity top
@@ -4745,6 +4770,20 @@ function likebtn_bp_activity_bottom()
     return _likebtn_bp_activity(false, LIKEBTN_POSITION_BOTTOM);
 }
 
+// BuddyPress Fetches full an activity's full, non-excerpted content via a POST request.
+// Used for the 'Read More' link on long activity items.
+/*function likebtn_bp_get_single_activity_content($content) {
+    global $activities_template;
+
+    if (empty($activities_template) || empty($activities_template->activity) || empty($activities_template->activity->current_comment)) {
+        return $content;
+    }
+
+    $entity_id = $activities_template->activity->current_comment->id;
+
+    return _likebtn_get_content_universal(LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, $entity_id, $content);
+}*/
+
 // Activity page.
 //add_action("bp_has_activities", array(&$this, "BuddyPressBeforeActivityLoop"));
 
@@ -4756,6 +4795,12 @@ add_action('bp_activity_entry_meta', 'likebtn_bp_activity_bottom');
 
 // BuddyPress activity comment
 add_filter('bp_get_activity_content', 'likebtn_bp_activity_comment');
+add_filter('bp_get_activity_content_body', 'likebtn_bp_activity_comment_ajax');
+
+// BuddyPress Fetches full an activity's full, non-excerpted content via a POST request.
+// Used for the 'Read More' link on long activity items.
+//add_action('bp_dtheme_get_single_activity_content',       'likebtn_bp_get_single_activity_content');
+//add_action('bp_legacy_theme_get_single_activity_content', 'likebtn_bp_get_single_activity_content');
 
 // Forum topic page
 add_filter('bp_has_topic_posts', 'likebtn_bp_activity');
