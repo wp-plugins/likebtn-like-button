@@ -1838,6 +1838,8 @@ function likebtn_admin_buttons() {
     $blog_locale = get_locale();
     list($blog_locale_main) = explode("_", $blog_locale);
     $plugin_dir = plugin_dir_path(__FILE__);
+
+    $select2_locale_script = '';
     if (file_exists($plugin_dir.'public/js/jquery/select2/locale/select2_locale_'.$blog_locale.'.js')) {
         $select2_locale_script = _likebtn_get_public_url().'js/jquery/select2/locale/select2_locale_'.$blog_locale.'.js';
     } else if (file_exists($plugin_dir.'public/js/jquery/select2/locale/select2_locale_'.$blog_locale_main.'.js')) {
@@ -1913,7 +1915,8 @@ function likebtn_admin_buttons() {
     likebtn_admin_header();
     ?>
     
-    <script src="//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/<?php echo $likebtn_website_locale ?>/js/donate_generator.js" type="text/javascript"></script>
+    <script>(function(d, e, s) {a = d.createElement(e);m = d.getElementsByTagName(e)[0];a.async = 1;a.src = s;m.parentNode.insertBefore(a, m)})(document, 'script', '//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/<?php echo $likebtn_website_locale ?>/js/donate_generator.js');
+if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
     <?php /*
     <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/select2/select2.js?ver=<?php echo LIKEBTN_VERSION ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo _likebtn_get_public_url() ?>js/jquery/jquery-ui/jquery-ui.js?ver=<?php echo LIKEBTN_VERSION ?>" />
@@ -2784,13 +2787,18 @@ function likebtn_admin_statistics() {
     global $likebtn_post_statuses;
     global $wpdb;
 
+    $query_parameters = array();
+
     $likebtn_entities = _likebtn_get_entities(true);
 
     // Custom item
     $likebtn_entities[LIKEBTN_ENTITY_CUSTOM_ITEM] = __('Custom item');
 
     // get parameters
-    $entity_name = $_GET['likebtn_entity_name'];
+    $entity_name = '';
+    if (!empty($_GET['likebtn_entity_name'])) {
+        $entity_name = $_GET['likebtn_entity_name'];
+    }
     if (!array_key_exists($entity_name, $likebtn_entities)) {
         $entity_name = LIKEBTN_ENTITY_POST;
     }
@@ -2899,7 +2907,7 @@ function likebtn_admin_statistics() {
     $p = new LikeBtnLikeButtonPagination();
     $p->limit($page_size); // Limit entries per page
     $p->target($pagination_target);
-    $p->currentPage($_GET[$p->paging]); // Gets and validates the current page
+    //$p->currentPage(); // Gets and validates the current page
     $p->prevLabel(__('Previous', LIKEBTN_I18N_DOMAIN));
     $p->nextLabel(__('Next', LIKEBTN_I18N_DOMAIN));
 
@@ -3787,8 +3795,10 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         $data .= ' data-item_url="' . $entity_url . '" ';
     }
     if ($entity_title && !$prepared_settings['item_title']) {
+        $entity_title = strip_shortcodes($entity_title);
         $entity_title = preg_replace('/\s+/', ' ', $entity_title);
         $entity_title = htmlspecialchars($entity_title);
+
         $data .= ' data-item_title="' . $entity_title . '" ';
     }
     if ($entity_image && !$prepared_settings['item_image']) {
@@ -4088,6 +4098,11 @@ add_action('woocommerce_after_shop_loop_item_title', 'likebtn_woocommerce_produc
 function likebtn_comment_text($content) {
 
     global $comment;
+    
+    // Add like button only if comment is rendered from the list and not from sidebar widget
+    if (!_likebtn_has_caller('wp_list_comments')) {
+        return $content;
+    }
 
     if (is_feed()) {
         return $content;
@@ -4402,8 +4417,12 @@ function likebtn_edit_item_callback() {
         'value' => $value
     );
 
-    define( 'DOING_AJAX', true );
-    ob_clean();
+    if (!DOING_AJAX) {
+        define('DOING_AJAX', true);
+    }
+    if (ob_get_contents()) {
+        ob_clean();
+    }
     wp_send_json($response);
 }
 
@@ -4433,8 +4452,12 @@ function likebtn_refresh_plan_callback() {
         'reload' => (int)get_option('likebtn_notice_plan'),
     );
 
-    define('DOING_AJAX', true);
-    ob_clean();
+    if (!DOING_AJAX) {
+        define('DOING_AJAX', true);
+    }
+    if (ob_get_contents()) {
+        ob_clean();
+    }
     wp_send_json($response);
 }
 
@@ -5028,4 +5051,16 @@ function _likebtn_get_entity_url($entity_name, $entity_id, $url = '')
             break;
     }
     return $url;
+}
+
+// Check if function has been called by some other function
+function _likebtn_has_caller($function_name)
+{
+    $e = new Exception;
+
+    if (strstr($e->getTraceAsString(), $function_name.'(')) {
+        return true;
+    } else {
+        return false;
+    }
 }
