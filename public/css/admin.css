@@ -323,3 +323,6 @@
 .likebtn_disabled label {
     color: #888;
 }
+#stats_actions_form .button-secondary {
+    margin-right: 5px;
+}

@@ -277,27 +277,6 @@ function resetSettings(entity_name, parameters)
     displayFields();
 }
 
-// submit statistics items
-function statisticsSubmit(plan, messages)
-{
-    if (typeof(plan) != "undefined" && parseInt(plan) >= plans.vip) {
-
-        if (jQuery("#statistics_container .item_checkbox:checked").size()) {
-            if (confirm(messages.confirm)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            alert(messages.items);
-            return false;
-        }
-    } else {
-        alert(messages.upgrade);
-        return false;
-    }
-}
-
 // select/unselect items
 function statisticsItemsCheckbox(el)
 {
@@ -810,5 +789,27 @@ function likebtnOnGetAccountDataClose()
                 
             }
         });
+    }
+}
+
+// Statistics bulk actions
+function likebtnStatsBulkAction(action, plan, msg_confirm)
+{
+    if (typeof(plan) != "undefined" && parseInt(plan) >= plans.vip) {
+
+        if (jQuery("#statistics_container .item_checkbox:checked").size()) {
+            if (confirm(msg_confirm)) {
+                jQuery("#stats_bulk_action").val(action);
+                jQuery("#stats_actions_form").submit();
+            } else {
+                return false;
+            }
+        } else {
+            alert(likebtn_msg_select_items);
+            return false;
+        }
+    } else {
+        alert(likebtn_msg_upgrade);
+        return false;
     }
 }

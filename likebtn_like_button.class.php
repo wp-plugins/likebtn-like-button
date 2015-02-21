@@ -205,7 +205,11 @@ class LikeBtnLikeButton {
                 if (!empty($item['dislikes'])) {
                     $dislikes = $item['dislikes'];
                 }
-                $entity_updated = $this->updateCustomFields($item['identifier'], $likes, $dislikes, $item['url']);
+                $url = '';
+                if (isset($item['url'])) {
+                    $url = $item['url'];
+                }
+                $entity_updated = $this->updateCustomFields($item['identifier'], $likes, $dislikes, $url);
             }
         }
 
@@ -223,15 +227,7 @@ class LikeBtnLikeButton {
 
         preg_match("/^(.*)_(\d+)$/", $identifier, $identifier_parts);
 
-        $entity_name = '';
-        if (!empty($identifier_parts[1])) {
-            $entity_name = $identifier_parts[1];
-        }
-        
-        $entity_id = '';
-        if (!empty($identifier_parts[2])) {
-            $entity_id = $identifier_parts[2];
-        }
+        list($entity_name, $entity_id) = $this->parseIdentifier($identifier);
 
         $likes_minus_dislikes = null;
         if ($likes !== null && $dislikes !== null) {
@@ -434,6 +430,151 @@ class LikeBtnLikeButton {
     }
 
     /**
+     * Update votes in database from API response.
+     */
+    public function deleteVotes($response) {
+        $entity_updated = false;
+
+        if (!empty($response['response']['items'])) {
+            foreach ($response['response']['items'] as $item) {
+                $entity_updated = $this->deleteCustomFields($item['identifier']);
+            }
+        }
+
+        return $entity_updated;
+    }
+
+    /**
+     * Update entity custom fields
+     */
+    public function deleteCustomFields($identifier) 
+    {
+        global $wpdb;
+
+        $likebtn_entities = _likebtn_get_entities(true, true);
+
+        list($entity_name, $entity_id) = $this->parseIdentifier($identifier);
+
+        $entity_updated = false;
+
+        if (array_key_exists($entity_name, $likebtn_entities) && is_numeric($entity_id)) {
+
+            // set Custom fields
+            switch ($entity_name) {
+                case LIKEBTN_ENTITY_COMMENT:
+                    // Comment
+                    $comment = get_comment($entity_id);
+
+                    // check if post exists and is not revision
+                    if (!empty($comment) && $comment->comment_type != 'revision') {
+                        delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                        delete_comment_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                        delete_comment_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                        $entity_updated = true;
+                    }
+                    break;
+
+                case LIKEBTN_ENTITY_BP_ACTIVITY_POST:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT:
+                case LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC:
+                    if (!_likebtn_is_bp_active()) {
+                        break;
+                    }
+                    $bp_activity = $wpdb->get_row("
+                        SELECT id
+                        FROM ".$wpdb->prefix."bp_activity
+                        WHERE id = {$entity_id}
+                    ");
+
+                    if (!empty($bp_activity)) {
+                        bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                        bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                        bp_activity_delete_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                        $entity_updated = true;
+                    }
+                    break;
+
+                case LIKEBTN_ENTITY_BP_MEMBER:
+                    // BuddyPress Member Profile
+                    _likebtn_delete_bp_member_votes($entity_id);
+                    $entity_updated = true;
+                    break;
+
+                case LIKEBTN_ENTITY_BBP_USER:
+                    // bbPress Member Profile
+                    _likebtn_delete_user_votes($entity_id);
+                    $entity_updated = true;
+                    break;
+
+                case LIKEBTN_ENTITY_USER:
+                    // BuddyPress Member Profile
+                    $entity_updated = _likebtn_delete_bp_member_votes($entity_id);
+
+                    // General user and bbPress Member Profile
+                    $entity_updated = $entity_updated || _likebtn_delete_user_votes($entity_id);
+                    break;
+                
+                default:
+                    // Post
+                    $post = get_post($entity_id);
+
+                    // check if post exists and is not revision
+                    if (!empty($post) && !empty($post->post_type) && $post->post_type != 'revision') {
+                        delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+                        delete_post_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+                        delete_post_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+                        $entity_updated = true;
+                    }
+                    break;
+            }
+        }
+
+        // Check custom item
+        $item_db = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT likes, dislikes
+                FROM ".$wpdb->prefix.LIKEBTN_TABLE_ITEM."
+                WHERE identifier = %s",
+                $identifier
+            )
+        );
+
+        // Custom identifier
+        if ($item_db || !$entity_updated) {
+            $where = array('identifier' => $identifier);
+            $result = $wpdb->delete($wpdb->prefix . LIKEBTN_TABLE_ITEM, $where);
+            if ($result) {
+                $entity_updated = true;
+            }
+        }
+
+        return $entity_updated;
+    }
+
+    /**
+     * Parse identifier.
+     */
+    public function parseIdentifier($identifier) {
+        preg_match("/^(.*)_(\d+)$/", $identifier, $identifier_parts);
+
+        $entity_name = '';
+        if (!empty($identifier_parts[1])) {
+            $entity_name = $identifier_parts[1];
+        }
+        
+        $entity_id = '';
+        if (!empty($identifier_parts[2])) {
+            $entity_id = $identifier_parts[2];
+        }
+
+        return array(
+            $entity_name,
+            $entity_id
+        );
+    }
+
+    /**
      * Run locales synchronization.
      */
     public function runSyncLocales() {
@@ -558,6 +699,26 @@ class LikeBtnLikeButton {
         // check result
         if (isset($response['response']['reseted']) && $response['response']['reseted']) {
            $result = $response['response']['reseted'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Reset likes/dislikes using API
+     *
+     * @param type $account_api_key
+     * @param type $site_api_key
+     */
+    public function delete($identifier) {
+        $result = false;
+
+        $url = "identifier_filter={$identifier}";
+        $response = $this->apiRequest('delete', $url);
+
+        // check result
+        if (isset($response['response']['deleted']) && $response['response']['deleted']) {
+           $result = $response['response']['deleted'];
         }
 
         return $result;

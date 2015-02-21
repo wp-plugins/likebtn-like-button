@@ -11,6 +11,7 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         'title' => '',
         'entity_name' => array(LIKEBTN_ENTITY_POST),
         'number' => self::NUMBER_OF_ITEMS,
+        'order' => 'likes',
         'time_range' => 'all',
         'show_likes' => '',
         'show_dislikes' => '',
@@ -22,8 +23,8 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
 
     function LikeBtnLikeButtonMostLikedWidget() {
         load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
-        $widget_ops = array('description' => __('Most liked posts and comments', LIKEBTN_I18N_DOMAIN));
-        parent::WP_Widget(false, $name = __('LikeBtn Most Liked Content', LIKEBTN_I18N_DOMAIN), $widget_ops);
+        $widget_ops = array('description' => __('A list of most liked posts, comments, etc', LIKEBTN_I18N_DOMAIN));
+        parent::WP_Widget(false, $name = __('(LikeBtn) Most Liked Content', LIKEBTN_I18N_DOMAIN), $widget_ops);
     }
 
     /** @see WP_Widget::widget */
@@ -50,6 +51,12 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         // Custom item
         $likebtn_entities[LIKEBTN_ENTITY_CUSTOM_ITEM] = __('Custom item');
 
+        $order_list = array(
+            'likes' => __('Likes', LIKEBTN_I18N_DOMAIN),
+            'dislikes' => __('Dislikes', LIKEBTN_I18N_DOMAIN),
+            'likes_minus_dislikes' => __('Likes minus dislikes', LIKEBTN_I18N_DOMAIN)
+        );
+
         $time_range_list = array(
             'all' => __('All time', LIKEBTN_I18N_DOMAIN),
             '1' => __('1 day', LIKEBTN_I18N_DOMAIN),
@@ -74,6 +81,9 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         }
         if (empty($instance['number']) || (int)$instance['number'] < 1) {
             $instance['number'] = self::NUMBER_OF_ITEMS;
+        }
+        if (empty($instance['order'])) {
+            $instance['order'] = 'likes';
         }
         if (empty($instance['time_range'])) {
             $instance['time_range'] = 'all';
@@ -100,16 +110,27 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
             <input class="widefat" type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('entity_name'); ?>"><?php _e('Items to show (use CTRL to select multiple entries)', LIKEBTN_I18N_DOMAIN); ?>:</label><br/>
-            <select name="<?php echo $this->get_field_name('entity_name'); ?>[]" id="<?php echo $this->get_field_id('entity_name'); ?>" multiple="multiple" size="6" style="height:auto !important;">
+            <label for="<?php echo $this->get_field_id('entity_name'); ?>"><?php _e('Items to show', LIKEBTN_I18N_DOMAIN); ?>:</label><br/>
+            <?php /*<select name="<?php echo $this->get_field_name('entity_name'); ?>[]" id="<?php echo $this->get_field_id('entity_name'); ?>" multiple="multiple" size="6" style="height:auto !important;">
                 <?php foreach ($likebtn_entities as $entity_name_value => $entity_title): ?>
                     <option value="<?php echo $entity_name_value; ?>" <?php echo (in_array($entity_name_value, $instance['entity_name']) ? 'selected="selected"' : ''); ?> ><?php _e($entity_title, LIKEBTN_I18N_DOMAIN); ?></option>
                 <?php endforeach ?>
-            </select>
+            </select>*/ ?>
+            <?php foreach ($likebtn_entities as $entity_name_value => $entity_title): ?>
+                <input type="checkbox" name="<?php echo $this->get_field_name('entity_name'); ?>[]" id="<?php echo $this->get_field_id('entity_name'); ?>" value="<?php echo $entity_name_value; ?>" <?php echo (in_array($entity_name_value, $instance['entity_name']) ? 'checked="checked"' : ''); ?> /> <?php _e($entity_title, LIKEBTN_I18N_DOMAIN); ?><br/>
+            <?php endforeach ?>
         </p>
         <p>
             <label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of items to show:', LIKEBTN_I18N_DOMAIN); ?></label>
             <input type="text" id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" value="<?php echo $instance['number']; ?>" size="3" />
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id('order'); ?>"><?php _e('Order by:', LIKEBTN_I18N_DOMAIN); ?></label>
+            <select name="<?php echo $this->get_field_name('order'); ?>" id="<?php echo $this->get_field_id('order'); ?>">
+                <?php foreach ($order_list as $order_value => $order_name): ?>
+                    <option value="<?php echo $order_value; ?>" <?php selected($order_value, $instance['order']); ?> ><?php _e($order_name, LIKEBTN_I18N_DOMAIN); ?></option>
+                <?php endforeach ?>
+            </select>
         </p>
         <p>
             <label for="<?php echo $this->get_field_id('time_range'); ?>"><?php _e('Time range:', LIKEBTN_I18N_DOMAIN); ?></label>
@@ -261,6 +282,7 @@ class LikeBtnLikeButtonMostLiked {
                     p.post_date,
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     p.post_type,
                     p.post_mime_type,
                     '' as url
@@ -269,8 +291,11 @@ class LikeBtnLikeButtonMostLiked {
                      ON (p.ID = pm_likes.post_id)
                  LEFT JOIN {$wpdb->prefix}postmeta pm_dislikes
                      ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}postmeta pm_likes_minus_dislikes
+                     ON (pm_likes_minus_dislikes.post_id = pm_likes.post_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
                     pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
+                    AND p.post_status = 'publish'
                     AND p.post_type in ({$query_post_types}) ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND post_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
@@ -290,6 +315,7 @@ class LikeBtnLikeButtonMostLiked {
                     p.comment_date as 'post_date',
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     '".LIKEBTN_ENTITY_COMMENT."' as post_type,
                     '' as post_mime_type,
                     '' as url
@@ -298,8 +324,11 @@ class LikeBtnLikeButtonMostLiked {
                     ON (p.comment_ID = pm_likes.comment_id)
                  LEFT JOIN {$wpdb->prefix}commentmeta pm_dislikes
                     ON (pm_dislikes.comment_id = pm_likes.comment_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}commentmeta pm_likes_minus_dislikes
+                     ON (pm_likes_minus_dislikes.comment_id = pm_likes.comment_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
-                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' 
+                    AND p.comment_approved = 1 ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND comment_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
@@ -308,6 +337,9 @@ class LikeBtnLikeButtonMostLiked {
 
         // Custom items
         if (in_array(LIKEBTN_ENTITY_CUSTOM_ITEM, $instance['entity_name'])) {
+            if ($post_types_count > 0) {
+                $query .= " UNION ";
+            }
             $query_post_types = "'" . implode("','", $instance['entity_name']) . "'";
             $query .= "
                  SELECT
@@ -316,6 +348,7 @@ class LikeBtnLikeButtonMostLiked {
                     '' as 'post_date',
                     p.likes,
                     p.dislikes,
+                    p.likes_minus_dislikes,
                     '".LIKEBTN_ENTITY_CUSTOM_ITEM."' as 'post_type',
                     '' as 'post_mime_type',
                     url
@@ -337,6 +370,7 @@ class LikeBtnLikeButtonMostLiked {
                     p.user_registered as 'post_date',
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     '" . LIKEBTN_ENTITY_BP_MEMBER . "' as post_type,
                     '' as post_mime_type,
                     '' as url
@@ -345,8 +379,11 @@ class LikeBtnLikeButtonMostLiked {
                     ON (p.ID = pm_likes.object_id AND pm_likes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "')
                  LEFT JOIN {$wpdb->prefix}bp_xprofile_meta pm_dislikes
                     ON (pm_dislikes.object_id = pm_likes.object_id AND pm_dislikes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "' AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}bp_xprofile_meta pm_likes_minus_dislikes
+                    ON (pm_likes_minus_dislikes.object_id = pm_likes.object_id AND pm_likes_minus_dislikes.object_type = '" . LIKEBTN_BP_XPROFILE_OBJECT_TYPE . "' AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
-                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' 
+                    AND p.user_status = 0 ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
@@ -363,12 +400,13 @@ class LikeBtnLikeButtonMostLiked {
                 $query .= " UNION ";
             }
             $query .= "
-                SELECT {$query_select}
+                SELECT 
                     p.id as 'post_id',
                     CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create' && p.type != 'new_blog_post', CONCAT(': ', p.content), '') ) as 'post_title',
                     p.date_recorded as 'post_date',
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     IF (p.type = 'bbp_topic_create',
                         '" . LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC . "',
                         IF (p.type = 'new_blog_post',
@@ -383,8 +421,12 @@ class LikeBtnLikeButtonMostLiked {
                      ON (p.id = pm_likes.activity_id)
                  LEFT JOIN {$wpdb->prefix}bp_activity_meta pm_dislikes
                      ON (pm_dislikes.activity_id = pm_likes.activity_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}bp_activity_meta pm_likes_minus_dislikes
+                     ON (pm_likes_minus_dislikes.activity_id = pm_likes.activity_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
-                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' 
+                    AND p.hide_sitewide = 0
+                    AND p.is_spam = 0 ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
@@ -403,6 +445,7 @@ class LikeBtnLikeButtonMostLiked {
                     p.post_date,
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     p.post_type,
                     p.post_mime_type,
                     '' as url
@@ -411,9 +454,12 @@ class LikeBtnLikeButtonMostLiked {
                      ON (p.ID = pm_likes.post_id)
                  LEFT JOIN {$wpdb->prefix}postmeta pm_dislikes
                      ON (pm_dislikes.post_id = pm_likes.post_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}postmeta pm_likes_minus_dislikes
+                     ON (pm_likes_minus_dislikes.post_id = pm_likes.post_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
                     pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "'
-                    AND p.post_type in ('".implode("', '", $likebtn_bbp_post_types)."') ";
+                    AND p.post_type in ('".implode("', '", $likebtn_bbp_post_types)."') 
+                    AND p.post_status = 'publish' ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND post_date >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
@@ -432,6 +478,7 @@ class LikeBtnLikeButtonMostLiked {
                     p.user_registered as 'post_date',
                     CONVERT(pm_likes.meta_value, UNSIGNED INTEGER) as 'likes',
                     CONVERT(pm_dislikes.meta_value, UNSIGNED INTEGER) as 'dislikes',
+                    CONVERT(pm_likes_minus_dislikes.meta_value, UNSIGNED INTEGER) as 'likes_minus_dislikes',
                     '" . LIKEBTN_ENTITY_BBP_USER . "' as post_type,
                     '' as post_mime_type,
                     '' as url
@@ -440,8 +487,11 @@ class LikeBtnLikeButtonMostLiked {
                     ON (p.ID = pm_likes.user_id)
                  LEFT JOIN {$wpdb->prefix}usermeta pm_dislikes
                     ON (pm_dislikes.user_id = pm_likes.user_id AND pm_dislikes.meta_key = '" . LIKEBTN_META_KEY_DISLIKES . "')
+                 LEFT JOIN {$wpdb->prefix}usermeta pm_likes_minus_dislikes
+                    ON (pm_likes_minus_dislikes.user_id = pm_likes.user_id AND pm_likes_minus_dislikes.meta_key = '" . LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES . "')
                  WHERE
-                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' ";
+                    pm_likes.meta_key = '" . LIKEBTN_META_KEY_LIKES . "' 
+                    AND p.user_status = 0 ";
             if (!empty($instance['time_range']) && $instance['time_range'] != 'all') {
                 $query .= " AND p.user_registered >= '" . $this->timeRangeToDateTime($instance['time_range']) . "'";
             }
@@ -453,9 +503,24 @@ class LikeBtnLikeButtonMostLiked {
         }
 
         $query .= "
-            ORDER BY
-                likes DESC
-             {$query_limit}";
+            ORDER BY ";
+        switch ($instance['order']) {
+            default:
+            case 'likes':
+                $query .= "likes";
+                break;
+
+            case 'dislikes':
+                $query .= "dislikes";
+                break;
+
+            case 'likes_minus_dislikes':
+                $query .= "likes_minus_dislikes";
+                break;
+        }
+        $query .= " DESC";
+
+        $query .= " {$query_limit}";
 
 // echo "<pre>";
 // print_r($query);

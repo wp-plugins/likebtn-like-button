@@ -455,7 +455,8 @@ $likebtn_internal_options = array(
     'likebtn_plugin_v' => '',
     'likebtn_installation_timestamp' => '',
     'likebtn_notice_plan' => 0, // 1 = upgrade, -1 = downgrade
-    'likebtn_account_data_hash' => ''
+    'likebtn_account_data_hash' => '',
+    'likebtn_admin_notices' => array()
 //    'likebtn_db_version' => 0,
 );
 
@@ -908,6 +909,10 @@ function likebtn_init() {
     _likebtn_plugin_on_load();
 
     load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
+
+    // Process forms
+    _likebtn_bulk_actions();
+
     if (is_admin()) {
         wp_enqueue_script('jquery');
     }
@@ -1323,6 +1328,35 @@ function likebtn_plan_notice() {
 
 add_action('admin_notices', 'likebtn_plan_notice');
 
+// Add notice
+function _likebtn_add_notice($notice) {
+    $notices = get_option('likebtn_admin_notices');
+    if (!is_array($notices)) {
+        $notices = array();
+    }
+    $notices[] = $notice;
+    update_option('likebtn_admin_notices', $notices);
+}
+
+// Display notices
+function likebtn_admin_notices() {
+    $likebtn_admin_notices = get_option('likebtn_admin_notices');
+
+    if (is_array($likebtn_admin_notices) && count($likebtn_admin_notices)) {
+        foreach ($likebtn_admin_notices as $notice) {
+            $class = 'updated';
+            if (!empty($notice['class'])) {
+                $class = $notice['class'];
+            }
+            _likebtn_notice($notice['msg'], $class);    
+        }
+        
+        update_option('likebtn_admin_notices', array());
+    }
+}
+
+add_action('admin_notices', 'likebtn_admin_notices');
+
 // uninstall hook
 function likebtn_uninstall() {
     global $likebtn_settings;
@@ -1711,14 +1745,14 @@ function likebtn_admin_settings() {
                         <tr valign="top">
                             <th scope="row"><label><?php _e('API key', LIKEBTN_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_account_api_key" value="<?php echo get_option('likebtn_account_api_key') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input" id="likebtn_account_api_key_input"/><br/>
+                                <input type="text" name="likebtn_account_api_key" value="<?php echo get_option('likebtn_account_api_key') ?>" onkeyup="accountChange(this)" class="likebtn_account likebtn_input" id="likebtn_account_api_key_input" maxlength="32" /><br/>
                                 <p class="description"><?php _e('Your website API key on LikeBtn.com. Can be obtained on <a href="http://likebtn.com/en/customer.php/websites" target="_blank">Websites</a> page', LIKEBTN_I18N_DOMAIN) ?></p>
                             </td>
                         </tr>
                         <tr valign="top">
                             <th scope="row"><label><?php _e('Site ID', LIKEBTN_I18N_DOMAIN); ?></label></th>
                             <td>
-                                <input type="text" name="likebtn_site_id" value="<?php echo get_option('likebtn_site_id') ?>" class="likebtn_input" id="likebtn_site_id_input"/><br/>
+                                <input type="text" name="likebtn_site_id" value="<?php echo get_option('likebtn_site_id') ?>" class="likebtn_input" id="likebtn_site_id_input" maxlength="24" /><br/>
                                 <?php /*<span class="description"><?php _e('Enter Site ID in following cases:', LIKEBTN_I18N_DOMAIN) ?><br/>
                                 ● <?php _e('Your site is local – located on a local server and is available from your local network only and NOT available from the Internet.', LIKEBTN_I18N_DOMAIN) ?><br/>
                                 ● <?php _e('Your site is path-based – one of sites located in different subdirectories of one domain and you want to have statistics separate from other sites.', LIKEBTN_I18N_DOMAIN) ?><br/><br/>*/ ?>
@@ -2522,7 +2556,6 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                     </tr>
                                                     <tr valign="top">
                                                         <th scope="row"><label><?php _e('Voting frequency', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                            <i class="likebtn_help" title="<?php _e("If voting frequency set to every second/minute make sure that 'IP address vote interval' of your website is set to 1 and 60 seconds correspondingly on Websites page of LikeBtn.com", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                         </th>
                                                         <td>
                                                             <select name="likebtn_settings_voting_frequency_<?php echo $entity_name; ?>">
@@ -2535,6 +2568,12 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                                 <option value="2592000" <?php selected('2592000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Monthly', LIKEBTN_I18N_DOMAIN); ?></option>
                                                                 <option value="31536000" <?php selected('31536000', get_option('likebtn_settings_voting_frequency_' . $entity_name)); ?> ><?php _e('Annually', LIKEBTN_I18N_DOMAIN); ?></option>
                                                             </select>
+                                                            <p class="description">
+                                                                * <?php echo strtr(
+                                                                    __('Make sure that its value is larger than <a href="%url_interval%">IP address vote interval</a> of your website.', LIKEBTN_I18N_DOMAIN), 
+                                                                    array('%url_interval%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."customer.php/websites');void(0);")
+                                                                ); ?>
+                                                            </p>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -2795,19 +2834,10 @@ function likebtn_admin_statistics() {
     $likebtn_entities[LIKEBTN_ENTITY_CUSTOM_ITEM] = __('Custom item');
 
     // get parameters
-    $entity_name = '';
-    if (!empty($_GET['likebtn_entity_name'])) {
-        $entity_name = $_GET['likebtn_entity_name'];
-    }
-    if (!array_key_exists($entity_name, $likebtn_entities)) {
-        $entity_name = LIKEBTN_ENTITY_POST;
-    }
+    $entity_name = _likebtn_statistics_entity();
 
-    // Resettings
-    $reseted = '';
-    if (!empty($_POST['item'])) {
-        $reseted = likebtn_reset($entity_name, $_POST['item']);
-    }
+    // Process bulk actions
+    //_likebtn_bulk_actions($entity_name);
 
     // Multisite - available for super admin only
     $blogs = array();
@@ -2870,15 +2900,18 @@ function likebtn_admin_statistics() {
     $likebtn_post_statuses['0'] = __('Comment not approved', LIKEBTN_I18N_DOMAIN);
     $likebtn_post_statuses['1'] = __('Comment approved', LIKEBTN_I18N_DOMAIN);
 
-    $sort_by = $_GET['likebtn_sort_by'];
+    $sort_by = '';
+    if (isset($_GET['likebtn_sort_by'])) {
+        $sort_by =$_GET['likebtn_sort_by'];
+    }
     if (!$sort_by) {
         $sort_by = 'likes';
     } elseif ($entity_name == LIKEBTN_ENTITY_CUSTOM_ITEM && $sort_by == 'post_id') {
         $sort_by = 'likes';
     }
 
-    $page_size = $_GET['likebtn_page_size'];
-    if (!$page_size) {
+    $page_size = LIKEBTN_STATISTIC_PAGE_SIZE;
+    if (isset($_GET['likebtn_page_size'])) {
         $page_size = LIKEBTN_STATISTIC_PAGE_SIZE;
     }
 
@@ -3064,6 +3097,11 @@ function likebtn_admin_statistics() {
 
     likebtn_admin_header();
     ?>
+
+    <script type="text/javascript">
+        var likebtn_msg_select_items = '<?php _e("Please select item(s)", LIKEBTN_I18N_DOMAIN); ?>';
+        var likebtn_msg_upgrade = '<?php _e("Upgrade your website to VIP to be able to use the feature", LIKEBTN_I18N_DOMAIN); ?>';
+    </script>
     <div>
 
         <?php if (!_likebtn_is_stat_enabled() || get_option('likebtn_last_sync_message')): ?>
@@ -3171,17 +3209,14 @@ function likebtn_admin_statistics() {
         <br/>
         <?php _e('Total found', LIKEBTN_I18N_DOMAIN); ?>: <strong><?php echo $total_found ?></strong>
         <br/>
-        <?php if ($reseted !== ''): ?>
-            <br/><span style="color: green"><?php _e('Likes and dislikes for the following number of items have been successfully reseted:', LIKEBTN_I18N_DOMAIN); ?></span> <strong style="color: green"><?php echo $reseted ?></strong><br/>
-        <?php endif ?>
-        <form onsubmit="return statisticsSubmit('<?php echo get_option('likebtn_plan'); ?>', {
-              confirm: '<?php _e("The votes count can not be recovered after resetting. Are you sure you want to reset likes and dislikes for the selected item(s)?", LIKEBTN_I18N_DOMAIN); ?>',
-              items: '<?php _e("Select item(s) you want to reset", LIKEBTN_I18N_DOMAIN); ?>',
-              upgrade: '<?php _e("Upgrade your website to VIP to be able to use the feature", LIKEBTN_I18N_DOMAIN); ?>'
-        })" method="post" action="">
+        <form method="post" action="" id="stats_actions_form">
+            <input type="hidden" name="bulk_action" value="" id="stats_bulk_action" />
         <?php if (count($statistics) && $p->total_pages > 0): ?>
             <div class="tablenav">
-                <input type="submit" class="button-secondary likebtn_ttip" onclick="" name="reset_selected" value="<?php _e('Reset selected', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('Set to zero number of likes and dislikes for selected items', LIKEBTN_I18N_DOMAIN); ?>">
+                <input type="button" class="button-secondary likebtn_ttip" onclick="likebtnStatsBulkAction('reset', '<?php echo get_option('likebtn_plan') ?>', '<?php _e("The votes count can not be recovered after resetting. Are you sure you want to reset likes and dislikes for the selected item(s)?", LIKEBTN_I18N_DOMAIN); ?>')" value="<?php _e('Reset', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('Set to zero number of likes and dislikes for selected items', LIKEBTN_I18N_DOMAIN); ?>">
+                
+                <input type="button" class="button-secondary likebtn_ttip" onclick="likebtnStatsBulkAction('delete', '<?php echo get_option('likebtn_plan') ?>', '<?php _e("The votes count can not be recovered after deleting. Are you sure you want to delete selected item(s) from statistics?", LIKEBTN_I18N_DOMAIN); ?>')" value="<?php _e('Delete', LIKEBTN_I18N_DOMAIN); ?>" title="<?php _e('Delete selected items from statistics: no posts, pages, comments, etc will be deleted, just their votes will be deleted from statistics', LIKEBTN_I18N_DOMAIN); ?>">
+
                 <div class="tablenav-pages">
                     <?php echo $p->show(); ?>
                 </div>
@@ -3284,6 +3319,19 @@ function likebtn_admin_statistics() {
     _likebtn_admin_footer();
 }
 
+// Get statistics entity
+function _likebtn_statistics_entity()
+{
+    $entity_name = LIKEBTN_ENTITY_POST;
+    if (!empty($_GET['likebtn_entity_name'])) {
+        $entity_name = $_GET['likebtn_entity_name'];
+    }
+    /*if (!array_key_exists($entity_name, $likebtn_entities)) {
+        $entity_name = LIKEBTN_ENTITY_POST;
+    }*/
+    return $entity_name;
+}
+
 // get SQL query for retrieving statistics
 function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query_orderby, $query_limit, $query_select = 'SQL_CALC_FOUND_ROWS')
 {
@@ -3297,7 +3345,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 p.comment_content as post_title,
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}commentmeta pm_likes
              LEFT JOIN {$prefix}comments p
                  ON (p.comment_ID = pm_likes.comment_id)
@@ -3348,7 +3397,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 CONCAT( IF(p.action != '', p.action, IF(p.content !='', p.content, IF(p.primary_link != '', p.primary_link, p.type))), IF(p.content != '' && p.type != 'bbp_topic_create' && p.type != 'new_blog_post', CONCAT(': ', p.content), '') ) as 'post_title',
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}bp_activity_meta pm_likes
              LEFT JOIN {$prefix}bp_activity p
                  ON (p.id = pm_likes.activity_id)
@@ -3368,7 +3418,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 p.value as 'post_title',
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}bp_xprofile_meta pm_likes
              LEFT JOIN {$prefix}bp_xprofile_data p
                  ON (p.id = pm_likes.object_id)
@@ -3390,7 +3441,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 p.display_name as 'post_title',
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}usermeta pm_likes
              LEFT JOIN {$prefix}users p
                  ON (p.ID = pm_likes.user_id)
@@ -3411,7 +3463,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 IF(p.post_title != '', p.post_title, p.post_content) as 'post_title',
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}postmeta pm_likes
              LEFT JOIN {$prefix}posts p
                  ON (p.ID = pm_likes.post_id)
@@ -3433,7 +3486,8 @@ function _likebtn_get_statistics_sql($entity_name, $prefix, $query_where, $query
                 p.post_title,
                 pm_likes.meta_value as 'likes',
                 pm_dislikes.meta_value as 'dislikes',
-                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes'
+                pm_likes_minus_dislikes.meta_value as 'likes_minus_dislikes',
+                '' as url
              FROM {$prefix}postmeta pm_likes
              LEFT JOIN {$prefix}posts p
                  ON (p.ID = pm_likes.post_id)
@@ -3464,6 +3518,40 @@ function likebtn_admin_help() {
     </div>
     <?php
     _likebtn_admin_footer();
+}
+
+// Process bulk actions
+function _likebtn_bulk_actions()
+{
+    $entity_name = _likebtn_statistics_entity();
+
+    // Resettings
+    if (empty($_POST['bulk_action']) || empty($_POST['item'])) {
+        return false;
+    }
+
+    switch ($_POST['bulk_action']) {
+        case 'reset':
+            $reseted = _likebtn_reset($entity_name, $_POST['item']);
+            _likebtn_add_notice(array(
+                'msg' => __('Likes and dislikes for the following number of items have been successfully reseted:', LIKEBTN_I18N_DOMAIN).' '.$reseted,
+            ));
+            break;
+
+        case 'delete':
+            $reseted = _likebtn_delete($entity_name, $_POST['item']);
+            _likebtn_add_notice(array(
+                'msg' => __('The following number of items have been successfully deleted:', LIKEBTN_I18N_DOMAIN).' '.$reseted,
+            ));
+            break;
+        
+        default:
+            return false;
+            break;
+    }
+
+    wp_redirect($_SERVER['REQUEST_URI']);
+    exit();
 }
 
 // get URL of the public folder
@@ -3655,6 +3743,30 @@ function _likebtn_save_bp_member_votes($entity_id, $likes, $dislikes, $likes_min
     return false;
 }
 
+// Delete BuddyPress Member Profile votes
+function _likebtn_delete_bp_member_votes($entity_id)
+{
+    global $wpdb;
+
+    if (!_likebtn_is_bp_active()) {
+        return false;
+    }
+    $bp_xprofile = $wpdb->get_row("
+        SELECT id
+        FROM ".$wpdb->prefix."bp_xprofile_data
+        WHERE user_id = {$entity_id}
+    ");
+
+    if (!empty($bp_xprofile)) {
+        bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES);
+        bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_DISLIKES);
+        bp_xprofile_delete_meta($entity_id, LIKEBTN_BP_XPROFILE_OBJECT_TYPE, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+        return true;
+    }
+
+    return false;
+}
+
 // Save user votes
 function _likebtn_save_user_votes($entity_id, $likes, $dislikes, $likes_minus_dislikes)
 {
@@ -3687,9 +3799,27 @@ function _likebtn_save_user_votes($entity_id, $likes, $dislikes, $likes_minus_di
                 update_user_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES, $likes_minus_dislikes);
             }
         }
+        return true;
     }
 
-    return true;
+    return false;
+}
+
+// Delete user votes
+function _likebtn_delete_user_votes($entity_id)
+{
+    global $wpdb;
+
+    $user = get_user_by('id', $entity_id); 
+
+    if (!empty($user)) {
+        delete_user_meta($entity_id, LIKEBTN_META_KEY_LIKES);
+        delete_user_meta($entity_id, LIKEBTN_META_KEY_DISLIKES);
+        delete_user_meta($entity_id, LIKEBTN_META_KEY_LIKES_MINUS_DISLIKES);
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -4337,8 +4467,12 @@ function likebtn_test_sync_callback() {
         'message' => $test_response['message'],
     );
 
-    define( 'DOING_AJAX', true );
-    ob_clean();
+    if (!DOING_AJAX) {
+        define('DOING_AJAX', true);
+    }
+    if (ob_get_contents()) {
+        ob_clean();
+    }
     wp_send_json($response);
 }
 
@@ -4378,8 +4512,12 @@ function likebtn_check_account_callback() {
         'message' => $test_response['message'],
     );
 
-    define( 'DOING_AJAX', true );
-    ob_clean();
+    if (!DOING_AJAX) {
+        define('DOING_AJAX', true);
+    }
+    if (ob_get_contents()) {
+        ob_clean();
+    }
     wp_send_json($response);
 }
 
@@ -4484,7 +4622,7 @@ function likebtn_refresh_plan_callback() {
 add_action('wp_ajax_likebtn_refresh_plan', 'likebtn_refresh_plan_callback');
 
 // reset items likes/dislikes
-function likebtn_reset($entity_name, $items)
+function _likebtn_reset($entity_name, $items)
 {
     $counter = 0;
 
@@ -4500,7 +4638,11 @@ function likebtn_reset($entity_name, $items)
     $reset_list['response'] = array('items'=>array());
 
     foreach ($items as $item_identifier) {
-        $identifier = $entity_name . '_' . $item_identifier;
+        if ($entity_name != LIKEBTN_ENTITY_CUSTOM_ITEM) {
+            $identifier = $entity_name . '_' . $item_identifier;
+        } else {
+            $identifier = $item_identifier;
+        }
         // reset votes in LikeBtn
         $likebtn_result = $likebtn->reset($identifier);
         $reset_list['response']['items'][] = array(
@@ -4515,6 +4657,44 @@ function likebtn_reset($entity_name, $items)
 
     if ($reset_list) {
         $likebtn->updateVotes($reset_list);
+    }
+    return $counter;
+}
+
+// delete items
+function _likebtn_delete($entity_name, $items)
+{
+    $counter = 0;
+
+    if (empty($entity_name) || empty($items)) {
+        return false;
+    }
+
+    require_once(dirname(__FILE__) . '/likebtn_like_button.class.php');
+    $likebtn = new LikeBtnLikeButton();
+
+    // prepare an array for resettings in the CMS
+    $list = array();
+    $list['response'] = array('items'=>array());
+
+    foreach ($items as $item_identifier) {
+        if ($entity_name != LIKEBTN_ENTITY_CUSTOM_ITEM) {
+            $identifier = $entity_name . '_' . $item_identifier;
+        } else {
+            $identifier = $item_identifier;
+        }
+        // delete votes in LikeBtn
+        $likebtn_result = $likebtn->delete($identifier);
+        $list['response']['items'][] = array(
+            'identifier' => $identifier
+        );
+        if ($likebtn_result) {
+            $counter++;
+        }
+    }
+
+    if ($list) {
+        $likebtn->deleteVotes($list);
     }
     return $counter;
 }
@@ -5084,3 +5264,11 @@ function _likebtn_has_caller($function_name)
         return false;
     }
 }
+
+// Reload current page
+/*function _likebtn_reload_page()
+{
+    header("HTTP/1.1 302 Found");
+    header("Location: ".$_SERVER['REQUEST_URI']);
+    exit;
+}*/
