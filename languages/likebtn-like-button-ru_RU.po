@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LikeBtn Like Button\n"
-"POT-Creation-Date: 2015-02-24 17:41+0300\n"
-"PO-Revision-Date: 2015-02-24 17:43+0300\n"
+"POT-Creation-Date: 2015-02-24 18:59+0300\n"
+"PO-Revision-Date: 2015-02-24 18:59+0300\n"
 "Last-Translator: LikeBtn <info@likebtn.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1035,6 +1035,7 @@ msgid "Send us Translation"
 msgstr "Отправить нам перевод"
 
 #: ../likebtn_like_button.php:2804
+#: ../likebtn_like_button_most_liked_widget.class.php:167
 msgid "Get shortcode"
 msgstr "Получить короткий код"
 
@@ -1052,7 +1053,7 @@ msgstr ""
 "понравившихся материалов."
 
 #: ../likebtn_like_button.php:2843
-#: ../likebtn_like_button_most_liked_widget.class.php:52
+#: ../likebtn_like_button_most_liked_widget.class.php:54
 msgid "Custom item"
 msgstr "Произвольный элемент"
 
@@ -1144,17 +1145,17 @@ msgid "Order by"
 msgstr "Сортировка"
 
 #: ../likebtn_like_button.php:3176 ../likebtn_like_button.php:3248
-#: ../likebtn_like_button_most_liked_widget.class.php:55
+#: ../likebtn_like_button_most_liked_widget.class.php:57
 msgid "Likes"
 msgstr "Лайки"
 
 #: ../likebtn_like_button.php:3177 ../likebtn_like_button.php:3249
-#: ../likebtn_like_button_most_liked_widget.class.php:56
+#: ../likebtn_like_button_most_liked_widget.class.php:58
 msgid "Dislikes"
 msgstr "Дислайки"
 
 #: ../likebtn_like_button.php:3178 ../likebtn_like_button.php:3250
-#: ../likebtn_like_button_most_liked_widget.class.php:57
+#: ../likebtn_like_button_most_liked_widget.class.php:59
 msgid "Likes minus dislikes"
 msgstr "Лайки минус дислайки"
 
@@ -1164,7 +1165,7 @@ msgstr "ID"
 
 #: ../likebtn_like_button.php:3180 ../likebtn_like_button.php:3199
 #: ../likebtn_like_button.php:3244
-#: ../likebtn_like_button_most_liked_widget.class.php:109
+#: ../likebtn_like_button_most_liked_widget.class.php:112
 msgid "Title"
 msgstr "Название"
 
@@ -1287,91 +1288,91 @@ msgstr "Список наиболее понравившихся записей,
 msgid "(LikeBtn) Most Liked Content"
 msgstr "(LikeBtn) Понравившиеся материалы"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:61
+#: ../likebtn_like_button_most_liked_widget.class.php:63
 msgid "All time"
 msgstr "За всё время"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:62
+#: ../likebtn_like_button_most_liked_widget.class.php:64
 msgid "1 day"
 msgstr "1 день"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:63
+#: ../likebtn_like_button_most_liked_widget.class.php:65
 msgid "2 days"
 msgstr "2 дня"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:64
+#: ../likebtn_like_button_most_liked_widget.class.php:66
 msgid "3 days"
 msgstr "3 дня"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:65
+#: ../likebtn_like_button_most_liked_widget.class.php:67
 msgid "1 week"
 msgstr "1 неделя"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:66
+#: ../likebtn_like_button_most_liked_widget.class.php:68
 msgid "2 weeks"
 msgstr "2 недели"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:67
+#: ../likebtn_like_button_most_liked_widget.class.php:69
 msgid "3 weeks"
 msgstr "3 недели"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:68
+#: ../likebtn_like_button_most_liked_widget.class.php:70
 msgid "1 month"
 msgstr "1 месяц"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:69
+#: ../likebtn_like_button_most_liked_widget.class.php:71
 msgid "2 months"
 msgstr "2 месяца"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:70
+#: ../likebtn_like_button_most_liked_widget.class.php:72
 msgid "3 months"
 msgstr "3 месяца"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:71
+#: ../likebtn_like_button_most_liked_widget.class.php:73
 msgid "6 months"
 msgstr "6 месяцев"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:72
+#: ../likebtn_like_button_most_liked_widget.class.php:74
 msgid "1 year"
 msgstr "1 год"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:77
+#: ../likebtn_like_button_most_liked_widget.class.php:79
 msgid "Most Liked Content"
 msgstr "Наиболее понравившиеся материалы"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:113
+#: ../likebtn_like_button_most_liked_widget.class.php:116
 msgid "Items to show"
 msgstr "Показывать следующие элементы"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:124
+#: ../likebtn_like_button_most_liked_widget.class.php:127
 msgid "Number of items to show:"
 msgstr "Количество элементов:"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:128
+#: ../likebtn_like_button_most_liked_widget.class.php:131
 msgid "Order by:"
 msgstr "Сортировка:"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:136
+#: ../likebtn_like_button_most_liked_widget.class.php:139
 msgid "Time range:"
 msgstr "Период времени:"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:145
+#: ../likebtn_like_button_most_liked_widget.class.php:148
 msgid "Display likes count"
 msgstr "Показывать лайки"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:149
+#: ../likebtn_like_button_most_liked_widget.class.php:152
 msgid "Display dislikes count"
 msgstr "Показывать дислайки"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:153
+#: ../likebtn_like_button_most_liked_widget.class.php:156
 msgid "Display thumbnail"
 msgstr "Показывать миниатюру"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:157
+#: ../likebtn_like_button_most_liked_widget.class.php:160
 msgid "Display excerpt"
 msgstr "Показывать краткий текст"
 
-#: ../likebtn_like_button_most_liked_widget.class.php:161
+#: ../likebtn_like_button_most_liked_widget.class.php:164
 msgid "Display item date"
 msgstr "Показывать дату"
 

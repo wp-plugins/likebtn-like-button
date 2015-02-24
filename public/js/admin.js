@@ -870,3 +870,55 @@ function likebtnShowShortcode(id, properties)
 
     jQuery('#'+id).val(shortcode);
 }
+
+// Show widget shortcode
+function likebtnWidgetShortcode(mnemonic, no_toggle)
+{
+    var properties = [];
+    var entity_name = [];
+
+    jQuery("#likebtn_widget_"+mnemonic+" :input").each(function(index, element) {
+        var field = jQuery(element);
+        var name = field.attr('data-property');
+        var value = field.val();
+
+        if (!name || field.hasClass('disabled')) {
+            return;
+        }
+
+        if (name == 'entity_name') {
+            return;
+        }
+
+        // Format value
+        if (field.attr('type') == 'checkbox' && !field.is(':checked')) {
+            value = '0';
+        }
+        // Find selected radio
+        if (field.attr('type') == 'radio' && !field.is(':checked')) {
+            return;
+        }
+
+        properties[name] = value;
+    });
+
+    jQuery("#likebtn_widget_"+mnemonic+" :input[data-property='entity_name']:checked").each(function(index, element) {
+        entity_name.push(jQuery(element).val());
+    });
+    properties['entity_name'] = entity_name.join(',');
+
+    var shortcode = '[likebtn_most_liked';
+
+    for (var name in properties) {
+        value = properties[name];
+        value = value.replaceAll('"', '&quot;');
+        shortcode += ' '+name+'="'+value+'"';
+    }
+    shortcode += ']';
+
+    jQuery('#likebtn_sc_'+mnemonic).val(shortcode);
+
+    if (typeof(no_toggle) === "undefined" || !no_toggle) {
+        jQuery('#likebtn_sc_wr_'+mnemonic).toggle();
+    }
+}
