@@ -25,7 +25,7 @@
 #likebtn .tablenav input {
     float: left;
 }
-.popup_donate_trigger {
+#popup_donate_trigger {
     position: relative;
     top: -4px;
     vertical-align: baseline;
@@ -115,6 +115,15 @@
 }
 .likebtn_reset_wrapper {
     text-align: right;
+    position: relative;
+}
+#likebtn_sc_wr {
+    display: none;
+}
+.likebtn_sc_trgr {
+    position: absolute;
+    left: 0;
+    bottom: 0;
 }
 #likebtn .likebtn_button_green {
     /*border-color: #668e01;

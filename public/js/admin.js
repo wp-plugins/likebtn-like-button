@@ -5,7 +5,13 @@ var likebtn_preview;
 var likebtn_preview_offset;
 var likebtn_preview_position = 'static';
 
+// replace all occurences of a string
+String.prototype.replaceAll = function(search, replace){
+    return this.split(search).join(replace);
+}
+
 jQuery(document).ready(function(jQuery) {
+    likebtnRefreshPreview();
     likebtnApplyTooltips();
 });
 
@@ -275,6 +281,7 @@ function resetSettings(entity_name, parameters)
     }
 
     displayFields();
+    likebtnRefreshPreview();
 }
 
 // select/unselect items
@@ -359,6 +366,10 @@ function likebtnGotoTab(tab, content_wrapper, content_wrapper_id, wrapper_select
             return false;
         }
     }*/
+
+    if (tab == 'popup') {
+        likebtnPreviewDonate();
+    }
 
     // Content
     jQuery(content_wrapper).addClass('hidden');
@@ -536,16 +547,28 @@ function displayFields()
     likebtnSetMultipleSelect2Val('#settings_popup_content_order', jQuery('#settings_popup_content_order_input').val(), true);
 
     // Display donate buttons
-    jQuery("#donate_pveview").html(likebtnDGGetPreview('#popup_donate_input'));
+    likebtnPreviewDonate();
 
     // Must come before displayTranslationsOnLoad
     displayAddthis();
     displayTranslationsOnLoad();
 }
 
+// Preview donate buttons
+function likebtnPreviewDonate()
+{
+    if (typeof(likebtnDGGetPreview) === "undefined") {
+        return false;
+    }
+    jQuery("#donate_pveview").html(likebtnDGGetPreview('#popup_donate_input'));
+}
+
 // Get default AddThis value
 function likebtnGetDefaultAddthis(lang)
 {
+    if (typeof(lang) === undefined) {
+        lang = jQuery("#settings_lang").val();
+    }
     var default_value = likebtn_default_settings.addthis_service_codes.default_values;
 
     if (typeof(lang) !== "undefined" && typeof(default_value[lang]) !== "undefined") {
@@ -602,6 +625,9 @@ function likebtnRefreshPreview(entity_name)
     var property_name;
     var entity_regexp;
 
+    if (typeof(entity_name) === "undefined") {
+        entity_name = jQuery("#likebtn_entity_name_field").val();
+    }
     if (!wrapper || !entity_name) {
         return false;
     }
@@ -637,7 +663,6 @@ function likebtnRefreshPreview(entity_name)
         }
         if (property_name == 'popup_content_order') {
             value = likebtnGetMultipleSelect2Val('#settings_popup_content_order');
-            console.log('value'+value);
         }
 
         properties[property_name] = value;
@@ -646,6 +671,9 @@ function likebtnRefreshPreview(entity_name)
     if (typeof(LikeBtn) !== "undefined") {
         LikeBtn.apply(wrapper[0], properties, ['identifier', 'site_id']);
     }
+
+    // Show shortcode
+    likebtnShowShortcode('likebtn_sc', properties);
 }
 
 // Escape string against regular expression
@@ -812,4 +840,33 @@ function likebtnStatsBulkAction(action, plan, msg_confirm)
         alert(likebtn_msg_upgrade);
         return false;
     }
+}
+
+// Toggle shortcode container
+function likebtnToggleShortcode(id)
+{
+    likebtnRefreshPreview();
+    jQuery('#'+id).toggle();
+}
+
+// Show shortcode
+function likebtnShowShortcode(id, properties)
+{
+    var shortcode = '[likebtn identifier="'+likebtn_msg_identifier+'"';
+    var value = '';
+    for (var name in properties) {
+        value = properties[name];
+        // Miss default parameters
+        if ((typeof(reset_settings[name]) !== undefined && reset_settings[name] === value) ||
+            (typeof(reset_settings['settings_'+name]) !== undefined && reset_settings['settings_'+name] === value) ||
+            (name == 'addthis_service_codes' && value == likebtnGetDefaultAddthis())
+        ) {
+            continue;
+        }
+        value = value.replaceAll('"', '&quot;');
+        shortcode += ' '+name+'="'+value+'"';
+    }
+    shortcode += ']';
+
+    jQuery('#'+id).val(shortcode);
 }

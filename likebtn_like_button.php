@@ -1983,6 +1983,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
      */ ?>
 
         var likebtn_msg_reset = '<?php _e('Are you sure you want to reset settings for this entity?', LIKEBTN_I18N_DOMAIN); ?>';
+        var likebtn_msg_identifier = '<?php _e('CUSTOM ITEM NAME', LIKEBTN_I18N_DOMAIN); ?>';
 
         var likebtn_path_settings_theme = '//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/bundles/likebtnwebsite/i/theme/';
         var likebtn_path_settings_counter_type = '//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/bundles/likebtnwebsite/i/counter/';
@@ -2045,7 +2046,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
     <div>
         <form method="post" action="options.php" onsubmit="return likebtnOnSaveButtons()" id="settings_form">
             <?php settings_fields('likebtn_buttons'); ?>
-            <input type="hidden" name="likebtn_subpage" value="<?php echo $subpage; ?>" >
+            <input type="hidden" name="likebtn_subpage" value="<?php echo $subpage; ?>" id="likebtn_entity_name_field">
 
             <h3 class="nav-tab-wrapper" style="padding: 0" id="likebtn_subpage_tab_wrapper">
                 <?php foreach ($likebtn_entities as $tab_entity_name => $tab_entity_title): ?>
@@ -2800,7 +2801,15 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                             </div>
                                         </div>*/ ?>
                                         <div class="likebtn_reset_wrapper">
+                                            <a href="javascript:likebtnToggleShortcode('likebtn_sc_wr')" class="likebtn_sc_trgr"><?php _e('Get shortcode', LIKEBTN_I18N_DOMAIN); ?></a>
                                             <input class="button-secondary" type="button" name="Reset" value="<?php _e('Reset', LIKEBTN_I18N_DOMAIN); ?>" onclick="return resetSettings('<?php echo $entity_name; ?>', reset_settings)" />
+                                        </div>
+                                        <div id="likebtn_sc_wr">
+                                            <br/>
+                                            <textarea class="likebtn_input likebtn_disabled" rows="5" id="likebtn_sc" readonly="readonly"></textarea>
+                                            <p class="description">
+                                                <?php _e('Replace "CUSTOM ITEM NAME" with the custom unique text. The custom item name will be displayed in Statistics and in the Most liked content widget.', LIKEBTN_I18N_DOMAIN); ?>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
