@@ -9,3 +9,7 @@
 #bbpress-forums div.bbp-reply-content a.at300m {
     padding: 0 2px;
 }
+
+.likebtn-mlw {
+	list-style: outside none none;
+}
