@@ -23,7 +23,7 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   Custom Post Types
 
 = Demo =
-<a href="http://wordpress.likebtn.com/wordpress-like-button-plugin/" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
+<a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
 = Features =
 *   More than 50 parameters, 25 themes, 11 languages.
