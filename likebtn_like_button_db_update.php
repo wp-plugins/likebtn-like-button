@@ -173,3 +173,14 @@ function likebtn_db_update_5() {
         }
     }
 }
+
+// New options
+function likebtn_db_update_6() {
+    global $likebtn_buttons_options;
+
+    $likebtn_entities = _likebtn_get_entities();
+    foreach ($likebtn_entities as $entity_name => $entity_title) {
+        update_option('likebtn_newline_'.$entity_name, $likebtn_buttons_options['likebtn_newline']);
+        update_option('likebtn_wrap_'.$entity_name, $likebtn_buttons_options['likebtn_wrap']);
+    }
+}

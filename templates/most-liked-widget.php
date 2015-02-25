@@ -21,9 +21,9 @@ endif ?>
             <a href="<?php echo $post['link'] ?>" title="<?php echo $post['title'] ?>" rel="nofollow">
                 <?php if ($show_thumbnail): ?>
                     <?php if( 'image/' == substr( $post['post_mime_type'], 0, 6 ) ): ?>
-                        <?php echo wp_get_attachment_image( $post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail') ); ?>
+                        <?php echo wp_get_attachment_image( $post['id'], $thumbnail_size, array('class' => 'likebtn-item-thumbnail') ); ?>
                     <?php else: ?>
-                        <?php echo get_the_post_thumbnail($post['id'], "thumbnail", array('class' => 'likebtn-item-thumbnail')); ?>
+                        <?php echo get_the_post_thumbnail($post['id'], $thumbnail_size, array('class' => 'likebtn-item-thumbnail')); ?>
                     <?php endif ?>
                 <?php endif ?>
                 <div class="likebtn-mlw-title">

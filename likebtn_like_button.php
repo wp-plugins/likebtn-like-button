@@ -15,7 +15,7 @@
 // PLugin version
 define('LIKEBTN_VERSION', '2.1.3');
 // Current DB version
-define('LIKEBTN_DB_VERSION', 5);
+define('LIKEBTN_DB_VERSION', 6);
 
 // i18n domain
 define('LIKEBTN_I18N_DOMAIN', 'likebtn-like-button');
@@ -245,11 +245,11 @@ $likebtn_settings = array(
 // removed settings
 global $likebtn_settings_deprecated;
 $likebtn_settings_deprecated = array(
-    'style' => array(),
-    'display_only' => array(),
-    'unlike_allowed' => array(),
-    'like_dislike_at_the_same_time' => array(),
-    'show_copyright' => array()
+    'style' => array("default" => 'white'),
+    'display_only' => array("default" => '0'),
+    'unlike_allowed' => array("default" => '1'),
+    'like_dislike_at_the_same_time' => array("default" => '0'),
+    'show_copyright' => array("default" => '1')
 );
 
 // plans
@@ -436,7 +436,9 @@ $likebtn_buttons_options = array(
     'likebtn_position' => LIKEBTN_POSITION_BOTTOM,
     'likebtn_alignment' => LIKEBTN_ALIGNMENT_LEFT,
     'likebtn_html_before' => '',
-    'likebtn_html_after' => ''
+    'likebtn_html_after' => '',
+    'likebtn_newline' => '',
+    'likebtn_wrap' => '1'
 );
 // Internal settings
 global $likebtn_internal_options;
@@ -1484,7 +1486,7 @@ function _likebtn_db_update()
         // Backward compatibility
         $db_version = (int)get_option('likebtn_like_button_db_version');
     }
-
+    //$db_version = 5;
     $db_version++;
     while (function_exists('likebtn_db_update_'.$db_version)) {
         call_user_func('likebtn_db_update_'.$db_version);
@@ -2240,26 +2242,26 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                     <input type="checkbox" name="likebtn_settings_white_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_white_label_' . $entity_name)); ?> />
                                                 </td>
                                             </tr>
-                                            <?php if (empty($likebtn_entities_config['likebtn_position'][$entity_name]['hide'])): ?>
-                                                <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Position', LIKEBTN_I18N_DOMAIN); ?></label></th>
-                                                    <td>
-                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_TOP ?>" <?php if (LIKEBTN_POSITION_TOP == get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Top of Content', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_BOTTOM ?>" <?php if (LIKEBTN_POSITION_BOTTOM == get_option('likebtn_position_' . $entity_name) || !get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Bottom of Content', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
-                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_BOTH ?>" <?php if (LIKEBTN_POSITION_BOTH == get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Top and Bottom', LIKEBTN_I18N_DOMAIN); ?>
-
-                                                    </td>
-                                                </tr>
-                                            <?php endif ?>
                                             <?php if (empty($likebtn_entities_config['likebtn_alignment'][$entity_name]['hide'])): ?>
                                                 <tr valign="top">
-                                                    <th scope="row"><label><?php _e('Alignment', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                    <th scope="row"><label><?php _e('Horizontal alignment', LIKEBTN_I18N_DOMAIN); ?></label></th>
                                                     <td>
                                                         <input type="radio" name="likebtn_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_ALIGNMENT_LEFT; ?>" <?php if (LIKEBTN_ALIGNMENT_LEFT == get_option('likebtn_alignment_' . $entity_name) || !get_option('likebtn_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Left'); ?>
                                                         &nbsp;&nbsp;&nbsp;
                                                         <input type="radio" name="likebtn_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_ALIGNMENT_CENTER; ?>" <?php if (LIKEBTN_ALIGNMENT_CENTER == get_option('likebtn_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Center'); ?>
                                                         &nbsp;&nbsp;&nbsp;
                                                         <input type="radio" name="likebtn_alignment_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_ALIGNMENT_RIGHT; ?>" <?php if (LIKEBTN_ALIGNMENT_RIGHT == get_option('likebtn_alignment_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Right'); ?>
+
+                                                    </td>
+                                                </tr>
+                                            <?php endif ?>
+                                            <?php if (empty($likebtn_entities_config['likebtn_position'][$entity_name]['hide'])): ?>
+                                                <tr valign="top">
+                                                    <th scope="row"><label><?php _e('Vertical alignment', LIKEBTN_I18N_DOMAIN); ?></label></th>
+                                                    <td>
+                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_TOP ?>" <?php if (LIKEBTN_POSITION_TOP == get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Top of Content', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_BOTTOM ?>" <?php if (LIKEBTN_POSITION_BOTTOM == get_option('likebtn_position_' . $entity_name) || !get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Bottom of Content', LIKEBTN_I18N_DOMAIN); ?>&nbsp;&nbsp;&nbsp;
+                                                        <input type="radio" name="likebtn_position_<?php echo $entity_name; ?>" value="<?php echo LIKEBTN_POSITION_BOTH ?>" <?php if (LIKEBTN_POSITION_BOTH == get_option('likebtn_position_' . $entity_name)): ?>checked="checked"<?php endif ?> /> <?php _e('Top and Bottom', LIKEBTN_I18N_DOMAIN); ?>
 
                                                     </td>
                                                 </tr>
@@ -2385,19 +2387,35 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
-                                                        <th scope="row"><label><?php _e('Insert HTML before', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                            <i class="likebtn_help" title="<?php _e('HTML code to insert before the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        <th scope="row"><label><?php _e('HTML to put before', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <?php /*<i class="likebtn_help" title="<?php _e('HTML code to insert before the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>*/ ?>
                                                         </th>
                                                         <td>
                                                             <textarea name="likebtn_html_before_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_before_' . $entity_name); ?></textarea>
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
-                                                        <th scope="row"><label><?php _e('Insert HTML after', LIKEBTN_I18N_DOMAIN); ?></label>
-                                                            <i class="likebtn_help" title="<?php _e('HTML code to insert after the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        <th scope="row"><label><?php _e('HTML to put after', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <?php /*<i class="likebtn_help" title="<?php _e('HTML code to insert after the Like Button', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>*/ ?>
                                                         </th>
                                                         <td>
                                                             <textarea name="likebtn_html_after_<?php echo $entity_name; ?>" class="likebtn_input" rows="2"><?php echo get_option('likebtn_html_after_' . $entity_name); ?></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Display on a new line', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("Add a 'clear:both' style to the like button container", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_newline_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_newline_' . $entity_name)) ?> />
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <th scope="row"><label><?php _e('Wrap button in a div', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                            <i class="likebtn_help" title="<?php _e("If disabled alignment and new line options have no affect", LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
+                                                        </th>
+                                                        <td>
+                                                            <input type="checkbox" name="likebtn_wrap_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_wrap_' . $entity_name)) ?> />
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -3239,7 +3257,7 @@ function likebtn_admin_statistics() {
                         <th>ID<?php if ($sort_by == 'post_id'): ?>&nbsp;↓<?php endif ?></th>
                     <?php endif ?>
                     <?php if ($entity_name == LIKEBTN_ENTITY_POST): ?>
-                        <th><?php _e('Thumbnail') ?></th>
+                        <th><?php _e('Featured image', LIKEBTN_I18N_DOMAIN) ?></th>
                     <?php endif ?>
                     <th width="100%"><?php _e('Title', LIKEBTN_I18N_DOMAIN) ?><?php if ($sort_by == 'post_title'): ?>&nbsp;↓<?php endif ?></th>
                     <?php if ($blogs && $statistics_blog_id == 'all'): ?>
@@ -3840,6 +3858,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
 {
     global $wp_version;
     global $likebtn_map_entities;
+    global $likebtn_settings_deprecated;
 
     $prepared_settings = array();
 
@@ -3852,7 +3871,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         $entity_name = _likebtn_cut_list_flag($entity_name);
     }
 
-    if ($values && $values['identifier']) {
+    if ($values && isset($values['identifier']) && $values['identifier'] !== '') {
         $data = ' data-identifier="' . $values['identifier'] . '" ';
     } else {
         $identifier = $entity_name;
@@ -3873,7 +3892,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         if ($values && isset($values[$option_name])) {
             // if values passed
             $option_value = $values[$option_name];
-        } elseif (!$use_entity_settings) {
+        } elseif (!$use_entity_settings && !in_array($option_name, $likebtn_settings_deprecated)) {
             // Do not use entity value - use default. Usually in shortcodes.
             $option_value = $option_info['default'];
         } else {
@@ -3981,15 +4000,30 @@ MARKUP;
         $markup = $markup . $html_after;
     }
 
-    // alignment
+    if ($wrap) {
+        if (get_option('likebtn_wrap_' . $use_entity_name) != '1') {
+            $wrap = false;
+        }
+    }
+
     if ($wrap) {
         $alignment = get_option('likebtn_alignment_' . $use_entity_name);
+        $newline = get_option('likebtn_newline_' . $use_entity_name);
+
+        $style = '';
+
+        if ($newline == '1') {
+            $style .= 'clear:both;';
+        }
+
         if ($alignment == LIKEBTN_ALIGNMENT_RIGHT) {
-            $markup = '<div style="text-align:right" class="likebtn_container">' . $markup . '</div>';
+            $style .= 'text-align:right;';
+            $markup = '<div class="likebtn_container" style="'.$style.'">' . $markup . '</div>';
         } elseif ($alignment == LIKEBTN_ALIGNMENT_CENTER) {
-            $markup = '<div style="text-align:center" class="likebtn_container">' . $markup . '</div>';
+            $style .= 'text-align:center;';
+            $markup = '<div class="likebtn_container" style="'.$style.'">' . $markup . '</div>';
         } else {
-            $markup = '<div class="likebtn_container">' . $markup . '</div>';
+            $markup = '<div class="likebtn_container" style="'.$style.'">' . $markup . '</div>';
         }
     }
 

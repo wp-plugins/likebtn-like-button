@@ -13,6 +13,7 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
         'number' => self::NUMBER_OF_ITEMS,
         'order' => 'likes',
         'time_range' => 'all',
+        'thumbnail_size' => 'thumbnail',
         'show_likes' => '',
         'show_dislikes' => '',
         'show_dislikes' => '',
@@ -59,6 +60,13 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
             'likes_minus_dislikes' => __('Likes minus dislikes', LIKEBTN_I18N_DOMAIN)
         );
 
+        $thumbnail_size_list = array(
+            'thumbnail' => __('Thumbnail', LIKEBTN_I18N_DOMAIN),
+            'medium' => __('Medium', LIKEBTN_I18N_DOMAIN),
+            'large' => __('Large', LIKEBTN_I18N_DOMAIN),
+            'full' => __('Full size', LIKEBTN_I18N_DOMAIN),
+        );
+
         $time_range_list = array(
             'all' => __('All time', LIKEBTN_I18N_DOMAIN),
             '1' => __('1 day', LIKEBTN_I18N_DOMAIN),
@@ -79,16 +87,19 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
             $instance['title'] = __('Most Liked Content', LIKEBTN_I18N_DOMAIN);
         }
         if (empty($instance['entity_name']) || !is_array($instance['entity_name'])) {
-            $instance['entity_name'] = array(LIKEBTN_ENTITY_POST);
+            $instance['entity_name'] = self::$instance_default['entity_name'];
         }
         if (empty($instance['number']) || (int)$instance['number'] < 1) {
-            $instance['number'] = self::NUMBER_OF_ITEMS;
+            $instance['number'] = self::$instance_default['number'];
         }
         if (empty($instance['order'])) {
-            $instance['order'] = 'likes';
+            $instance['order'] = self::$instance_default['order'];
         }
         if (empty($instance['time_range'])) {
-            $instance['time_range'] = 'all';
+            $instance['time_range'] = self::$instance_default['time_range'];
+        }
+        if (empty($instance['thumbnail_size'])) {
+            $instance['thumbnail_size'] = self::$instance_default['thumbnail_size'];
         }
         /*if (empty($instance['show_likes'])) {
             $instance['show_likes'] = '';
@@ -153,7 +164,12 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
             </p>
             <p>
                 <input class="checkbox" type="checkbox" <?php checked($instance['show_thumbnail']); ?> id="<?php echo $this->get_field_id('show_thumbnail'); ?>" name="<?php echo $this->get_field_name('show_thumbnail'); ?>" value="1" data-property="show_thumbnail" />
-                <label for="<?php echo $this->get_field_id('show_thumbnail'); ?>"><?php _e('Display thumbnail', LIKEBTN_I18N_DOMAIN); ?></label>
+                <label for="<?php echo $this->get_field_id('show_thumbnail'); ?>"><?php _e('Display featured image', LIKEBTN_I18N_DOMAIN); ?></label>
+                <select name="<?php echo $this->get_field_name('thumbnail_size'); ?>" id="<?php echo $this->get_field_id('thumbnail_size'); ?>" data-property="thumbnail_size" >
+                    <?php foreach ($thumbnail_size_list as $thumbnail_size_value => $thumbnail_size_name): ?>
+                        <option value="<?php echo $thumbnail_size_value; ?>" <?php selected($thumbnail_size_value, $instance['thumbnail_size']); ?> ><?php _e($thumbnail_size_name, LIKEBTN_I18N_DOMAIN); ?></option>
+                    <?php endforeach ?>
+                </select>
             </p>
             <p>
                 <input class="checkbox" type="checkbox" <?php checked($instance['show_excerpt']); ?> id="<?php echo $this->get_field_id('show_excerpt'); ?>" name="<?php echo $this->get_field_name('show_excerpt'); ?>" value="1" data-property="show_excerpt" />
