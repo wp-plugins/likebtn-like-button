@@ -25,6 +25,8 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 = Demo =
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
+[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
+
 = Features =
 *   More than 50 parameters, 25 themes, 11 languages.
 *   Allows visitors to like and dislike content anonymously.

@@ -3537,6 +3537,7 @@ function likebtn_admin_help() {
     likebtn_admin_header();
     ?>
     <div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/n4gye6Blmf8" frameborder="0" allowfullscreen></iframe>
         <ul>
             <li><?php echo __('<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank">WordPress LikeBtn Plugin FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
             <li><?php echo __('<a href="http://likebtn.com/en/faq" target="_blank">LikeBtn FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>

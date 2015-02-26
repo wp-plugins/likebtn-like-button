@@ -202,7 +202,11 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     {
         foreach (self::$instance_default as $field => $default_value) {
             if (!isset($instance[$field])) {
-                $instance[$field] = '';
+                if ($field == 'title') {
+                    $instance['title'] = __('Most Liked Content', LIKEBTN_I18N_DOMAIN);
+                } else {
+                    $instance[$field] = '';
+                }
             }
         }
         return $instance;
