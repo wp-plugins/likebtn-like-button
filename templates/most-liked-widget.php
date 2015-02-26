@@ -18,7 +18,7 @@ endif ?>
 	<ul class="likebtn-mlw">
 	<?php foreach ($post_loop as $post): ?>
 		<li id="post-<?php echo $post['id'] ?>" class="likebtn-mlw-item" >
-            <a href="<?php echo $post['link'] ?>" title="<?php echo $post['title'] ?>" rel="nofollow">
+            <a href="<?php echo $post['link'] ?>" title="<?php echo $post['title'] ?>">
                 <?php if ($show_thumbnail): ?>
                     <?php if( 'image/' == substr( $post['post_mime_type'], 0, 6 ) ): ?>
                         <?php echo wp_get_attachment_image( $post['id'], $thumbnail_size, array('class' => 'likebtn-item-thumbnail') ); ?>
