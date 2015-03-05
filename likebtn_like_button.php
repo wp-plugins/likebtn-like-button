@@ -5179,7 +5179,7 @@ function likebtn_bbp_reply_top_right()
 // bbPress reply bottom
 function likebtn_bbp_reply_bottom($content)
 {
-    echo $content.likebtn_bbp_reply(true, LIKEBTN_POSITION_BOTTOM);
+    return $content.likebtn_bbp_reply(true, LIKEBTN_POSITION_BOTTOM);
 }
 
 // bbPress thread
