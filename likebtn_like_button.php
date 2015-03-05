@@ -1214,7 +1214,7 @@ function _likebtn_plan_html() {
 
     if (isset($likebtn_plans[$likebtn_plan]) && $plan_synced) {
         $plan_html = '
-            <a href="javascript: likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'#plans_pricing\'); void(0)" class="likebtn_ttip" title="'.__('Plans & Pricing', LIKEBTN_I18N_DOMAIN).'"><strong>'.$likebtn_plans[$likebtn_plan].'</strong></a> 
+            <a href="javascript: likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'?add_website='.$_SERVER['SERVER_NAME'].'#plans_pricing\'); void(0)" class="likebtn_ttip" title="'.__('Plans & Pricing', LIKEBTN_I18N_DOMAIN).'"><strong>'.$likebtn_plans[$likebtn_plan].'</strong></a> 
             <img src="'._likebtn_get_public_url().'img/refresh.gif" class="likebtn_refresh likebtn_ttip" onclick="refreshPlan(\''.__('Error occured. Disable WP HTTP Compression plugin if you have it enabled.', LIKEBTN_I18N_DOMAIN).'\', \''.__('Plan data refreshed', LIKEBTN_I18N_DOMAIN).'\')" title="'.__('Refresh data', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_trgr"/>
             <img src="'._likebtn_get_public_url().'img/refresh_loader.gif" class="likebtn_refresh likebtn_refresh_loader likebtn_ttip" style="display:none" title="'.__('Please wait...', LIKEBTN_I18N_DOMAIN).'" id="likebtn_refresh_ldr"/> 
             <small class="likebtn_success" id="likebtn_refresh_success" style="display:none"></small>
@@ -1222,6 +1222,7 @@ function _likebtn_plan_html() {
         if ($likebtn_plan != LIKEBTN_PLAN_FREE) {
             if ((int)get_option('likebtn_last_plan_successfull_sync_time') >= time() - 86000) {
                 $expires_in_option = (int)get_option('likebtn_plan_expires_in');
+                $expires_in = '';
                 if ($expires_in_option) {
                     $expires_in = ceil($expires_in_option / 86400);
                 }
