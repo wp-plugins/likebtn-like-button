@@ -67,8 +67,8 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 5. WooCommerce
 6. Settings
 7. Statistics
-8. Most Liked Content Widget admin
-9. Most Liked Content Widget frontend
+8. Most liked content widget admin
+9. Most liked content widget frontend
 
 == Changelog ==
 
