@@ -12,7 +12,7 @@
 // ini_set('display_errors', 'On');
 // ini_set('error_reporting', E_ALL);
 
-// PLugin version
+// Plugin version
 define('LIKEBTN_VERSION', '2.1.3');
 // Current DB version
 define('LIKEBTN_DB_VERSION', 6);
