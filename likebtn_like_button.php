@@ -29,7 +29,7 @@ define('LIKEBTN_PLAN_ULTRA', 4);
 define('LIKEBTN_PLAN_TRIAL', 9);
 //update_option('likebtn_plan', LIKEBTN_PLAN_FREE);
 
-// Flag added to entity excertps
+// Flag added to entity excerpts
 define('LIKEBTN_LIST_FLAG', '_likebtn_list');
 
 // entity names
