@@ -3,7 +3,7 @@ Contributors: LikeBtn, LikeBtn Support
 Donate link: http://likebtn.com
 Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
-Tested up to: 4.1
+Tested up to: 4.2.2
 Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
