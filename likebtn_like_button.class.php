@@ -784,6 +784,13 @@ class LikeBtnLikeButton {
         $response_string = $this->curl($url);
         $response = $this->jsonDecode($response_string);
 
+        if (!isset($response['result'])) {
+            $response['result'] = 'error';
+        }
+        if (!isset($response['message'])) {
+            $response['message'] = 'Could not retrieve data from LikeBtn API';
+        }
+
         return $response;
     }
 

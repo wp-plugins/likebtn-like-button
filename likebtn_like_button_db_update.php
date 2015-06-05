@@ -184,3 +184,27 @@ function likebtn_db_update_6() {
         update_option('likebtn_wrap_'.$entity_name, $likebtn_buttons_options['likebtn_wrap']);
     }
 }
+
+// fix voting_enabled
+function likebtn_db_update_7() {
+    global $wpdb;
+
+    //_likebtn_add_options();
+
+    $likebtn_entities = _likebtn_get_entities();
+    foreach ($likebtn_entities as $entity_name => $entity_title) {
+
+        $option_name = 'likebtn_settings_popup_enabled_'.$entity_name;
+
+        $option_exists = $wpdb->get_row("
+            SELECT option_value
+            FROM ".$wpdb->prefix."options
+            WHERE option_name = '{$option_name}'
+        ");
+        if ($option_exists) {
+            if ((int)$option_exists->option_value != 1) {
+                update_option('likebtn_settings_popup_disabled_'.$entity_name, '1');
+            }
+        }
+    }
+}

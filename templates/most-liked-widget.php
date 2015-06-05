@@ -8,11 +8,19 @@ if ( !defined('ABSPATH') )
 	die('-1');
 ?>
 
-<?php echo $before_widget; ?>
+<?php if (!empty($before_widget)): ?>
+    <?php echo $before_widget; ?>
+<?php endif ?>
 
-<?php if (!empty($title)):
-	echo $before_title . $title . $after_title;
-endif ?>
+<?php if (!empty($title)): ?>
+    <?php if (!empty($before_title)): ?>
+        <?php echo $before_title; ?>
+    <?php endif ?>
+	<?php echo $title; ?>
+    <?php if (!empty($after_title)): ?>
+        <?php echo $after_title; ?>
+    <?php endif ?>
+<?php endif ?>
 
 <?php if (count($post_loop) > 0): ?>
 	<ul class="likebtn-mlw">
@@ -62,5 +70,8 @@ endif ?>
 	</div>
 <?php
 endif;
+?>
 
-echo $after_widget; ?>
+<?php if (!empty($after_widget)): ?>
+    <?php echo $after_widget; ?>
+<?php endif ?>

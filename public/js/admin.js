@@ -8,10 +8,10 @@ var likebtn_preview_position = 'static';
 // replace all occurences of a string
 String.prototype.replaceAll = function(search, replace){
     return this.split(search).join(replace);
-}
+};
 
 jQuery(document).ready(function(jQuery) {
-    likebtnRefreshPreview();
+    //likebtnRefreshPreview();
     likebtnApplyTooltips();
 });
 

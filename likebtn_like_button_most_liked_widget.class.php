@@ -29,9 +29,14 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     }
 
     /** @see WP_Widget::widget */
-    function widget($args, $instance) {
+    function widget($args, $instance, $output = true) {
         global $LikeBtnLikeButtonMostLiked;
-        echo $LikeBtnLikeButtonMostLiked->widget($args, $instance);
+        $html = $LikeBtnLikeButtonMostLiked->widget($args, $instance);
+        if (!empty($output)) {
+            echo $html;
+        } else {
+            return $html;
+        }
     }
 
     /*function update($new_instance, $old_instance) {
@@ -620,7 +625,12 @@ class LikeBtnLikeButtonMostLiked {
         }
 
         // Get and include the template we're going to use
+        ob_start();
 		include( $this->getTemplateHierarchy(self::TEMPLATE) );
+        $result = ob_get_contents();
+        ob_get_clean();
+
+        return $result;
     }
 
     function timeRangeToDateTime($range) {
