@@ -4,7 +4,7 @@ Donate link: http://likebtn.com
 Tags: like button, voting, rating, vote, dislike, contest, rate, thumb, widget, widgets, poll, survey, donate, donations, share
 Requires at least: 2.8
 Tested up to: 4.2.2
-Stable tag: 2.1.3
+Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,18 @@ The Like Button widget is powered by <a href="http://likebtn.com" target="_blank
 9. Most liked content widget frontend
 
 == Changelog ==
+
+= 2.1.4 =
+* Popup enabled option renamed into Popup disabled
+* Added German language to the WordPress plugin
+* Fixed formatting issue in ppPress posts
+* Added Wrap button in a div option
+* Added Display on a new line option
+* Added featured image size in most liked content widget
+* Added possibility to generate like button shortcodes from Buttons tab
+* Featured image in most liked content widget moved under the post title
+* Added delete item feature in Statistics
+* No private posts in most liked content widget
 
 = 2.1.3 =
 * Updated Statistics tab
