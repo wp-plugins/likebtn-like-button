@@ -1,7 +1,7 @@
 === Like Button Voting & Rating ===
 Contributors: LikeBtn, LikeBtn Support
 Donate link: http://likebtn.com
-Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs
+Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter
 Requires at least: 2.8
 Tested up to: 4.2.2
 Stable tag: 2.1.4
