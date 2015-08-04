@@ -984,8 +984,8 @@ function likebtn_admin_header() {
 
           ga('create', 'UA-37384414-15', 'auto');
           ga('send', 'pageview');
-
         </script>
+        <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter31779816 = new Ya.Metrika({ id:31779816, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="https://mc.yandex.ru/watch/31779816" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
         <h2 class="likebtn_logo">
             <a href="http://likebtn.com" target="_blank" title="LikeBtn Like Button"><img alt="" src="{$logo_url}">LikeBtn</a>
         </h2>
