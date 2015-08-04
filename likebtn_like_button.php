@@ -1156,10 +1156,18 @@ function _likebtn_sidebar_synchronization()
         $status_class = 'likebtn_error';
     }
 
-    $html = '
-        <div class="likebtn_sidebar_section">
-            '.__('Status', LIKEBTN_I18N_DOMAIN).': <strong class="'.$status_class.'">'.$status.'</strong>
-    ';
+    if (!$sync_result_html) {
+        $html = '
+            <div class="likebtn_sidebar_section">
+                '.__('Status', LIKEBTN_I18N_DOMAIN).': <strong class="'.$status_class.'">'.$status.'</strong>
+        ';
+    } else {
+        // Show error in status
+        $html = '
+            <div class="likebtn_sidebar_section">
+                '.__('Status', LIKEBTN_I18N_DOMAIN).': <strong class="likebtn_error">'.$sync_result_html.'</strong>
+        ';
+    }
     if (!$enabled) {
         $html .= ' <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>';
     }
@@ -1169,12 +1177,12 @@ function _likebtn_sidebar_synchronization()
             <div class="likebtn_sidebar_div_simple"></div>
                 '.__('Last sync', LIKEBTN_I18N_DOMAIN).': <strong>'.$last_sync_html.'</strong>
         ';
-        if ($sync_result_html) {
+        /*if ($sync_result_html) {
             $html .= '
                 <div class="likebtn_sidebar_div_simple"></div>
                 '.__('Error', LIKEBTN_I18N_DOMAIN).': <strong class="likebtn_error">'.$sync_result_html.'</strong>
             ';
-        }
+        }*/
     }
     $html .= '</div>';
 
@@ -4480,7 +4488,7 @@ function likebtn_manual_sync_callback() {
     if (ob_get_contents()) {
         ob_clean();
     }
-    wp_send_json($response);
+    _likebtn_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_manual_sync', 'likebtn_manual_sync_callback');
@@ -4525,7 +4533,7 @@ function likebtn_test_sync_callback() {
     if (ob_get_contents()) {
         ob_clean();
     }
-    wp_send_json($response);
+    _likebtn_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_test_sync', 'likebtn_test_sync_callback');
@@ -4570,7 +4578,7 @@ function likebtn_check_account_callback() {
     if (ob_get_contents()) {
         ob_clean();
     }
-    wp_send_json($response);
+    _likebtn_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_check_account', 'likebtn_check_account_callback');
@@ -4633,7 +4641,7 @@ function likebtn_edit_item_callback() {
     if (ob_get_contents()) {
         ob_clean();
     }
-    wp_send_json($response);
+    _likebtn_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_edit_item', 'likebtn_edit_item_callback');
@@ -4668,7 +4676,7 @@ function likebtn_refresh_plan_callback() {
     if (ob_get_contents()) {
         ob_clean();
     }
-    wp_send_json($response);
+    _likebtn_send_json($response);
 }
 
 add_action('wp_ajax_likebtn_refresh_plan', 'likebtn_refresh_plan_callback');
@@ -5314,6 +5322,17 @@ function _likebtn_has_caller($function_name)
         return true;
     } else {
         return false;
+    }
+}
+
+// Send JSON to browser
+function _likebtn_send_json( $response ) {
+    @header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+    echo json_encode( $response );
+    if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+        wp_die();
+    } else {
+        die;
     }
 }
 

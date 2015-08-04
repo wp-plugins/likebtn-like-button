@@ -753,29 +753,18 @@ class LikeBtnLikeButton {
             $api_key = trim(get_option('likebtn_account_api_key'));
         }
 
-        // local_domain and subdirectory are kept for backward compatibility
-        /*$subdirectory = trim(get_option('likebtn_subdirectory'));
-        $local_domain = trim(get_option('likebtn_local_domain'));
-        if ($local_domain) {
-          $domain = $local_domain;
-        }
-        else {
-          $parse_url = parse_url(get_site_url());
-          $domain    = $parse_url['host'] . $subdirectory;
-        }*/
-        $domain_site_id = '';
-
         if (!$site_id) {
             $site_id = trim(get_option('likebtn_site_id'));
         }
-        if ($site_id) {
-            $domain_site_id .= "site_id={$site_id}&";
-        } else {
+        //if ($site_id) {
+        $domain_site_id = "site_id={$site_id}&";
+        //}
+        /* else {
             $parse_url = parse_url(get_site_url());
             $domain    = $parse_url['host'];
 
             $domain_site_id .= "domain={$domain}&";
-        }
+        }*/
 
         $apiurl = LIKEBTN_API_URL . "?email={$email}&api_key={$api_key}&nocache=.php&source=wordpress&" . $domain_site_id;
         //}
