@@ -3074,10 +3074,10 @@ function likebtn_admin_statistics() {
     // order by
     switch ($sort_by) {
         case 'dislikes':
-            $query_orderby = 'ORDER BY dislikes DESC';
+            $query_orderby = 'ORDER BY ABS(dislikes) DESC';
             break;
         case 'likes_minus_dislikes':
-            $query_orderby = 'ORDER BY likes_minus_dislikes DESC';
+            $query_orderby = 'ORDER BY ABS(likes_minus_dislikes)*SIGN(likes_minus_dislikes) DESC';
             break;
         case 'post_id':
             $query_orderby = 'ORDER BY post_id ASC';
@@ -3087,7 +3087,7 @@ function likebtn_admin_statistics() {
             break;
         case 'likes':
         default:
-            $query_orderby = 'ORDER BY likes DESC';
+            $query_orderby = 'ORDER BY ABS(likes) DESC';
             $sort_by = 'likes';
             break;
         /*case 'last_updated':
@@ -3120,7 +3120,7 @@ function likebtn_admin_statistics() {
     // echo $query_prepared;
     // echo $wpdb->prepare($query, $query_parameters);
     // $wpdb->show_errors();
-    //exit();
+    // exit();
     $statistics = $wpdb->get_results($query_prepared);
 
     $total_found = 0;
