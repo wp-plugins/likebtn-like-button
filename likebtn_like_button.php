@@ -4383,7 +4383,7 @@ add_filter('comment_text', 'likebtn_comment_text');
 
 // show the Like Button in Post/Page
 // if Like Button is enabled in admin for Post/Page do not show button twice
-function likebtn_post($post_id = NULL) {
+function likebtn_post($post_id = NULL, $values = null) {
     global $post;
     if (empty($post_id)) {
         $post_id = $post->ID;
@@ -4406,13 +4406,13 @@ function likebtn_post($post_id = NULL) {
     }
 
     // 'post' here is for the sake of backward compatibility
-    $html = _likebtn_get_markup('post', $post_id);
+    $html = _likebtn_get_markup('post', $post_id, $values);
 
     echo $html;
 }
 
 // get or echo the Like Button in comment
-function likebtn_comment($comment_id = NULL) {
+function likebtn_comment($comment_id = NULL, $values = null) {
     //global $comment;
     if (empty($comment_id)) {
         $comment_id = get_comment_ID();
@@ -4423,14 +4423,14 @@ function likebtn_comment($comment_id = NULL) {
         return;
     }
 
-    $html = _likebtn_get_markup(LIKEBTN_ENTITY_COMMENT, $comment_id);
+    $html = _likebtn_get_markup(LIKEBTN_ENTITY_COMMENT, $comment_id, $values);
 
     echo $html;
 }
 
 // Show the Like Button in WooCommerce Product
 // if Like Button is enabled in admin do not show button twice
-function likebtn_woocommerce($post_id = NULL) {
+function likebtn_woocommerce($post_id = NULL, $values = null) {
     global $post;
 
     if (empty($post_id)) {
@@ -4443,7 +4443,7 @@ function likebtn_woocommerce($post_id = NULL) {
         return;
     }
 
-    $html = _likebtn_get_markup(LIKEBTN_ENTITY_PRODUCT, $post_id);
+    $html = _likebtn_get_markup(LIKEBTN_ENTITY_PRODUCT, $post_id, $values);
 
     echo $html;
 }
