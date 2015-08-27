@@ -2,7 +2,7 @@
 /*
   Plugin Name: Like Button Voting & Rating
   Plugin URI: http://likebtn.com
-  Description: Add a Like Button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get instant statistics & insights! (COMMERCIAL PLUGIN)
+  Description: Add a Like Button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get instant statistics & insights!
   Version: 2.1.4
   Author: likebtn
   Author URI: http://likebtn.com
@@ -4383,30 +4383,34 @@ add_filter('comment_text', 'likebtn_comment_text');
 
 // show the Like Button in Post/Page
 // if Like Button is enabled in admin for Post/Page do not show button twice
-function likebtn_post($post_id = NULL, $values = null) {
+function likebtn_post($post_id = null, $values = null) {
     global $post;
     if (empty($post_id)) {
         $post_id = $post->ID;
     }
 
     // detemine entity type
-    if (is_page()) {
+    /*if (is_page()) {
         $entity_name = LIKEBTN_ENTITY_PAGE;
+    } else {*/
+    if (!empty($post->post_type)) {
+        $entity_name = $post->post_type;
     } else {
         $entity_name = LIKEBTN_ENTITY_POST;
     }
+    //}
 
     // check if the Like Button should be displayed
     // if Like Button enabled for Post or Page in Admin do not show Like Button twice
-    if ($entity_name == LIKEBTN_ENTITY_POST && get_option('likebtn_show_' . LIKEBTN_ENTITY_POST) == '1') {
+    /*if ($entity_name == LIKEBTN_ENTITY_POST && get_option('likebtn_show_' . LIKEBTN_ENTITY_POST) == '1') {
         return;
     }
     if ($entity_name == LIKEBTN_ENTITY_PAGE && get_option('likebtn_show_' . LIKEBTN_ENTITY_PAGE) == '1') {
         return;
-    }
+    }*/
 
     // 'post' here is for the sake of backward compatibility
-    $html = _likebtn_get_markup('post', $post_id, $values);
+    $html = _likebtn_get_markup($entity_name, $post_id, $values);
 
     echo $html;
 }
@@ -4419,9 +4423,9 @@ function likebtn_comment($comment_id = NULL, $values = null) {
     }
 
     // if Like Button enabled for Comment in Admin do not show Like Button twice
-    if (get_option('likebtn_show_' . LIKEBTN_ENTITY_COMMENT) == '1') {
+    /*if (get_option('likebtn_show_' . LIKEBTN_ENTITY_COMMENT) == '1') {
         return;
-    }
+    }*/
 
     $html = _likebtn_get_markup(LIKEBTN_ENTITY_COMMENT, $comment_id, $values);
 
@@ -4439,9 +4443,9 @@ function likebtn_woocommerce($post_id = NULL, $values = null) {
 
     // check if the Like Button should be displayed
     // if Like Button enabled in Admin do not show Like Button twice
-    if (get_option('likebtn_show_' . LIKEBTN_ENTITY_PRODUCT) == '1') {
+    /*if (get_option('likebtn_show_' . LIKEBTN_ENTITY_PRODUCT) == '1') {
         return;
-    }
+    }*/
 
     $html = _likebtn_get_markup(LIKEBTN_ENTITY_PRODUCT, $post_id, $values);
 
