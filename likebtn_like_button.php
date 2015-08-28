@@ -910,6 +910,7 @@ $likebtn_features = array(
 
 // initicalization
 function likebtn_init() {
+
     _likebtn_plugin_on_load();
 
     load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
@@ -922,7 +923,7 @@ function likebtn_init() {
     }
 }
 
-add_action('init', 'likebtn_init');
+add_action('init', 'likebtn_init', 11);
 
 // add Settings link to the plugin list page
 function likebtn_links($links, $file) {
