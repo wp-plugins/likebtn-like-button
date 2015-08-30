@@ -27,12 +27,6 @@ The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your w
 = Live Demo =
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
-= Help =
-
-<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">FAQ & Tutorials</a>
-
-[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
-
 = Features =
 *   More than 50 parameters, 25 themes, 11 languages.
 *   Allows visitors to like and dislike content anonymously.
@@ -46,6 +40,12 @@ The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your w
 *   Custom texts.
 *   Allows to collect donations by adding donate buttons to popup.
 *   Adds "Likes", "Dislikes" and "Likes minus dislikes" custom fields to posts.
+
+= Help =
+
+<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">FAQ & Tutorials</a>
+
+[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
 
 The Like button widget is powered by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>
 
