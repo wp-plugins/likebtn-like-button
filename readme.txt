@@ -8,7 +8,7 @@ Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add a Like button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get stats & insights!
+Add Like button to posts, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Stats & insights! Voting & rating!
 
 == Description ==
 
@@ -24,7 +24,7 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 
 The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or upgrade: <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>
 
-= Demo =
+= Live Demo =
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
 [youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
@@ -35,9 +35,8 @@ The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your w
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
-*   Widget displaying most liked content. (PRO/VIP/ULTRA)
-*   Shortcode to display the Like Button inside a post/page: <code>[likebtn]</code>
-*   Shortcode to display the most liked content: <code>[likebtn_most_liked]</code> (PRO/VIP/ULTRA)
+*   Shortcode <code>[likebtn]</code> to display the Like button inside a post/page.
+*   Widget and shortcode <code>[likebtn_most_liked]</code> to display the most liked content. (PRO/VIP/ULTRA)
 *   Customizable position and alignment.
 *   Full access to the Like button CSS.
 *   Custom texts.
