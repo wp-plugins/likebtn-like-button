@@ -12,7 +12,7 @@ Add Like button to posts, comments, WooCommerce, BuddyPress, bbPress, custom pos
 
 == Description ==
 
-The **Like Button Voting & Rating** plugin allows you to add a cool looking fully customizable <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Like Button</a> to:
+The **Like Button Voting & Rating** plugin allows you to add a cool looking fully customizable Like button to:
 
 *   Posts
 *   Pages
@@ -22,10 +22,14 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   bbPress Forum Posts and Users
 *   Custom Post Types
 
-The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or upgrade: <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">Plans & Pricing</a>
+The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
 
 = Live Demo =
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
+
+= Tutorials =
+
+<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">WordPress Like Button Tutorials</a>
 
 [youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
 
