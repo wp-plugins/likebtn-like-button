@@ -2,7 +2,7 @@
 /*
   Plugin Name: Like Button Voting & Rating
   Plugin URI: https://likebtn.com/en/wordpress-like-button-plugin
-  Description: Add Like button to posts, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get stats and insights! Get voting and rating!
+  Description: Add Like button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get stats and insights!
   Version: 2.1.4
   Author: LikeBtn
   Author URI: http://likebtn.com
