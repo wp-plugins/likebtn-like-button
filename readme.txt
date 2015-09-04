@@ -7,7 +7,7 @@ Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add Like button to posts, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Stats and insights! Voting and rating!
+Add Like button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get instant stats and insights!
 
 == Description ==
 
