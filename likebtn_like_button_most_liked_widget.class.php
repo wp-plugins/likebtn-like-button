@@ -185,7 +185,7 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
                 <label for="<?php echo $this->get_field_id('show_date'); ?>"><?php _e('Display item date', LIKEBTN_I18N_DOMAIN); ?></label>
             </p>
             <p>
-                <a href="javascript:likebtnWidgetShortcode('<?php echo $widget_mnemonic; ?>')"><?php _e('Get shortcode', LIKEBTN_I18N_DOMAIN); ?></a>
+                <a href="javascript:likebtnWidgetShortcode('<?php echo $widget_mnemonic; ?>')"><?php _e('Get shortcode', LIKEBTN_I18N_DOMAIN); ?></a> <small>▼</small>
             </p>
             <p id="likebtn_sc_wr_<?php echo $widget_mnemonic; ?>" class="likebtn_sc_wr">
                 <textarea class="likebtn_input likebtn_disabled" rows="5" id="likebtn_sc_<?php echo $widget_mnemonic; ?>" readonly="readonly"></textarea>

@@ -21,6 +21,8 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   bbPress Forum Posts and Users
 *   Custom Post Types
 
+[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
+
 The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
 
 = Live Demo =
@@ -42,9 +44,7 @@ The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your w
 
 = Help =
 
-<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">FAQ & Tutorials</a>
-
-[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
+<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Documentation</a>
 
 The Like button widget is powered by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>
 

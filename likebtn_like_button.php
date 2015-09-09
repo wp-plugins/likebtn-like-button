@@ -974,7 +974,7 @@ add_action('admin_head', 'likebtn_admin_head');
 
 // admin header
 function likebtn_admin_header() {
-    $logo_url = _likebtn_get_public_url() . 'img/logotype.png';
+    $logo_url = _likebtn_get_public_url() . 'img/logo.png';
     $header = <<<HEADER
     <div class="wrap" id="likebtn">
         <script>
@@ -987,9 +987,6 @@ function likebtn_admin_header() {
           ga('send', 'pageview');
         </script>
         <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter31779816 = new Ya.Metrika({ id:31779816, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="https://mc.yandex.ru/watch/31779816" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-        <h2 class="likebtn_logo">
-            <a href="http://likebtn.com" target="_blank" title="LikeBtn Like Button"><img alt="" src="{$logo_url}">LikeBtn</a>
-        </h2>
 HEADER;
 //<div id="plan_upgrade">
 //                Plan:
@@ -1010,6 +1007,11 @@ HEADER;
                 
                 <div id="postbox-container-1" class="postbox-container">
                     <div class="meta-box-sortables ui-sortable">
+                        <div class="postbox likebtn_logo">
+                            <div class="inside likebtn_sidebar_inside">
+                                <a href="http://likebtn.com" target="_blank" title="LikeBtn.com"><img alt="" src="'.$logo_url.'" /></a>
+                            </div>
+                        </div>
                         <div class="postbox">
                             <h3 class="hndle ui-sortable-handle"><span>' . __('Plan & Features', LIKEBTN_I18N_DOMAIN) . '</span></h3>
                             ' . _likebtn_sidebar_plan() . '
@@ -1019,14 +1021,15 @@ HEADER;
                             <div class="inside likebtn_sidebar_inside">
                                 ' . _likebtn_sidebar_synchronization() . '
                             </div>
-                        </div>
-                        <div class="postbox">
+                        </div>' .
+                         ($_GET['page'] != 'likebtn_buttons' ? 
+                        '<div class="postbox">
                             <h3 class="hndle ui-sortable-handle"><span>' . __('Follow', LIKEBTN_I18N_DOMAIN) . '</span></h3>
                             <div class="inside">
                                 ' . _likebtn_sidebar_social() . '
                             </div>
-                        </div>
-                    </div>
+                        </div>' : '') .
+                    '</div>
                 </div>
                 <div id="postbox-container-2" class="postbox-container">
                     <h2 class="nav-tab-wrapper">
@@ -2000,7 +2003,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
      */ ?>
 
         var likebtn_msg_reset = '<?php _e('Are you sure you want to reset settings for this entity?', LIKEBTN_I18N_DOMAIN); ?>';
-        var likebtn_msg_identifier = '<?php _e('CUSTOM ITEM NAME', LIKEBTN_I18N_DOMAIN); ?>';
+        //var likebtn_msg_identifier = '<?php _e('likeButton1', LIKEBTN_I18N_DOMAIN); ?>';
 
         var likebtn_path_settings_theme = '//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/bundles/likebtnwebsite/i/theme/';
         var likebtn_path_settings_counter_type = '//<?php echo LIKEBTN_WEBSITE_DOMAIN; ?>/bundles/likebtnwebsite/i/counter/';
@@ -2157,7 +2160,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                         <span class="support_link">
                                             ♥ <?php _e('Like it?', LIKEBTN_I18N_DOMAIN); ?>
                                             <a href="http://wordpress.org/support/view/plugin-reviews/likebtn-like-button?rate=5#postform" target="_blank">
-                                                <?php _e('Support the plugin with 5 Stars', LIKEBTN_I18N_DOMAIN); ?>
+                                                <?php _e('Support the plugin with ★ 5 Stars', LIKEBTN_I18N_DOMAIN); ?>
                                             </a>
                                         </span>
                                     </div>
@@ -2834,15 +2837,38 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                             </div>
                                         </div>*/ ?>
                                         <div class="likebtn_reset_wrapper">
-                                            <a href="javascript:likebtnToggleShortcode('likebtn_sc_wr')" class="likebtn_sc_trgr"><?php _e('Get shortcode', LIKEBTN_I18N_DOMAIN); ?></a>
+                                            <span class="likebtn_sc_trgr"><a href="javascript:likebtnToggleShortcode('likebtn_sc_wr')"><?php _e('Get shortcode', LIKEBTN_I18N_DOMAIN); ?></a> <small>▼</small></span>
                                             <input class="button-secondary" type="button" name="Reset" value="<?php _e('Reset', LIKEBTN_I18N_DOMAIN); ?>" onclick="return resetSettings('<?php echo $entity_name; ?>', reset_settings)" />
                                         </div>
-                                        <div id="likebtn_sc_wr">
+                                        <div id="likebtn_sc_wr" class="postbox">
                                             <br/>
                                             <textarea class="likebtn_input likebtn_disabled" rows="5" id="likebtn_sc" readonly="readonly"></textarea>
-                                            <p class="description">
-                                                <?php _e('Replace "CUSTOM ITEM NAME" with the custom unique text. The custom item name will be displayed in Statistics and in the Most liked content widget.', LIKEBTN_I18N_DOMAIN); ?>
-                                            </p>
+                                            <table class="form-table">
+                                                <tr>
+                                                    <th scope="row">
+                                                        <label><?php _e('Button identifier', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                    </th>
+                                                    <td>
+                                                        <input type="radio" name="likebtn_identifier_type" value="post_id" checked="checked"/> <?php _e('Post ID', LIKEBTN_I18N_DOMAIN); ?>
+                                                        &nbsp;&nbsp;&nbsp;
+                                                        <input type="radio" name="likebtn_identifier_type" value="custom" /> <?php _e('Custom', LIKEBTN_I18N_DOMAIN); ?>&nbsp;
+                                                        <input type="text" id="likebtn_sc_identifier" value="likeButton1" class="likebtn_sc_identifier_custom hidden"/>
+                                                    </td>
+                                                </tr>
+                                                <tr class="likebtn_sc_identifier_custom hidden">
+                                                    <th scope="row" class="no-padding-top">
+                                                        &nbsp;
+                                                    </th>
+                                                    <td class="no-padding-top">
+                                                        <p class="likebtn_error">
+                                                            <?php _e('Identifier must be unique for all the buttons inserted using shortcode, otherwise buttons will reflect the same number of likes.', LIKEBTN_I18N_DOMAIN); ?>
+                                                        </p>
+                                                        <p class="likebtn_error">
+                                                            <?php _e('If custom identifier is used you will see button identifier in statistics and most liked content widget instead of post title. You also will be unable to sort posts by likes.', LIKEBTN_I18N_DOMAIN); ?>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

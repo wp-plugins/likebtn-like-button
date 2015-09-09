@@ -852,8 +852,15 @@ function likebtnToggleShortcode(id)
 // Show shortcode
 function likebtnShowShortcode(id, properties)
 {
-    var shortcode = '[likebtn identifier="'+likebtn_msg_identifier+'"';
+    var shortcode = '[likebtn';
     var value = '';
+    var identifier_type = jQuery("#likebtn_sc_wr [name='likebtn_identifier_type']:checked:first").val();
+
+    if (identifier_type != 'post_id') {
+        var likebtn_identifier = jQuery("#likebtn_sc_identifier").val();
+        shortcode += ' identifier="'+likebtn_identifier+'"';
+    }
+
     for (var name in properties) {
         value = properties[name];
         // Miss default parameters
@@ -869,6 +876,13 @@ function likebtnShowShortcode(id, properties)
     shortcode += ']';
 
     jQuery('#'+id).val(shortcode);
+
+    // Hint
+    if (identifier_type == 'post_id') {
+        jQuery(".likebtn_sc_identifier_custom").addClass('hidden');
+    } else {
+        jQuery(".likebtn_sc_identifier_custom").removeClass('hidden');
+    }
 }
 
 // Show widget shortcode
