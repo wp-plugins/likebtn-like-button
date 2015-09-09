@@ -23,7 +23,7 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 
 [youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
 
-The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
+The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like Button for Website">LikeBtn.com</a>. The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
 
 = Live Demo =
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
@@ -46,16 +46,13 @@ The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your w
 
 <a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Documentation</a>
 
-The Like button widget is powered by <a href="http://likebtn.com" target="_blank" title="Like Button For Website">LikeBtn.com</a>
-
 == Installation ==
 
 1. Upload `likebtn-like-button` to the `/wp-content/plugins/` directory
-1. Activate the Like Button plugin through the WordPress 'Plugins' menu
-1. Register on LikeBtn.com
-1. Add your website to your account on LikeBtn.com
-1. Enter your LikeBtn.com account data on the plugin Synchronization tab
-1. Configure the plugin in the Like Button admin panel
+1. Activate the plugin through the "Plugins" menu in WordPress.
+1. Open plugin Synchronization tab and click "Get Account Data".
+1. Register on LikeBtn.com, add your website to your account on LikeBtn.com and enter your LikeBtn.com account data on the plugin Synchronization tab.
+1. Open plugin Buttons tab, choose a post type and click "Enable Like Button".
 
 == Frequently Asked Questions ==
 
