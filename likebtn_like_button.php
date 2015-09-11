@@ -4257,6 +4257,9 @@ function likebtn_get_content($content, $callback_content_position = '') {
 
 // add Like Button to the entity (except Comment)
 function likebtn_the_content($content) {
+    if (!in_the_loop()) {
+        return $content;
+    }
     if (get_post_type() == LIKEBTN_ENTITY_PRODUCT) {
         return $content;
     }
