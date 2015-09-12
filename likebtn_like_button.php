@@ -4265,6 +4265,7 @@ function likebtn_the_content($content) {
         return $content;
     }*/
     if (_likebtn_has_shortcode($content, LIKEBTN_SHORTCODE_OFF)) {
+        $content = _likebtn_remove_shortcode($content, LIKEBTN_SHORTCODE_OFF);
         return $content;
     }
     if (get_post_type() == LIKEBTN_ENTITY_PRODUCT) {
@@ -5398,4 +5399,10 @@ function _likebtn_has_shortcode($content, $tag)
     }
     //}
     return false;
+}
+
+// Remove specified shortcode from content
+function _likebtn_remove_shortcode($content, $tag)
+{
+    return preg_replace("/\[".$tag."\]/", '', $content);
 }
