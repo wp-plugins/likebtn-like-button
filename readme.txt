@@ -35,6 +35,7 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
 *   Shortcode <code>[likebtn]</code> to display the Like button inside a post/page.
+*   Shortcode <code>[likebtn_off]</code> to disable the Like button in a post/page.
 *   Widget and shortcode <code>[likebtn_most_liked]</code> to display the most liked content. (PRO/VIP/ULTRA)
 *   Customizable position and alignment.
 *   Full access to the Like button CSS.
