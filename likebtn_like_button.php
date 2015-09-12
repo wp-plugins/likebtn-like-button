@@ -20,6 +20,9 @@ define('LIKEBTN_DB_VERSION', 7);
 // i18n domain
 define('LIKEBTN_I18N_DOMAIN', 'likebtn-like-button');
 
+// Shortcodes
+define('LIKEBTN_SHORTCODE_OFF', 'likebtn_off');
+
 // LikeBtn plans
 define('LIKEBTN_PLAN_FREE', 0);
 define('LIKEBTN_PLAN_PLUS', 1);
@@ -4257,7 +4260,11 @@ function likebtn_get_content($content, $callback_content_position = '') {
 
 // add Like Button to the entity (except Comment)
 function likebtn_the_content($content) {
-    if (!in_the_loop()) {
+    // MultiFlex theme does not use Loop
+    /*if (!in_the_loop()) {
+        return $content;
+    }*/
+    if (_likebtn_has_shortcode($content, LIKEBTN_SHORTCODE_OFF)) {
         return $content;
     }
     if (get_post_type() == LIKEBTN_ENTITY_PRODUCT) {
@@ -5377,3 +5384,18 @@ function _likebtn_send_json( $response ) {
     header("Location: ".$_SERVER['REQUEST_URI']);
     exit;
 }*/
+
+// Checks whether the content passed contains a specific short code. 
+function _likebtn_has_shortcode($content, $tag)
+{
+    /*if (function_exists('has_shortcode')) {
+        if (has_shortcode($content, $tag)) {
+            return true;
+        }
+    } else {*/
+    if (strstr($content, '['.$tag.']')) {
+        return true;
+    }
+    //}
+    return false;
+}
