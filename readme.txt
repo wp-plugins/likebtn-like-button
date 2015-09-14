@@ -33,7 +33,7 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 <a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
 
 = Features =
-*   More than 50 parameters, 25 themes, 11 languages.
+*   More than 60 parameters, 25 themes, 25 languages.
 *   Allows visitors to like and dislike content anonymously.
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
