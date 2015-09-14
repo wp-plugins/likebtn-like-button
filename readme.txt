@@ -21,6 +21,10 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   bbPress Forum Posts and Users
 *   Custom Post Types
 
+= Documentation =
+
+<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Overview & Documentation</a>
+
 [youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
 
 The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like Button for Website">LikeBtn.com</a>. The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
@@ -42,10 +46,6 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 *   Custom texts.
 *   Allows to collect donations by adding donate buttons to popup.
 *   Adds "Likes", "Dislikes" and "Likes minus dislikes" custom fields to posts.
-
-= Help =
-
-<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Documentation</a>
 
 == Installation ==
 
