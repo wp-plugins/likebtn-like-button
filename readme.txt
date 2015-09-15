@@ -64,13 +64,15 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 == Screenshots ==
 1. Like Buttons
 2. Themes
-3. BuddyPress
-4. bbPress
-5. WooCommerce
-6. Settings
-7. Statistics
-8. Most liked content widget admin
-9. Most liked content widget frontend
+3. Mobile Friendly
+4. Sorting Content by Likes
+5. Most Liked Content Widget
+6. Statistics
+7. Settings
+8. Most Liked Content Widget (admin)
+9. BuddyPress
+10. bbPress
+11. WooCommerce
 
 == Changelog ==
 
