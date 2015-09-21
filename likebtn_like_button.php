@@ -5,7 +5,7 @@
   Description: Add Like button to posts, pages, comments, WooCommerce, BuddyPress, bbPress, custom post types! Sort content by likes! Get instant stats and insights!
   Version: 2.1.4
   Author: LikeBtn
-  Author URI: http://likebtn.com
+  Author URI: https://likebtn.com
  */
 
 // Debug
@@ -989,7 +989,6 @@ function likebtn_admin_header() {
           ga('create', 'UA-37384414-15', 'auto');
           ga('send', 'pageview');
         </script>
-        <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter31779816 = new Ya.Metrika({ id:31779816, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="https://mc.yandex.ru/watch/31779816" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 HEADER;
 //<div id="plan_upgrade">
 //                Plan:
@@ -1012,7 +1011,8 @@ HEADER;
                     <div class="meta-box-sortables ui-sortable">
                         <div class="postbox likebtn_logo">
                             <div class="inside likebtn_sidebar_inside">
-                                <a href="http://likebtn.com" target="_blank" title="LikeBtn.com"><img alt="" src="'.$logo_url.'" /></a>
+                                <a href="https://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="LikeBtn.com"><img alt="" src="'.$logo_url.'" /></a>
+                                <input type="submit" id="likebtn_contact" value="' . __('Contact Us', LIKEBTN_I18N_DOMAIN) . '" class="button-primary" onclick="likebtnPopup(\''.__('https://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'customer.php/contact/full/?platform=WordPress&host_name=' . get_site_url() . '&email=' . get_option('likebtn_account_email') . '&likebtn_short_version=1\', \'\', 600, 600)">
                             </div>
                         </div>
                         <div class="postbox">
@@ -1102,7 +1102,7 @@ function _likebtn_sidebar_plan()
         $html .= '
         <div class="likebtn_sidebar_div"></div>
         <div class="likebtn_sidebar_section">
-            '.__('Max buttons per page', LIKEBTN_I18N_DOMAIN).': <strong><nobr>'.($features['max_buttons'] ? $features['max_buttons'] : __('Unlimited', LIKEBTN_I18N_DOMAIN)).'</strong></nobr>
+            '.__('Max buttons per page', LIKEBTN_I18N_DOMAIN).': <strong><nobr>'.($features['max_buttons'] ? $features['max_buttons'] : __('Unlimited', LIKEBTN_I18N_DOMAIN)).'</nobr></strong>
         </div>
         <div class="likebtn_sidebar_div"></div>
         <div class="likebtn_sidebar_section">
@@ -1125,7 +1125,7 @@ function _likebtn_sidebar_plan()
         if ($likebtn_plan == LIKEBTN_PLAN_FREE || $likebtn_plan == LIKEBTN_PLAN_TRIAL) {
             $html .= '
     <div class="likebtn_upgrade_container">
-        <input class="button-secondary likebtn_button_upgrade" type="button" value="'.__('Upgrade', LIKEBTN_I18N_DOMAIN).'" onclick="likebtnPopup(\''.__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN).'#plans_pricing\')" />
+        <input class="button-secondary likebtn_button_upgrade" type="button" value="'.__('Upgrade', LIKEBTN_I18N_DOMAIN).'" onclick="likebtnPopup(\''.__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN).'\')" />
     </div>
     ';
         }
@@ -2162,7 +2162,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
 
                                         <span class="support_link">
                                             ♥ <?php _e('Like it?', LIKEBTN_I18N_DOMAIN); ?>
-                                            <a href="http://wordpress.org/support/view/plugin-reviews/likebtn-like-button?rate=5#postform" target="_blank">
+                                            <a href="https://wordpress.org/support/view/plugin-reviews/likebtn-like-button?filter=5&rate=5#postform" target="_blank">
                                                 <?php _e('Support the plugin with ★ 5 Stars', LIKEBTN_I18N_DOMAIN); ?>
                                             </a>
                                         </span>
@@ -2385,7 +2385,7 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                             <i class="likebtn_help" title="<?php _e('Suppose you have a post which belongs to more than one category and you have excluded one of those categories. So the Like Button will not be available for that post. Enter comma separated post ids where you want to show the Like Button irrespective of that post category being excluded.', LIKEBTN_I18N_DOMAIN); ?>">&nbsp;</i>
                                                         </th>
                                                         <td>
-                                                            <input type="text"name="likebtn_allow_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_allow_ids_' . $entity_name)); ?>" class="likebtn_input" />
+                                                            <input type="text" name="likebtn_allow_ids_<?php echo $entity_name; ?>" value="<?php _e(get_option('likebtn_allow_ids_' . $entity_name)); ?>" class="likebtn_input" />
                                                         </td>
                                                     </tr>
                                                     <tr valign="top">
@@ -3190,7 +3190,7 @@ function likebtn_admin_statistics() {
                     <li>
                         <?php echo strtr(
                             __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
-                            array('%url_upgrade%'=>"javascript:likebtnPopup('".__('http://likebtn.com/en/', LIKEBTN_I18N_DOMAIN)."#plans_pricing')")
+                            array('%url_upgrade%'=>"javascript:likebtnPopup('".__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN)."');void(0);")
                         ); ?>
                     </li>
                 <?php endif ?>
@@ -3583,8 +3583,8 @@ function likebtn_admin_help() {
     <div>
         <iframe width="560" height="315" src="https://www.youtube.com/embed/n4gye6Blmf8" frameborder="0" allowfullscreen></iframe>
         <ul>
-            <li><?php echo __('<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank">WordPress LikeBtn Plugin FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
-            <li><?php echo __('<a href="http://likebtn.com/en/faq" target="_blank">LikeBtn FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
+            <li><?php echo __('<a href="https://likebtn.com/en/wordpress-like-button-plugin" target="_blank">Documentation</a>', LIKEBTN_I18N_DOMAIN); ?></li>
+            <li><?php echo __('<a href="https://likebtn.com/en/faq" target="_blank">LikeBtn.com FAQ</a>', LIKEBTN_I18N_DOMAIN); ?></li>
             <li><?php echo __('<a href="http://forum.likebtn.com/forums/34-WordPress" target="_blank">Forum</a>', LIKEBTN_I18N_DOMAIN); ?></li>
         </ul>
     </div>

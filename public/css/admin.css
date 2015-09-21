@@ -1,6 +1,10 @@
 #likebtn .likebtn_logo {
-    text-align: center;
     padding: 5px;
+}
+#likebtn_contact {
+    position: absolute;
+    right: 10px;
+    top: 2px;
 }
 #premium_features_hint {
     float: right;

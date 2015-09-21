@@ -25,7 +25,7 @@ class LikeBtnLikeButtonMostLikedWidget extends WP_Widget {
     function LikeBtnLikeButtonMostLikedWidget() {
         load_plugin_textdomain(LIKEBTN_I18N_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
         $widget_ops = array('description' => __('A list of most liked posts, comments, etc', LIKEBTN_I18N_DOMAIN));
-        parent::WP_Widget(false, $name = __('(LikeBtn) Most Liked Content', LIKEBTN_I18N_DOMAIN), $widget_ops);
+        parent::__construct(false, $name = __('(LikeBtn) Most Liked Content', LIKEBTN_I18N_DOMAIN), $widget_ops);
     }
 
     /** @see WP_Widget::widget */

@@ -2,7 +2,7 @@
 Contributors: LikeBtn, LikeBtn Support
 Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter
 Requires at least: 2.8
-Tested up to: 4.2.2
+Tested up to: 4.3.1
 Stable tag: 2.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
