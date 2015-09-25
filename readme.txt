@@ -1,6 +1,6 @@
 === Like Button Voting & Rating ===
 Contributors: likebtn, LikeBtn Support
-Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter
+Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter, post, posts, sharing, woocommerce, wordpress, bbPress, buddypress, comment, comments, rich snippets, page, pages, facebook, ratings, review, reviews, seo, addthis, votes, plugin, mobile plugin, youtube
 Requires at least: 2.8
 Tested up to: 4.3.1
 Stable tag: 2.1.4
