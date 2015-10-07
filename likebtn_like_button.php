@@ -112,6 +112,9 @@ $post_formats = array(
     'status' => __('Status'),
 );
 
+global $likebtn_global_disabled;
+$likebtn_global_disabled = false;
+
 // post types without excerpts
 global $likebtn_no_excerpts;
 $likebtn_no_excerpts = array(
@@ -196,6 +199,7 @@ $likebtn_settings = array(
     "domain_from_parent" => array("default" => '0'),
     //"subdirectory" => array("default" => ''),
     "item_url" => array("default" => ''),
+    "item_date" => array("default" => ''),
     "share_enabled" => array("default" => '1'),
     "item_title" => array("default" => ''),
     "item_description" => array("default" => ''),
@@ -222,6 +226,7 @@ $likebtn_settings = array(
     "tooltip_like_show_always" => array("default" => '0'),
     "tooltip_dislike_show_always" => array("default" => '0'),
     "white_label" => array("default" => '0'),
+    "rich_snippet" => array("default" => '0'),
     "popup_html" => array("default" => ''),
     "popup_donate" => array("default" => ''),
     "popup_content_order" => array("default" => 'popup_share,popup_donate,popup_html'),
@@ -1035,7 +1040,7 @@ HEADER;
                     '</div>
                 </div>
                 <div id="postbox-container-2" class="postbox-container">
-                    <h2 class="nav-tab-wrapper">
+                    <h1 class="nav-tab-wrapper">
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_buttons' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_buttons">' . __('Buttons', LIKEBTN_I18N_DOMAIN) . '</a>
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_settings' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_settings">' . __('Synchronization', LIKEBTN_I18N_DOMAIN) . '</a>
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_statistics' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_statistics">' . __('Statistics', LIKEBTN_I18N_DOMAIN) . ' <i class="premium_feature" title="PRO / VIP / ULTRA">&nbsp;</i></a>
@@ -1047,7 +1052,7 @@ HEADER;
                     '</div>
     ';
 
-    $header .= '</h2>';
+    $header .= '</h1>';
 
     echo $header;
 }
@@ -1107,6 +1112,8 @@ function _likebtn_sidebar_plan()
         <div class="likebtn_sidebar_div"></div>
         <div class="likebtn_sidebar_section">
             <ul class="likebtn_features">
+                <li class="likebtn_avail"><span class="likebtn_ttip" title="FREE">'.__('Shortcodes', LIKEBTN_I18N_DOMAIN).'</span></li>
+                <li class="likebtn_avail"><span class="likebtn_ttip" title="FREE">'.__('Google Rich Snippets', LIKEBTN_I18N_DOMAIN).'</span> <small><a href="'.__('https://likebtn.com/en/faq#rich_snippets', LIKEBTN_I18N_DOMAIN).'" target="_blank">'.__('what is it?', LIKEBTN_I18N_DOMAIN).'</a></small></li>
                 <li class="'.($features['statistics'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Statistics', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
                 <li class="'.($features['synchronization'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Synchronization', LIKEBTN_I18N_DOMAIN).'</span></li>
                 <li class="'.($features['most_liked_widget'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Most liked content widget', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
@@ -2263,6 +2270,20 @@ if (typeof(LikeBtn) != "undefined") { LikeBtn.init(); }</script>
                                                     <input type="checkbox" name="likebtn_settings_white_label_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_white_label_' . $entity_name)); ?> />
                                                 </td>
                                             </tr>
+                                            <?php if ($entity_name !== LIKEBTN_ENTITY_COMMENT): ?>
+                                                <tr valign="top" class="plan_dependent plan_vip">
+                                                    <th scope="row"><label><?php _e('Google Rich Snippets', LIKEBTN_I18N_DOMAIN); ?></label>
+                                                    </th>
+                                                    <td>
+                                                        <input type="checkbox" name="likebtn_settings_rich_snippet_<?php echo $entity_name; ?>" value="1" <?php checked('1', get_option('likebtn_settings_rich_snippet_' . $entity_name)); ?> <?php if ($entity_name == LIKEBTN_ENTITY_PRODUCT || $entity_name == LIKEBTN_ENTITY_PRODUCT_LIST): ?>disabled="disabled"<?php endif ?>/>
+                                                        <?php if ($entity_name == LIKEBTN_ENTITY_PRODUCT || $entity_name == LIKEBTN_ENTITY_PRODUCT_LIST): ?>
+                                                            <small style="color:gray"><?php echo __('WooCommerce is adding Rich Snippets to the products pages by default.', LIKEBTN_I18N_DOMAIN) ?></small>
+                                                        <?php else: ?>
+                                                            <small><a href="<?php echo __('https://likebtn.com/en/faq#rich_snippets', LIKEBTN_I18N_DOMAIN) ?>" target="_blank"><?php echo __('What are Google Rich Snippets and how do they boost traffic?', LIKEBTN_I18N_DOMAIN) ?></a></small>
+                                                        <?php endif ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endif ?>
                                             <?php if (empty($likebtn_entities_config['likebtn_alignment'][$entity_name]['hide'])): ?>
                                                 <tr valign="top">
                                                     <th scope="row"><label><?php _e('Horizontal alignment', LIKEBTN_I18N_DOMAIN); ?></label></th>
@@ -3175,36 +3196,38 @@ function likebtn_admin_statistics() {
     </script>
     <div>
 
-        <?php if (!_likebtn_is_stat_enabled() || get_option('likebtn_last_sync_message')): ?>
-            <span class="likebtn_error">
+        <?php if (!_likebtn_is_stat_enabled() /*|| (get_option('likebtn_last_sync_result') == 'error' && get_option('likebtn_last_sync_message'))*/): ?>
+            <div class="notice update-nag">
+                
                 <?php 
                     echo strtr(
                         __('Statistics not available, enable synchronization in order to view statistics:', LIKEBTN_I18N_DOMAIN), 
                         array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
                     );
                 ?>
-            </span>
-            <?php /*_e('To enable statistics:', LIKEBTN_I18N_DOMAIN)*/ ?>
-            <ol>
-                <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
+            
+                <?php /*_e('To enable statistics:', LIKEBTN_I18N_DOMAIN)*/ ?>
+                <ol>
+                    <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
+                        <li>
+                            <?php echo strtr(
+                                __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
+                                array('%url_upgrade%'=>"javascript:likebtnPopup('".__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN)."');void(0);")
+                            ); ?>
+                        </li>
+                    <?php endif ?>
                     <li>
                         <?php echo strtr(
-                            __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
-                            array('%url_upgrade%'=>"javascript:likebtnPopup('".__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN)."');void(0);")
+                            __('Enable synchronization on <a href="%url_sync%">Synchronization</a> tab.', LIKEBTN_I18N_DOMAIN), 
+                            array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
                         ); ?>
                     </li>
-                <?php endif ?>
-                <li>
-                    <?php echo strtr(
-                        __('Enable synchronization on <a href="%url_sync%">Synchronization</a> tab.', LIKEBTN_I18N_DOMAIN), 
-                        array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
-                    ); ?>
-                </li>
-                <?php /*<li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-                <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-                <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>*/ ?>
-                <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_I18N_DOMAIN); ?></li> */ ?>
-            </ol>
+                    <?php /*<li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
+                    <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
+                    <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>*/ ?>
+                    <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_I18N_DOMAIN); ?></li> */ ?>
+                </ol>
+            </div>
         <?php else: ?>
             <p class="description">
                 ● <?php _e('Keep in mind that items appear in Statistics after receiving at least one vote.', LIKEBTN_I18N_DOMAIN); ?><br/>
@@ -3965,6 +3988,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
     $entity_url = '';
     $entity_title = '';
     $entity_image = '';
+    $entity_date = '';
 
     if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
         $entity = get_comment($entity_id);
@@ -3984,6 +4008,11 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         if (function_exists('bp_core_get_user_domain')) {
             $entity_url = bp_core_get_user_domain($entity_id);
         }
+        $user_info = get_userdata($entity_id);
+        if (!empty($user_info) && !empty($user_info->user_registered)) {
+
+        }
+        $entity_date = mysql2date("c", $user_info->user_registered);
     } else {
         $entity = get_post($entity_id);
         if ($entity) {
@@ -3993,6 +4022,7 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
             if (!empty($entity_image_url[0])) {
                 $entity_image = $entity_image_url[0];
             }
+            $entity_date = mysql2date("c", $entity->post_date);
         }
     }
 
@@ -4008,6 +4038,9 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
     }
     if ($entity_image && !$prepared_settings['item_image']) {
         $data .= ' data-item_image="' . $entity_image . '" ';
+    }
+    if ($entity_date && !$prepared_settings['item_date']) {
+        $data .= ' data-item_date="' . $entity_date . '" ';
     }
 
     // Set engine and plugin info
@@ -4126,8 +4159,15 @@ function _likebtn_get_entity_settings($entity_name) {
 function likebtn_get_content($content, $callback_content_position = '') {
 
     global $likebtn_no_excerpts;
+    global $likebtn_global_disabled;
 
+    // No like button in RSS
     if (is_feed()) {
+        return $content;
+    }
+
+    // Like button has been disabled on this page
+    if ($likebtn_global_disabled) {
         return $content;
     }
 
@@ -4418,6 +4458,12 @@ function likebtn_comment_text($content) {
 }
 
 add_filter('comment_text', 'likebtn_comment_text');
+
+// Disable like button on current
+function likebtn_disable() {
+    global $likebtn_global_disabled;
+    $likebtn_global_disabled = true;
+}
 
 // show the Like Button in Post/Page
 // if Like Button is enabled in admin for Post/Page do not show button twice
@@ -5215,7 +5261,7 @@ function likebtn_bbp_has_replies($has_replies)
 {
     add_filter('bbp_theme_before_reply_admin_links', 'likebtn_bbp_reply_top_left');
     add_filter('bbp_theme_after_reply_admin_links', 'likebtn_bbp_reply_top_right');
-    add_filter('bbp_get_reply_content', 'likebtn_bbp_reply_bottom');
+    //add_filter('bbp_get_reply_content', 'likebtn_bbp_reply_bottom');
     add_filter('bbp_get_reply_author_link', 'likebtn_bbp_author_link');
 
     return $has_replies;
@@ -5234,9 +5280,9 @@ function likebtn_bbp_reply_top_right()
 }
 
 // bbPress reply bottom
-function likebtn_bbp_reply_bottom($content)
+function likebtn_bbp_reply_bottom()
 {
-    return $content.likebtn_bbp_reply(true, LIKEBTN_POSITION_BOTTOM);
+    echo likebtn_bbp_reply(true, LIKEBTN_POSITION_BOTTOM);
 }
 
 // bbPress thread
@@ -5264,6 +5310,7 @@ function likebtn_bbp_user_profile()
 
 
 add_filter('bbp_has_replies', 'likebtn_bbp_has_replies');
+add_action('bbp_theme_after_reply_content', 'likebtn_bbp_reply_bottom' );
 add_action('bbp_template_after_user_profile', 'likebtn_bbp_user_profile');
 
 // Add style to frontend

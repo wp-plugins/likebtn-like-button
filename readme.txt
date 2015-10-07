@@ -30,10 +30,11 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like Button for Website">LikeBtn.com</a>. The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
 
 = Live Demo =
-<a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a>
+<a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a> | <a href="https://domainpromo.com/godaddy-coupons" target="_blank" rel="nofollow">https://domainpromo.com</a>
 
 = Features =
 *   More than 60 parameters, 25 themes, 25 languages.
+*   Google Rich Snippets providing five star rating in search results. (<a href="https://likebtn.com/en/faq#rich_snippets" target="_blank" title="Google Rich Snippets Five Star Rating">Learn more</a>)
 *   Allows visitors to like and dislike content anonymously.
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
