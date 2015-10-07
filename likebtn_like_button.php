@@ -4357,10 +4357,20 @@ function _likebtn_woocommerce_content_bottom($content, $html, $position) {
     }
 }
 
+// Init actions wchich can't be initited right away
+function _likebtn_woocommerce_hooks()
+{
+    // To avoid displaying in Linked products
+    if (function_exists('is_product') && !is_product()) {
+        add_action('woocommerce_after_shop_loop_item_title', 'likebtn_woocommerce_product_top', 7);
+        add_action('woocommerce_after_shop_loop_item_title', 'likebtn_woocommerce_product_bottom', 12);
+    }
+}
+
 add_action('woocommerce_single_product_summary', 'likebtn_woocommerce_product_top', 7);
 add_action('woocommerce_after_main_content', 'likebtn_woocommerce_after_main_content', 7);
-add_action('woocommerce_after_shop_loop_item_title', 'likebtn_woocommerce_product_top', 7);
-add_action('woocommerce_after_shop_loop_item_title', 'likebtn_woocommerce_product_bottom', 12);
+// WooCommerce here is not defined yet
+add_action('loop_start', '_likebtn_woocommerce_hooks');
 
 // add Like Button to the Comment
 function likebtn_comment_text($content) {
