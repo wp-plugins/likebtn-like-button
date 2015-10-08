@@ -3197,8 +3197,8 @@ function likebtn_admin_statistics() {
     <div>
 
         <?php if (!_likebtn_is_stat_enabled() /*|| (get_option('likebtn_last_sync_result') == 'error' && get_option('likebtn_last_sync_message'))*/): ?>
-            <div class="notice update-nag">
-                
+            <div class="error">
+                <br/>
                 <?php 
                     echo strtr(
                         __('Statistics not available, enable synchronization in order to view statistics:', LIKEBTN_I18N_DOMAIN), 
