@@ -486,6 +486,7 @@ $likebtn_entities_config = array(
         LIKEBTN_ENTITY_BBP_USER => array('value'=>'github'),
     ),
     'popup_position' => array(
+        LIKEBTN_ENTITY_PRODUCT => array('value'=>'top'),
         LIKEBTN_ENTITY_BP_MEMBER => array('value'=>'bottom'),
         LIKEBTN_ENTITY_BP_ACTIVITY_POST => array('value'=>'left'),
         LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE => array('value'=>'left'),
@@ -528,7 +529,7 @@ $likebtn_entities_config = array(
         LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC => array('hide'=>true)
     ),
     'likebtn_position' => array(
-        LIKEBTN_ENTITY_PRODUCT => array('hide'=>true),
+        //LIKEBTN_ENTITY_PRODUCT => array('hide'=>true),
         LIKEBTN_ENTITY_BP_MEMBER => array('hide'=>true),
         LIKEBTN_ENTITY_BBP_USER => array('hide'=>true)
     ),
@@ -955,10 +956,13 @@ function likebtn_admin_menu() {
     );
     //add_options_page('LikeBtn Like Button', __('LikeBtn Like Button', 'likebtn'), 'activate_plugins', 'likebtn', 'likebtn_admin_content');
     add_submenu_page(
-            'likebtn_buttons', __('Synchronization', LIKEBTN_I18N_DOMAIN) . ' ‹ ' . __('LikeBtn Like Button', LIKEBTN_I18N_DOMAIN), __('Synchronization', LIKEBTN_I18N_DOMAIN), 'manage_options', 'likebtn_settings', 'likebtn_admin_settings'
+            'likebtn_buttons', __('Settings', LIKEBTN_I18N_DOMAIN) . ' ‹ ' . __('LikeBtn Like Button', LIKEBTN_I18N_DOMAIN), __('Settings', LIKEBTN_I18N_DOMAIN), 'manage_options', 'likebtn_settings', 'likebtn_admin_settings'
     );
     add_submenu_page(
             'likebtn_buttons', __('Statistics', LIKEBTN_I18N_DOMAIN) . ' ‹ LikeBtn Like Button', __('Statistics', LIKEBTN_I18N_DOMAIN), 'manage_options', 'likebtn_statistics', 'likebtn_admin_statistics'
+    );
+    add_submenu_page(
+            'likebtn_buttons', __('Reports', LIKEBTN_I18N_DOMAIN) . ' ‹ LikeBtn Like Button', __('Reports', LIKEBTN_I18N_DOMAIN), 'manage_options', 'likebtn_reports', 'likebtn_admin_reports'
     );
     add_submenu_page(
             'likebtn_buttons', __('Help') . ' ‹ LikeBtn Like Button', __('Help'), 'manage_options', 'likebtn_help', 'likebtn_admin_help'
@@ -1042,8 +1046,9 @@ HEADER;
                 <div id="postbox-container-2" class="postbox-container">
                     <h1 class="nav-tab-wrapper">
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_buttons' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_buttons">' . __('Buttons', LIKEBTN_I18N_DOMAIN) . '</a>
-                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_settings' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_settings">' . __('Synchronization', LIKEBTN_I18N_DOMAIN) . '</a>
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_settings' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_settings">' . __('Settings', LIKEBTN_I18N_DOMAIN) . '</a>
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_statistics' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_statistics">' . __('Statistics', LIKEBTN_I18N_DOMAIN) . ' <i class="premium_feature" title="PRO / VIP / ULTRA">&nbsp;</i></a>
+                        <a class="nav-tab ' . ($_GET['page'] == 'likebtn_reports' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_reports">' . __('Reports', LIKEBTN_I18N_DOMAIN) . '</a>
                         <a class="nav-tab ' . ($_GET['page'] == 'likebtn_help' ? 'nav-tab-active' : '') . '" href="' . admin_url() . 'admin.php?page=likebtn_help">' . __('Help') . '</a>';
 
                 $header .= '
@@ -1114,8 +1119,9 @@ function _likebtn_sidebar_plan()
             <ul class="likebtn_features">
                 <li class="likebtn_avail"><span class="likebtn_ttip" title="FREE">'.__('Shortcodes', LIKEBTN_I18N_DOMAIN).'</span></li>
                 <li class="likebtn_avail"><span class="likebtn_ttip" title="FREE">'.__('Google Rich Snippets', LIKEBTN_I18N_DOMAIN).'</span> <small><a href="'.__('https://likebtn.com/en/faq#rich_snippets', LIKEBTN_I18N_DOMAIN).'" target="_blank">'.__('what is it?', LIKEBTN_I18N_DOMAIN).'</a></small></li>
+                <li class="likebtn_avail"><span class="likebtn_ttip" title="FREE">'.__('Reports', LIKEBTN_I18N_DOMAIN).'</span></li>
                 <li class="'.($features['statistics'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Statistics', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
-                <li class="'.($features['synchronization'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Synchronization', LIKEBTN_I18N_DOMAIN).'</span></li>
+                <li class="'.($features['synchronization'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Synchronization', LIKEBTN_I18N_DOMAIN).'</span> <small><a href="'.admin_url().'admin.php?page=likebtn_settings" target="_blank">'.__('what is it?', LIKEBTN_I18N_DOMAIN).'</a></small></li>
                 <li class="'.($features['most_liked_widget'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Most liked content widget', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
                 <li class="'.($features['sorting'] ? 'likebtn_avail' : 'likebtn_unavail').'"><span class="likebtn_ttip" title="PRO / VIP / ULTRA">'.__('Sorting content by likes', LIKEBTN_I18N_DOMAIN).'</span>'.$likebtn_alert.'</li>
             </ul>
@@ -1264,7 +1270,7 @@ function _likebtn_plan_html() {
                     <div class="likebtn_sidebar_div_simple"></div>
                     '.__('Expires in', LIKEBTN_I18N_DOMAIN).': 
                     <strong class="likebtn_error">'.__('Unknown', LIKEBTN_I18N_DOMAIN).'</strong>
-                    <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Synchronization tab', LIKEBTN_I18N_DOMAIN).'"></i> 
+                    <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Settings tab', LIKEBTN_I18N_DOMAIN).'"></i> 
                     <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>
                 ';
             }
@@ -1274,7 +1280,7 @@ function _likebtn_plan_html() {
             <strong class="likebtn_error">'.
                 __('Unknown', LIKEBTN_I18N_DOMAIN).'
             </strong>
-            <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Synchronization tab', LIKEBTN_I18N_DOMAIN).'"></i> 
+            <i class="likebtn_help_simple" title="'.__('Enter your LikeBtn.com account data on Settings tab', LIKEBTN_I18N_DOMAIN).'"></i> 
             <a href="'.admin_url().'admin.php?page=likebtn_settings">'.__('Edit', LIKEBTN_I18N_DOMAIN).'</a>
         ';
     }
@@ -1324,7 +1330,7 @@ function likebtn_account_notice() {
 
     if (!get_option('likebtn_last_plan_successfull_sync_time')) {
         $msg = strtr(
-            __('Like Button', LIKEBTN_I18N_DOMAIN).': '.__('Please enter your LikeBtn.com account data on <a href="%url_sync%">Synchronization</a> tab.', LIKEBTN_I18N_DOMAIN), 
+            __('Like Button', LIKEBTN_I18N_DOMAIN).': '.__('Please enter your LikeBtn.com account data on <a href="%url_sync%">Settings</a> tab.', LIKEBTN_I18N_DOMAIN), 
             array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
         );
         _likebtn_notice($msg, 'update-nag');
@@ -1736,7 +1742,7 @@ function likebtn_admin_settings() {
             </table>
             */ ?>
             <p class="description">
-                <?php _e('Enable synchronization of likes from LikeBtn.com system into your database to get the opportunity to use the following features:', LIKEBTN_I18N_DOMAIN); ?><br/>
+                <?php _e('Enable synchronization of likes from LikeBtn.com system into your database to be able to:', LIKEBTN_I18N_DOMAIN); ?><br/>
                 ● <?php _e('View statistics on Statistics tab.', LIKEBTN_I18N_DOMAIN); ?><br/>
                 ● <?php _e('Sort content by likes.', LIKEBTN_I18N_DOMAIN); ?><br/>
                 ● <?php _e('Use most liked content widget and shortcode.', LIKEBTN_I18N_DOMAIN); ?><br/>
@@ -1820,7 +1826,7 @@ function likebtn_admin_settings() {
                             </th>
                             <td>
                                 <select name="likebtn_sync_inerval" <?php disabled((!get_option('likebtn_account_email') || !get_option('likebtn_account_api_key'))); ?> id="likebtn_sync_inerval_input">
-                                    <option value="" <?php selected('', get_option('likebtn_sync_inerval')); ?> ><?php _e('Do not fetch votes from LikeBtn.com into my database', LIKEBTN_I18N_DOMAIN) ?></option>
+                                    <option value="" <?php selected('', get_option('likebtn_sync_inerval')); ?> ><?php _e('Synchronization of votes into local database is disabled', LIKEBTN_I18N_DOMAIN) ?></option>
                                     <?php foreach ($likebtn_sync_intervals as $sync_interval): ?>
                                         <option value="<?php echo $sync_interval; ?>" <?php selected($sync_interval, get_option('likebtn_sync_inerval')); ?> ><?php echo $sync_interval; ?> <?php _e('min', LIKEBTN_I18N_DOMAIN); ?></option>
                                     <?php endforeach ?>
@@ -3201,32 +3207,12 @@ function likebtn_admin_statistics() {
                 <br/>
                 <?php 
                     echo strtr(
-                        __('Statistics not available, enable synchronization in order to view statistics:', LIKEBTN_I18N_DOMAIN), 
+                        __('Statistics not available. Enable synchronization in order to view statistics:', LIKEBTN_I18N_DOMAIN), 
                         array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
                     );
                 ?>
             
-                <?php /*_e('To enable statistics:', LIKEBTN_I18N_DOMAIN)*/ ?>
-                <ol>
-                    <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
-                        <li>
-                            <?php echo strtr(
-                                __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
-                                array('%url_upgrade%'=>"javascript:likebtnPopup('".__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN)."');void(0);")
-                            ); ?>
-                        </li>
-                    <?php endif ?>
-                    <li>
-                        <?php echo strtr(
-                            __('Enable synchronization on <a href="%url_sync%">Synchronization</a> tab.', LIKEBTN_I18N_DOMAIN), 
-                            array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
-                        ); ?>
-                    </li>
-                    <?php /*<li><?php _e('Set your website tariff plan in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-                    <li><?php _e('Enter E-mail and API key in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>
-                    <li><?php _e('Set Synchronization interval in Settings.', LIKEBTN_I18N_DOMAIN); ?></li>*/ ?>
-                    <?php /* <li><?php _e('Run Synchronization test in Settings.', LIKEBTN_I18N_DOMAIN); ?></li> */ ?>
-                </ol>
+                <?php echo _likebtn_enable_stats_msg(); ?>
             </div>
         <?php else: ?>
             <p class="description">
@@ -3411,6 +3397,101 @@ function likebtn_admin_statistics() {
     <?php
 
     _likebtn_admin_footer();
+}
+
+// admin vote statistics
+function likebtn_admin_reports() {
+
+    $loader_src = _likebtn_get_public_url() . 'img/ajax_loader_white.gif';
+
+    likebtn_admin_header();
+    ?>
+
+    <script type="text/javascript" src="<?php echo _likebtn_get_public_url() ?>/js/highstock/highstock.js"></script>
+    <script type="text/javascript" src="<?php echo _likebtn_get_public_url() ?>/js/highstock/exporting.js"></script>
+    <script type="text/javascript" src="<?php echo _likebtn_get_public_url() ?>/js/highstock/no-data-to-display.js"></script>
+    <script type="text/javascript">
+        var likebtn_reports_id = '<?php echo htmlspecialchars(get_option('likebtn_site_id')) ?>';
+        var likebtn_couch_db_view_main = '_design/doctrine_repositories/_view/equal_constraint';
+        var likebtn_couch_db_type = 'Likebtn.WidgetBundle.CouchDocument.Sitestats';
+        var likebtn_couch_db_url = 'https://storage.likebtn.com/widget';
+        var likebtn_report_store_days = 14;
+        var likebtn_msg_votes = '<?php _e('Total Votes') ?>';
+        var likebtn_msg_likes = '<?php _e('Likes') ?>';
+        var likebtn_msg_dislikes = '<?php _e('Dislikes') ?>';
+        var global_highcharts_lang = {
+            rangeSelectorZoom: '',
+            rangeSelectorFrom: '',
+            rangeSelectorTo: '/',
+            loading: "<?php _e('Loading...') ?>",
+            downloadJPEG: "<?php _e('Download JPEG image') ?>",
+            downloadPDF: "<?php _e('Download PDF document') ?>",
+            downloadPNG: "<?php _e('Download PNG image') ?>",
+            downloadSVG: "<?php _e('Download SVG vector image') ?>",
+            printChart: "<?php _e('Print chart') ?>",
+            months: ["<?php _e('January') ?>", "<?php _e('February') ?>", "<?php _e('March') ?>", "<?php _e('April') ?>", "<?php _e('May') ?>", "<?php _e('June') ?>", "<?php _e('July') ?>", "<?php _e('August') ?>", "<?php _e('September') ?>", "<?php _e('October') ?>", "<?php _e('November') ?>", "<?php _e('December') ?>"],
+            numericSymbols: null,
+            shortMonths: ["<?php _e('Jan') ?>", "<?php _e('Feb') ?>", "<?php _e('Mar') ?>", "<?php _e('Apr') ?>", "<?php _e('May') ?>", "<?php _e('Jun') ?>", "<?php _e('Jul') ?>", "<?php _e('Aug') ?>", "<?php _e('Sep') ?>", "<?php _e('Oct') ?>", "<?php _e('Nov') ?>", "<?php _e('Dec') ?>"],
+            weekdays: ["<?php _e('Sunday') ?>", "<?php _e('Monday') ?>", "<?php _e('Tuesday') ?>", "<?php _e('Wednesday') ?>", "<?php _e('Thursday') ?>", "<?php _e('Friday') ?>", "<?php _e('Saturday') ?>"],
+            noData: "<?php _e('No votes found') ?>"
+        }
+
+
+        jQuery(document).ready(function() {
+            loadReports();
+        });
+    </script>
+
+    <div id="likebtn_reports">
+        <?php if (!get_option('likebtn_site_id')): ?>
+            <div class="error">
+                <br/>
+                <?php echo strtr(
+                    __('Reports are not available. Enter your account data on <a href="%url_sync%">Settings</a> tab.', LIKEBTN_I18N_DOMAIN), 
+                    array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
+                ); ?>
+                <br/><br/>
+            </div>
+        <?php endif ?>
+        <div class="reports-error error"><br/><?php _e('Error occured') ?>. &nbsp;<button class="button-secondary" onclick="loadReports()"><?php _e('Try again') ?></button><br/><br/></div>
+        <h3 class="reports-vals">
+            <div class="report-val"><?php _e('Total Votes') ?> <span class="reports-label reports-total"><img src="<?php echo $loader_src ?>" /></span></div>
+            <div class="report-val"><?php _e('Likes') ?> <span class="reports-label reports-like"><img src="<?php echo $loader_src ?>" /></span></div>
+            <div class="report-val"><?php _e('Dislikes') ?> <span class="reports-label reports-dislike"><img src="<?php echo $loader_src ?>" /></span></div>
+        </h3>
+        <h4><?php _e('Last Two Weeks') ?></h4>
+        <div class="postbox likebtn-graph"><div class="reports-graph-d"></div></div>
+
+        <h4><?php _e('Last Year') ?></h4>
+        <div class="postbox likebtn-graph"><div class="reports-graph-m"></div></div>
+    </div>
+
+    <?php
+
+    _likebtn_admin_footer();
+}
+
+// Stats enable instructions
+function _likebtn_enable_stats_msg()
+{
+    ?>
+        <ol>
+            <?php if (get_option('likebtn_plan') < LIKEBTN_PLAN_PRO): ?>
+                <li>
+                    <?php echo strtr(
+                        __('<a href="%url_upgrade%">Upgrade</a> your website to PRO or higher plan on LikeBtn.com.', LIKEBTN_I18N_DOMAIN), 
+                        array('%url_upgrade%'=>"javascript:likebtnPopup('".__('https://likebtn.com/en/pricing', LIKEBTN_I18N_DOMAIN)."');void(0);")
+                    ); ?>
+                </li>
+            <?php endif ?>
+            <li>
+                <?php echo strtr(
+                    __('Enable synchronization on <a href="%url_sync%">Settings</a> tab.', LIKEBTN_I18N_DOMAIN), 
+                    array('%url_sync%'=>admin_url().'admin.php?page=likebtn_settings')
+                ); ?>
+            </li>
+        </ol>
+    <?php
 }
 
 // Get statistics entity
@@ -3653,7 +3734,7 @@ function _likebtn_bulk_actions()
 function _likebtn_get_public_url() {
     //$siteurl = get_option('siteurl');
     //return $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/public/';
-    return plugin_dir_url( __FILE__ ) . '/public/';
+    return plugin_dir_url( __FILE__ ) . 'public/';
 }
 
 // Get supported by current theme Post Formats
