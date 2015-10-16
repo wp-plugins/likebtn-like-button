@@ -1105,7 +1105,7 @@ function _likebtn_sidebar_plan()
         $features = _likebtn_get_features();
 
         $likebtn_alert = '';
-        if ((!_likebtn_is_stat_enabled() || get_option('likebtn_last_sync_message')) && $features['statistics']) {
+        if (/*(*/!_likebtn_is_stat_enabled() /*|| get_option('likebtn_last_sync_message'))*/ && $features['statistics']) {
             $likebtn_alert = ' <i class="likebtn_ttip likebtn_alert" data-likebtn_ttip_gr="e" title="'.__('Configure Synchronization in order to use this feature', LIKEBTN_I18N_DOMAIN).'"></i>';
         }
 
