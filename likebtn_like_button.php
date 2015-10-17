@@ -15,7 +15,7 @@
 // Plugin version
 define('LIKEBTN_VERSION', '2.1.4');
 // Current DB version
-define('LIKEBTN_DB_VERSION', 7);
+define('LIKEBTN_DB_VERSION', 8);
 
 // i18n domain
 define('LIKEBTN_I18N_DOMAIN', 'likebtn-like-button');
@@ -78,6 +78,8 @@ define('LIKEBTN_REVIEW_LINK_PERIOD', '1 month');
 
 // item table name
 define('LIKEBTN_TABLE_ITEM', 'likebtn_item');
+// Votes table name
+define('LIKEBTN_TABLE_VOTE', 'likebtn_vote');
 
 // custom fields names
 define('LIKEBTN_META_KEY_LIKES', 'Likes');
@@ -1421,6 +1423,7 @@ function likebtn_uninstall() {
 
     // Tables
     $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . LIKEBTN_TABLE_ITEM );
+    $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . LIKEBTN_TABLE_VOTE );
 }
 
 // activation hook
@@ -1460,17 +1463,28 @@ function _likebtn_add_options()
     if (!get_option('likebtn_installation_timestamp')) {
         add_option('likebtn_installation_timestamp', time());
     }
-
-    //add_option('likebtn_db_version', LIKEBTN_DB_VERSION);
 }
 
 // The latest version of DB
 function _likebtn_db_install() {
     global $wpdb;
 
-    $table_name = $wpdb->prefix . LIKEBTN_TABLE_ITEM;
+    /*$collate = '';
 
-    $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+    if ( $wpdb->has_cap( 'collation' ) ) {
+        if (!empty($wpdb->charset)) {
+            $collate .= "DEFAULT CHARACTER SET $wpdb->charset";
+        }
+        if (!empty($wpdb->collate)) {
+            $collate .= " COLLATE $wpdb->collate";
+        }
+    }*/
+
+    $table_item = $wpdb->prefix . LIKEBTN_TABLE_ITEM;
+    $table_vote = $wpdb->prefix . LIKEBTN_TABLE_VOTE;
+
+    $sql = "
+    CREATE TABLE IF NOT EXISTS {$table_item} (
         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         `identifier` text NOT NULL,
         `identifier_hash` varchar(32) NOT NULL,
@@ -1488,7 +1502,26 @@ function _likebtn_db_install() {
         KEY `dislikes` (`dislikes`),
         KEY `likes_minus_dislikes` (`likes_minus_dislikes`),
         KEY `identifier` (`identifier`(1))
-    );";
+    );
+    CREATE TABLE IF NOT EXISTS {$table_vote} (
+        `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `identifier` text NOT NULL,
+        `identifier_hash` varchar(32) NOT NULL,
+        `client_identifier` varchar(32) NOT NULL,
+        `type` tinyint(1) NOT NULL,
+        `user_id` bigint(20) DEFAULT 0,
+        `ip` varchar(40) NOT NULL,
+        `lat` float(10, 6) NULL,
+        `lng` float(10, 6) NULL,
+        `created_at` datetime NOT NULL,
+        PRIMARY KEY (`ID`),
+        UNIQUE KEY `identifiers` (`identifier_hash`, `client_identifier`, `user_id`),
+        KEY `identifier` (`identifier`(7)),
+        KEY `created_at` (`created_at`),
+        KEY `user_id` (`user_id`),
+        KEY `ip` (`ip`)
+    );
+    ";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
@@ -3401,6 +3434,23 @@ function likebtn_admin_statistics() {
 
 // admin vote statistics
 function likebtn_admin_reports() {
+    global $wpdb;
+
+    // Get coordinates
+    $created_at = date("Y-m-d H:i:s", strtotime('-2 weeks'));
+    $coordinates = $wpdb->get_results("
+        SELECT lat, lng
+        FROM ".$wpdb->prefix.LIKEBTN_TABLE_VOTE."
+        WHERE
+            lat != '' 
+            AND lat is not NULL 
+            AND lng != '' 
+            AND lng is not NULL 
+            AND created_at > '".$created_at."'
+        GROUP BY lat, lng
+        ORDER BY created_at DESC
+        LIMIT 1000
+    ");
 
     $loader_src = _likebtn_get_public_url() . 'img/ajax_loader_white.gif';
 
@@ -3439,6 +3489,7 @@ function likebtn_admin_reports() {
 
         jQuery(document).ready(function() {
             loadReports();
+            //showMap();
         });
     </script>
 
@@ -3461,10 +3512,26 @@ function likebtn_admin_reports() {
         </h3>
         <h4><?php _e('Last Two Weeks') ?></h4>
         <div class="postbox likebtn-graph"><div class="reports-graph-d"></div></div>
+        <?php if (count($coordinates)): ?>
+            <div class="postbox likebtn-graph"><div class="reports-map"></div></div>
+        <?php endif ?>
 
         <h4><?php _e('Last Year') ?></h4>
         <div class="postbox likebtn-graph"><div class="reports-graph-m"></div></div>
     </div>
+
+    <?php if (count($coordinates)): ?>
+        <script type="text/javascript">
+            var likebtn_reports_loc = [
+                <?php foreach ($coordinates as $i => $loc): ?>
+                    [<?php echo $loc->lat ?>, <?php echo $loc->lng ?>]<?php if ($i !== count($coordinates)-1): ?>,<?php endif ?>
+                <?php endforeach ?>
+            ];
+        </script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?v=3.exp&callback=showMap&libraries=visualization">
+        </script>
+    <?php endif ?>
 
     <?php
 
@@ -4060,9 +4127,16 @@ function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_enti
         ) {
             // option has default value
         } else {
+            // Some options need extra procession
+            if ($option_name == 'event_handler') {
+                $option_name = 'custom_eh';
+            }
             $data .= ' data-' . $option_name . '="' . $option_value_prepared . '" ';
         }
     }
+
+    // Event handler
+    $data .= ' data-event_handler="likebtn_eh" ';
 
     // Add item options
     $entity = null;
@@ -5399,7 +5473,6 @@ function likebtn_bbp_user_profile()
     echo $content;
 }
 
-
 add_filter('bbp_has_replies', 'likebtn_bbp_has_replies');
 add_action('bbp_theme_after_reply_content', 'likebtn_bbp_reply_bottom' );
 add_action('bbp_template_after_user_profile', 'likebtn_bbp_user_profile');
@@ -5413,6 +5486,24 @@ function likebtn_enqueue_style()
 
 // Add frontend style
 add_action('wp_enqueue_scripts', 'likebtn_enqueue_style');
+
+// Add script to frontend
+function likebtn_frontend_script()
+{
+    $src = _likebtn_get_public_url() . 'js/frontend.js?ver=' . LIKEBTN_VERSION;
+    wp_enqueue_script('likebtn_frontend', $src); 
+
+    wp_localize_script('likebtn_frontend', 'likebtn_eh_data', array(
+        // URL to wp-admin/admin-ajax.php to process the request
+        'ajaxurl' => admin_url( 'admin-ajax.php' ),
+        // generate a nonce with a unique ID "myajax-post-comment-nonce"
+        // so that you can check it later when an AJAX request is sent
+        'security' => wp_create_nonce('likebtn_event_handler')
+    ));
+}
+
+// Add frontend style
+add_action('wp_enqueue_scripts', 'likebtn_frontend_script');
 
 // Current + deprecated settings
 function _likebtn_get_all_settings()
@@ -5543,4 +5634,112 @@ function _likebtn_has_shortcode($content, $tag)
 function _likebtn_remove_shortcode($content, $tag)
 {
     return preg_replace("/\[".$tag."\]/", '', $content);
+}
+
+// Like button click handler
+function likebtn_event_handler(){
+    global $wpdb;
+    $response = array(
+        'result' => 'error',
+        'message' => $sync_response['message'],
+    );
+
+    $user_id = get_current_user_id();
+    $identifier = $_POST['identifier'];
+    $identifier_hash = md5($identifier);
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $client_identifier = md5($ip.$_SERVER['HTTP_USER_AGENT'].$_SERVER['HTTP_ACCEPT'].$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    $type = (int)$_POST['type'];
+    if ($type != 1 && $type != -1) {
+        $type = 1;
+    }
+    $created_at = date("Y-m-d H:i:s");
+    $ipinfo = _likebtn_ipinfo($ip);
+    $lat = '';
+    $lng = '';
+    if ($ipinfo) {
+        $lat = $ipinfo['lat'];
+        $lng = $ipinfo['lng'];
+    }
+
+    // Find
+    $vote = $wpdb->get_row("
+        SELECT id
+        FROM ".$wpdb->prefix.LIKEBTN_TABLE_VOTE."
+        WHERE identifier_hash = '{$identifier_hash}' 
+            AND client_identifier = '{$client_identifier}' 
+            AND user_id = '{$user_id}'
+    ");
+
+    $vote_data = array(
+        'identifier' => $identifier,
+        'identifier_hash' => $identifier_hash,
+        'client_identifier' => $client_identifier,
+        'type' => $type,
+        'user_id' => $user_id,
+        'ip' => $ip,
+        'lat' => $lat,
+        'lng' => $lng,
+        'created_at' => $created_at
+    );
+
+    try {
+        if ($vote) {
+            $update_where = array(
+                'identifier_hash' => $identifier_hash,
+                'client_identifier' => $client_identifier,
+                'user_id' => $user_id
+            );
+            $result = $wpdb->update($wpdb->prefix.LIKEBTN_TABLE_VOTE, $vote_data, $update_where);
+        } else {
+            $result = $wpdb->insert($wpdb->prefix.LIKEBTN_TABLE_VOTE, $vote_data);
+        }
+    } catch(Exception $e) {
+        $result = false;
+    }
+    if ($result) {
+        $response['result'] = 'success';
+    }
+
+    if (!DOING_AJAX) {
+        define('DOING_AJAX', true);
+    }
+    if (ob_get_contents()) {
+        ob_clean();
+    }
+    _likebtn_send_json($response);
+}
+add_action('wp_ajax_likebtn_event_handler', 'likebtn_event_handler' );
+add_action('wp_ajax_nopriv_likebtn_event_handler', 'likebtn_event_handler');
+
+// Get IP info
+function _likebtn_ipinfo($ip)
+{
+    $url = 'http://ipinfo.io/'.$ip.'/json';
+
+    try {
+        $http = new WP_Http();
+        $response = $http->request($url);
+    } catch (Exception $e) {
+        return '';
+    }
+
+    // Error occured
+    if (is_wp_error($response)) {
+        return '';
+    }
+
+    $ipinfo = array();
+    if (is_array($response) && !empty($response['body'])) {
+        try {
+            $ipinfo = json_decode($response['body'], true);
+        } catch (Exception $e) {}
+    }
+
+    if (is_array($ipinfo) && !empty($ipinfo['loc'])) {
+        list($lat, $lng) = explode(',', $ipinfo['loc']);
+        return array('lat' => $lat, 'lng' => $lng);
+    } else {
+        return '';
+    }
 }

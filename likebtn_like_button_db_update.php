@@ -208,3 +208,31 @@ function likebtn_db_update_7() {
         }
     }
 }
+
+function likebtn_db_update_8() {
+    global $wpdb;
+
+    $table_vote = $wpdb->prefix . LIKEBTN_TABLE_VOTE;
+
+    $sql = "CREATE TABLE IF NOT EXISTS {$table_vote} (
+        `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `identifier` text NOT NULL,
+        `identifier_hash` varchar(32) NOT NULL,
+        `client_identifier` varchar(32) NOT NULL,
+        `type` tinyint(1) NOT NULL,
+        `user_id` bigint(20) DEFAULT 0,
+        `ip` varchar(40) NOT NULL,
+        `lat` float(10, 6) NULL,
+        `lng` float(10, 6) NULL,
+        `created_at` datetime NOT NULL,
+        PRIMARY KEY (`ID`),
+        UNIQUE KEY `identifiers` (`identifier_hash`, `client_identifier`, `user_id`),
+        KEY `identifier` (`identifier`(7)),
+        KEY `created_at` (`created_at`),
+        KEY `user_id` (`user_id`),
+        KEY `ip` (`ip`)
+    );";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta($sql);
+}

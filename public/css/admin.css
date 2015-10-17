@@ -386,3 +386,6 @@
 .reports-dislike {
     background-color: #f0ad4e;
 }
+.reports-map {
+    height: 300px;
+}

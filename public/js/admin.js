@@ -1093,6 +1093,29 @@ function loadReports()
     );
 }
 
+// Show heat map
+function showMap()
+{
+    if (!jQuery(".reports-map:first").size() || !likebtn_reports_loc.length) {
+        return;
+    }
+    var map = new google.maps.Map(jQuery(".reports-map:first")[0], {
+        zoom: 1,
+        center: {lat: 37.775, lng: -122.434},
+        mapTypeId: google.maps.MapTypeId.SATELLITE
+    });
+
+    var points = [];
+    for (i in likebtn_reports_loc) {
+        points.push(new google.maps.LatLng(likebtn_reports_loc[i][0], likebtn_reports_loc[i][1]));
+    }
+
+    heatmap = new google.maps.visualization.HeatmapLayer({
+        data: points,
+        map: map
+    });
+}
+
 // Get series from data
 function reportsGetSeries(data, mode)
 {
