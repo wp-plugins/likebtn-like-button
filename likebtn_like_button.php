@@ -1664,6 +1664,23 @@ function _likebtn_add_default_options($entity_name) {
 
 register_activation_hook(__FILE__, 'likebtn_activation_hook');
 
+// Make this plugin the last in the list.
+// If plugin is loaded before myCRED, myCRED is not working on frontend.
+// https://wordpress.org/support/topic/how-to-change-plugins-load-order
+function likebtn_last() {
+    // ensure path to this file is via main wp plugin path
+    $wp_path_to_this_file = preg_replace('/(.*)plugins\/(.*)$/', WP_PLUGIN_DIR."/$2", __FILE__);
+    $this_plugin = plugin_basename(trim($wp_path_to_this_file));
+    $active_plugins = get_option('active_plugins');
+    $this_plugin_key = array_search($this_plugin, $active_plugins);
+    if ($this_plugin_key != count($active_plugins)-1) { 
+        array_splice($active_plugins, $this_plugin_key, 1);
+        array_push($active_plugins, $this_plugin);
+        update_option('active_plugins', $active_plugins);
+    }
+}
+add_action("activated_plugin", "likebtn_last");
+
 // admin init hook: registering settings
 function likebtn_admin_init()
 {
@@ -4067,10 +4084,51 @@ function _likebtn_delete_user_votes($entity_id)
     return false;
 }
 
+// MyCred
+if (defined('myCRED_VERSION')) {
+    require_once(dirname(__FILE__) . '/includes/likebtn_mycred.class.php');
 
-################
-### Frontend ###
-################
+    function likebtn_mycred_setup( $installed ) {
+        require_once(dirname(__FILE__) . '/includes/likebtn_mycred.class.php');
+
+        $installed[LikeBtn_MyCRED::ID] = array(
+            'title'       => __('Like Button', LIKEBTN_I18N_DOMAIN),
+            'description' => __('Award points for liking & disliking content.', LIKEBTN_I18N_DOMAIN),
+            'callback'    => array('LikeBtn_MyCRED')
+        );
+
+        return $installed;
+    }
+    add_filter('mycred_setup_hooks', 'likebtn_mycred_setup');
+
+    function likebtn_mycred_references($hooks) {
+        require_once(dirname(__FILE__) . '/includes/likebtn_mycred.class.php');
+
+        $hooks[LikeBtn_MyCRED::REF_LIKE]   = __( 'Liking Content', LIKEBTN_I18N_DOMAIN);
+        $hooks[LikeBtn_MyCRED::REF_GET_LIKE]   = __( 'Getting Content Like', LIKEBTN_I18N_DOMAIN);
+        $hooks[LikeBtn_MyCRED::REF_DISLIKE] = __( 'Disliking Content', LIKEBTN_I18N_DOMAIN);
+        $hooks[LikeBtn_MyCRED::REF_GET_DISLIKE] = __( 'Getting Content Dislike', LIKEBTN_I18N_DOMAIN);
+        return $hooks;
+    }
+    add_filter('mycred_all_references', 'likebtn_mycred_references');
+}
+
+// Get entity name and from identifier
+function _likebtn_parse_identifier($identifier)
+{
+    preg_match("/(.*)_(\d+)$/", $identifier, $m);
+    if ($m) {
+        return array(
+            'entity_name' => $m[1],
+            'entity_id' => $m[2],
+        );
+    } else {
+        return array(
+            'entity_name' => '',
+            'entity_id' => 0,
+        );
+    }
+}
 
 function _likebtn_get_markup($entity_name, $entity_id, $values = null, $use_entity_name = '', $use_entity_settings = true, $wrap = true) 
 {
@@ -5697,8 +5755,17 @@ function likebtn_event_handler(){
     } catch(Exception $e) {
         $result = false;
     }
+
     if ($result) {
         $response['result'] = 'success';
+
+        // myCRED Award
+        $parse_identifier = _likebtn_parse_identifier($identifier);
+        if ($type == 1) {
+            do_action('likebtn_mycred_like', $parse_identifier['entity_name'], $parse_identifier['entity_id']);
+        } else {
+            do_action('likebtn_mycred_dislike', $parse_identifier['entity_name'], $parse_identifier['entity_id']);
+        }
     }
 
     if (!DOING_AJAX) {
@@ -5742,4 +5809,61 @@ function _likebtn_ipinfo($ip)
     } else {
         return '';
     }
+}
+
+// Get entity by id
+function _likebtn_get_entity($entity_name, $entity_id)
+{
+    if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
+        return get_comment($entity_id);
+    } else if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))) {
+        if (function_exists('bp_activity_get_specific')) {
+            $activity_list = bp_activity_get_specific(array(
+                'activity_ids' => $entity_id,
+                'display_comments' => true
+            ));
+
+            if (!empty($activity_list['activities']) && !empty($activity_list['activities'][0])) {
+                return $activity_list['activities'][0];
+            }
+        };
+    } else if ($entity_name == LIKEBTN_ENTITY_BP_MEMBER) {
+        return get_user_by('id', $entity_id);
+    } else if ($entity_name == LIKEBTN_ENTITY_PRODUCT) {
+        if (class_exists('WC_Product_Factory')) {
+            $_pf = new WC_Product_Factory();  
+            return $_pf->get_product($id);
+        }
+    } else {
+        return get_post($entity_id);
+    }
+
+    return null;
+}
+
+// Get entity author id
+function _likebtn_get_author_id($entity_name, $entity_id)
+{
+    if ($entity_name == LIKEBTN_ENTITY_COMMENT) {
+        $comment = _likebtn_get_entity($entity_name, $entity_id);
+        if ($comment && !empty($comment->user_id)) {
+            return $comment->user_id;
+        }
+    } else if (in_array($entity_name, array(LIKEBTN_ENTITY_BP_ACTIVITY_POST, LIKEBTN_ENTITY_BP_ACTIVITY_UPDATE, LIKEBTN_ENTITY_BP_ACTIVITY_COMMENT, LIKEBTN_ENTITY_BP_ACTIVITY_TOPIC))) {
+        $activity = _likebtn_get_entity($entity_name, $entity_id);
+        if ($activity && !empty($activity->user_id)) {
+            return $activity->user_id;
+        }
+    } else if ($entity_name == LIKEBTN_ENTITY_BP_MEMBER) {
+        return $entity_id;
+    } else if ($entity_name == LIKEBTN_ENTITY_PRODUCT) {
+        return null;
+    } else {
+        // Posts, bbPress, custom post types
+        $post = _likebtn_get_entity($entity_name, $entity_id);
+        if ($post && !empty($post->post_author)) {
+            return $post->post_author;
+        }
+    }
+    return null;
 }
