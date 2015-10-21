@@ -39,6 +39,7 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
+*   Works on websites fully cached with Quick Cache, CloudFlae, etc.
 *   Shortcode <code>[likebtn]</code> to display the Like button inside a post/page.
 *   Shortcode <code>[likebtn_off]</code> to disable the Like button in a post/page.
 *   Widget and shortcode <code>[likebtn_most_liked]</code> to display the most liked content. (PRO/VIP/ULTRA)
