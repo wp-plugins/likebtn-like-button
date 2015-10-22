@@ -38,7 +38,7 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
-*   Compatible with <a href="https://ru.wordpress.org/plugins/mycred/" target="_blank">myCRED</a> points management system.
+*   Compatible with <a href="https://wordpress.org/plugins/mycred/" target="_blank">myCRED</a> points management system.
 *   Works on websites fully cached with Quick Cache, CloudFlae, etc.
 *   Shortcode <code>[likebtn]</code> to display the Like button inside a post/page.
 *   Shortcode <code>[likebtn_off]</code> to disable the Like button in a post/page.
