@@ -35,10 +35,10 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 = Features =
 *   More than 60 parameters, 25 themes, 25 languages.
 *   Google Rich Snippets providing five star rating in search results. (<a href="https://likebtn.com/en/faq#rich_snippets" target="_blank" title="Google Rich Snippets Five Star Rating">Learn more</a>)
-*   Allows visitors to like and dislike content anonymously.
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
+*   Compatible with <a href="https://ru.wordpress.org/plugins/mycred/" target="_blank">myCRED</a> points management system.
 *   Works on websites fully cached with Quick Cache, CloudFlae, etc.
 *   Shortcode <code>[likebtn]</code> to display the Like button inside a post/page.
 *   Shortcode <code>[likebtn_off]</code> to disable the Like button in a post/page.
