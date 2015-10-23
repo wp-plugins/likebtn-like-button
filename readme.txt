@@ -1,9 +1,9 @@
 === Like Button Voting & Rating ===
 Contributors: likebtn, LikeBtn Support
-Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter, post, posts, sharing, woocommerce, wordpress, bbPress, buddypress, comment, comments, rich snippets, page, pages, facebook, ratings, review, reviews, seo, addthis, votes, plugin, mobile plugin, youtube
+Tags: like button, voting, rating, vote, like, dislike, contest, rate, widget, widgets, like button widget, facebook like, facebook like button, poll, survey, donate, donations, share, share button, share buttons, thumbs up, thumb, thumbs, like counter, likes counter, post, posts, sharing, woocommerce, wordpress, bbPress, buddypress, comment, comments, rich snippets, page, pages, facebook, ratings, review, reviews, seo, addthis, votes, plugin, mobile plugin, youtube, mycred, ranking, user rating
 Requires at least: 2.8
 Tested up to: 4.3.1
-Stable tag: 2.1.4
+Stable tag: 2.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,7 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 
 = Features =
 *   More than 60 parameters, 25 themes, 25 languages.
-*   Google Rich Snippets providing five star rating in search results. (<a href="https://likebtn.com/en/faq#rich_snippets" target="_blank" title="Google Rich Snippets Five Star Rating">Learn more</a>)
+*   Google Rich Snippets providing five star rating in Google search results. (<a href="https://likebtn.com/en/faq#rich_snippets" target="_blank" title="Google Rich Snippets Five Star Rating">Learn more</a>)
 *   Sorting content by likes.
 *   Voting statistics. (PRO/VIP/ULTRA)
 *   Multisite compatible.
@@ -77,6 +77,12 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 11. WooCommerce
 
 == Changelog ==
+
+= 2.1.5 =
+* Add - Google Rich Snippets option providing five star rating in Google search results (http://likebtn.com/en/faq#rich_snippets)
+* Add - Real Time Reports.
+* Add - Compatibility with myCRED (https://wordpress.org/plugins/mycred) points management system.
+* Add - Shortcode [likebtn_off] to disable the Like button in a post/page.
 
 = 2.1.4 =
 * Popup enabled option renamed into Popup disabled
