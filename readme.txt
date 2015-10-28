@@ -21,17 +21,6 @@ The **Like Button Voting & Rating** plugin allows you to add a cool looking full
 *   bbPress Forum Posts and Users
 *   Custom Post Types
 
-= Documentation =
-
-<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Overview & Documentation</a>
-
-[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
-
-The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like Button for Website">LikeBtn.com</a>. The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
-
-= Live Demo =
-<a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a> | <a href="https://domainpromo.com/godaddy-coupons" target="_blank" rel="nofollow">https://domainpromo.com</a>
-
 = Features =
 *   More than 60 parameters, 25 themes, 25 languages.
 *   Google Rich Snippets providing five star rating in Google search results. (<a href="https://likebtn.com/en/faq#rich_snippets" target="_blank" title="Google Rich Snippets Five Star Rating">Learn more</a>)
@@ -48,6 +37,17 @@ The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like B
 *   Custom texts.
 *   Allows to collect donations by adding donate buttons to popup.
 *   Adds "Likes", "Dislikes" and "Likes minus dislikes" custom fields to posts.
+
+= Live Demo =
+<a href="http://wordpress.likebtn.com" target="_blank" title="wordpress like button demo">http://wordpress.likebtn.com</a> | <a href="https://domainpromo.com/godaddy-coupons" target="_blank" rel="nofollow">https://domainpromo.com</a>
+
+= Documentation =
+
+<a href="http://likebtn.com/en/wordpress-like-button-plugin" target="_blank" title="WordPress Like Button">Overview & Documentation</a>
+
+[youtube https://www.youtube.com/watch?v=n4gye6Blmf8]
+
+The plugin powered by <a href="http://likebtn.com" target="_blank" title="Like Button for Website">LikeBtn.com</a>. The plugin is **commercial** and provides a 7-day TRIAL. After TRIAL ends your website is switched to the FREE plan and you can continue using FREE or <a href="http://likebtn.com/en/#plans_pricing" target="_blank" title="Like Button Plans">upgrade.
 
 == Installation ==
 
