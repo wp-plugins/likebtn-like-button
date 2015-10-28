@@ -1673,10 +1673,14 @@ function likebtn_last() {
     $this_plugin = plugin_basename(trim($wp_path_to_this_file));
     $active_plugins = get_option('active_plugins');
     $this_plugin_key = array_search($this_plugin, $active_plugins);
-    if ($this_plugin_key != count($active_plugins)-1) { 
+    // If found and not last
+    if ($this_plugin_key !== false && $this_plugin_key != count($active_plugins)-1) { 
         array_splice($active_plugins, $this_plugin_key, 1);
-        array_push($active_plugins, $this_plugin);
-        update_option('active_plugins', $active_plugins);
+        // Do not add duplicape
+        if (array_search($this_plugin, $active_plugins) === false) {
+            array_push($active_plugins, $this_plugin);
+            update_option('active_plugins', $active_plugins);
+        }
     }
 }
 add_action("activated_plugin", "likebtn_last");
